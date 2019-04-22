@@ -1,0 +1,145 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <AssemblyName>CleanArchitecture.Web</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>CleanArchitecture.Web</PackageId>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="ClientApp\package-lock.json" />
+    <Content Remove="ClientApp\package.json" />
+    <Content Remove="ClientApp\public\manifest.json" />
+    <Content Remove="ClientApp\src\containers\DefaultLayout\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Breadcrumbs\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Cards\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Carousels\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Collapses\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Dropdowns\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Forms\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Jumbotrons\package.json" />
+    <Content Remove="ClientApp\src\views\Base\ListGroups\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Navbars\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Navs\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Paginations\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Popovers\package.json" />
+    <Content Remove="ClientApp\src\views\Base\ProgressBar\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Switches\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Tables\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Tabs\package.json" />
+    <Content Remove="ClientApp\src\views\Base\Tooltips\package.json" />
+    <Content Remove="ClientApp\src\views\Buttons\BrandButtons\package.json" />
+    <Content Remove="ClientApp\src\views\Buttons\ButtonDropdowns\package.json" />
+    <Content Remove="ClientApp\src\views\Buttons\ButtonGroups\package.json" />
+    <Content Remove="ClientApp\src\views\Buttons\Buttons\package.json" />
+    <Content Remove="ClientApp\src\views\Charts\package.json" />
+    <Content Remove="ClientApp\src\views\Dashboard\package.json" />
+    <Content Remove="ClientApp\src\views\Icons\CoreUIIcons\package.json" />
+    <Content Remove="ClientApp\src\views\Icons\Flags\package.json" />
+    <Content Remove="ClientApp\src\views\Icons\FontAwesome\package.json" />
+    <Content Remove="ClientApp\src\views\Icons\SimpleLineIcons\package.json" />
+    <Content Remove="ClientApp\src\views\Notifications\Alerts\package.json" />
+    <Content Remove="ClientApp\src\views\Notifications\Badges\package.json" />
+    <Content Remove="ClientApp\src\views\Notifications\Modals\package.json" />
+    <Content Remove="ClientApp\src\views\Pages\Login\package.json" />
+    <Content Remove="ClientApp\src\views\Pages\Logout\package-lock.json" />
+    <Content Remove="ClientApp\src\views\Pages\Logout\package.json" />
+    <Content Remove="ClientApp\src\views\Pages\Page404\package.json" />
+    <Content Remove="ClientApp\src\views\Pages\Page500\package.json" />
+    <Content Remove="ClientApp\src\views\Pages\Register\package.json" />
+    <Content Remove="ClientApp\src\views\Theme\Colors\package.json" />
+    <Content Remove="ClientApp\src\views\Theme\Typography\package.json" />
+    <Content Remove="ClientApp\src\views\Users\package.json" />
+    <Content Remove="ClientApp\src\views\Widgets\package.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\**\*;Views\**\*;Areas\**\Views;appsettings.json;web.config">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanArchitecture.Core\CleanArchitecture.Core.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Infrastructure\CleanArchitecture.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.0" />
+    <PackageReference Include="Dapper" Version="1.50.5" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.172" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
+  </ItemGroup>
+
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+    <Exec Command="bower install" />
+    <Exec Command="dotnet bundle" />
+  </Target>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.8.391" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ClientApp\package-lock.json" />
+    <None Include="ClientApp\package.json" />
+    <None Include="ClientApp\public\manifest.json" />
+    <None Include="ClientApp\src\containers\DefaultLayout\package.json" />
+    <None Include="ClientApp\src\views\Base\Breadcrumbs\package.json" />
+    <None Include="ClientApp\src\views\Base\Cards\package.json" />
+    <None Include="ClientApp\src\views\Base\Carousels\package.json" />
+    <None Include="ClientApp\src\views\Base\Collapses\package.json" />
+    <None Include="ClientApp\src\views\Base\Dropdowns\package.json" />
+    <None Include="ClientApp\src\views\Base\Forms\package.json" />
+    <None Include="ClientApp\src\views\Base\Jumbotrons\package.json" />
+    <None Include="ClientApp\src\views\Base\ListGroups\package.json" />
+    <None Include="ClientApp\src\views\Base\Navbars\package.json" />
+    <None Include="ClientApp\src\views\Base\Navs\package.json" />
+    <None Include="ClientApp\src\views\Base\Paginations\package.json" />
+    <None Include="ClientApp\src\views\Base\Popovers\package.json" />
+    <None Include="ClientApp\src\views\Base\ProgressBar\package.json" />
+    <None Include="ClientApp\src\views\Base\Switches\package.json" />
+    <None Include="ClientApp\src\views\Base\Tables\package.json" />
+    <None Include="ClientApp\src\views\Base\Tabs\package.json" />
+    <None Include="ClientApp\src\views\Base\Tooltips\package.json" />
+    <None Include="ClientApp\src\views\Buttons\BrandButtons\package.json" />
+    <None Include="ClientApp\src\views\Buttons\ButtonDropdowns\package.json" />
+    <None Include="ClientApp\src\views\Buttons\ButtonGroups\package.json" />
+    <None Include="ClientApp\src\views\Buttons\Buttons\package.json" />
+    <None Include="ClientApp\src\views\Charts\package.json" />
+    <None Include="ClientApp\src\views\Dashboard\package.json" />
+    <None Include="ClientApp\src\views\Icons\CoreUIIcons\package.json" />
+    <None Include="ClientApp\src\views\Icons\Flags\package.json" />
+    <None Include="ClientApp\src\views\Icons\FontAwesome\package.json" />
+    <None Include="ClientApp\src\views\Icons\SimpleLineIcons\package.json" />
+    <None Include="ClientApp\src\views\Notifications\Alerts\package.json" />
+    <None Include="ClientApp\src\views\Notifications\Badges\package.json" />
+    <None Include="ClientApp\src\views\Notifications\Modals\package.json" />
+    <None Include="ClientApp\src\views\Pages\Login\package.json" />
+    <None Include="ClientApp\src\views\Pages\Logout\package-lock.json" />
+    <None Include="ClientApp\src\views\Pages\Logout\package.json" />
+    <None Include="ClientApp\src\views\Pages\Page404\package.json" />
+    <None Include="ClientApp\src\views\Pages\Page500\package.json" />
+    <None Include="ClientApp\src\views\Pages\Register\package.json" />
+    <None Include="ClientApp\src\views\Theme\Colors\package.json" />
+    <None Include="ClientApp\src\views\Theme\Typography\package.json" />
+    <None Include="ClientApp\src\views\Users\package.json" />
+    <None Include="ClientApp\src\views\Widgets\package.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Pages\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Pages\_ViewStart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+</Project>
