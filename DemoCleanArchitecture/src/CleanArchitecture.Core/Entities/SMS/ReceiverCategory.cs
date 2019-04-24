@@ -5,14 +5,11 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.SMS
 {
-    public class MessageReceiverGroup : BaseEntity
+    public class ReceiverCategory : BaseEntity
     {
+        public string Code { get; set; }
         public string Name { get; set; }
 
         public ICollection<MessageReceiver> MessageReceivers { get; set; }
-
-        //Meta data
-        public DateTime CreatedTime { get; set; }
-        public int? CreatedBy { get; set; }
     }
 }

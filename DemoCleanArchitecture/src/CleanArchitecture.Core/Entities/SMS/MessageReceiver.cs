@@ -10,11 +10,14 @@ namespace CleanArchitecture.Core.Entities.SMS
         public int? CustomerId { get; set; }
         public Customer Customer { get; set; }
 
-        public string FullName { get; set; }
-        public string ShortName { get; set; }
-
         public int? EmployeeId { get; set; }
         public HR.Employee Employee { get; set; }
+
+        public int? ReceiverCategoryId { get; set; }
+        public ReceiverCategory ReceiverCategory { get; set; }
+
+        public string FullName { get; set; }
+        public string ShortName { get; set; }
 
         public ICollection<MessageReceiverGroup> MessageReceiverGroups { get; set; }
 

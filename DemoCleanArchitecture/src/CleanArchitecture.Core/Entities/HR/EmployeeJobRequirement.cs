@@ -8,8 +8,8 @@ namespace CleanArchitecture.Core.Entities.HR
 {
     public class EmployeeJobRequirement
     {
-        public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public int EmployeeJobId { get; set; }
+        public EmployeeJob EmployeeJob { get; set; }
         public int JobRequirementId { get; set; }
         public JobRequirement JobRequirement { get; set; }
     }

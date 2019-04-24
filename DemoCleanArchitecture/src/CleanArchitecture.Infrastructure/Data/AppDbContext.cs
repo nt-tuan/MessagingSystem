@@ -19,13 +19,14 @@ namespace CleanArchitecture.Infrastructure.Data
         }
 
         //SMS Module
-        public DbSet<AutoMessageConfig> AutoMessageConfigs { get; set; }
-        public DbSet<AutoMessageConfigDetails> AutoMessageConfigDetails { get; set; }
+        //public DbSet<AutoMessageConfig> AutoMessageConfigs { get; set; }
+        //public DbSet<AutoMessageConfigDetails> AutoMessageConfigDetails { get; set; }
         public DbSet<MessageReceiver> MessageReceivers { get; set; }
-        public DbSet<MessageReceiverGroup> MessageReceiverGroups { get; set; }
-        public DbSet<MessageServiceProvider> MessageServiceProviders { get; set; }
-        public DbSet<ReceiverProvider> ReceiverProviders { get; set; }
-        public DbSet<SentMessage> SentMessages { get; set; }
+        public DbSet<ReceiverCategory> ReceiverCategory { get; set; }
+        //public DbSet<MessageReceiverGroup> MessageReceiverGroups { get; set; }
+        //public DbSet<MessageServiceProvider> MessageServiceProviders { get; set; }
+        //public DbSet<ReceiverProvider> ReceiverProviders { get; set; }
+        //public DbSet<SentMessage> SentMessages { get; set; }
 
         //HR Module
         public DbSet<Department> Departments { get; set; }
@@ -55,6 +56,19 @@ namespace CleanArchitecture.Infrastructure.Data
             }
 
             return result;
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Employee>().HasOne(u => u.Department).WithMany(u => u.Employees);
+            modelBuilder.Entity<Employee>().HasMany(u => u.EmployeeJobs).WithOne(u => u.Employee).HasForeignKey(u => u.EmployeeId);
+            modelBuilder.Entity<EmployeeJob>().HasMany(u => u.EmployeeJobRequirements).WithOne(u => u.EmployeeJob).HasForeignKey(u => u.EmployeeJobId);
+            modelBuilder.Entity<JobRequirement>().HasMany(u => u.EmployeeJobRequirements).WithOne(u => u.JobRequirement).HasForeignKey(u => u.JobRequirementId);
+            modelBuilder.Entity<MessageReceiver>().HasOne(u => u.ReceiverCategory).WithMany(u => u.MessageReceivers).HasForeignKey(u => u.ReceiverCategoryId);
+            modelBuilder.Entity<MessageReceiver>().Ignore(u => u.MessageReceiverGroups);
+            modelBuilder.Entity<EmployeeJobRequirement>().HasKey(u => u.JobRequirementId);
+            modelBuilder.Entity<EmployeeJobRequirement>().HasKey(u => u.EmployeeJobId);
         }
     }
 }
