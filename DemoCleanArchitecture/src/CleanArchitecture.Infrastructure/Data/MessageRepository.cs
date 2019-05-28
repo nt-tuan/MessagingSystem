@@ -27,9 +27,16 @@ namespace CleanArchitecture.Infrastructure.Data
             return await _context.ReceiverCategory.ToListAsync();
         }
 
-        public List<Customer> GetCustomers(int? distributor = null, string name = null)
+        public async Task<List<Customer>> GetCustomers(int? distributor = null, string name = null)
         {
-            throw new NotImplementedException();
+            var lst = new List<Customer>();
+            lst.Add(new Customer
+            {
+                Code = "ASBDA",
+                Fullname = "Nhà thuốc 123",
+                Shortname = "Nt123"
+            });
+            return lst;
         }
 
         public Customer UpdateCustomer(Customer customer)

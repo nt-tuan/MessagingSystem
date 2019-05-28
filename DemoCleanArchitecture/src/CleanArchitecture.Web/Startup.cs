@@ -1,10 +1,12 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.SharedKernel;
 using CleanArchitecture.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace CleanArchitecture.Web
 {
@@ -35,10 +38,38 @@ namespace CleanArchitecture.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             // TODO: Add DbContext and IOC
-            string dbName = Guid.NewGuid().ToString();
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase(dbName));
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //string dbName = Guid.NewGuid().ToString();
+            services.AddDbContext<AppDbContext> (options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+            services.Configure<IdentityOptions>(options =>
+            {
+                //Password setting
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredLength = 8;
+
+                //Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+
+                //User settings
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@";
+                options.User.RequireUniqueEmail = true;
+            });
+            services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
+            services.ConfigureApplicationCookie(options => {
+                options.Cookie.Name = "auth_cookie";
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
+
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";

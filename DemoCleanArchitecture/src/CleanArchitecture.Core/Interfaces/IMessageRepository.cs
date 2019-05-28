@@ -10,7 +10,7 @@ namespace CleanArchitecture.Core.Interfaces
     public interface IMessageRepository
     {
         //Customer interfaces
-        List<Customer> GetCustomers(int? distributor = null, string name = null);
+        Task<List<Customer>> GetCustomers(int? distributor = null, string name = null);
         Customer UpdateCustomer(Customer customer);
         Customer AddCustomer(Customer customer);
 

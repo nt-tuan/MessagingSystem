@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Badge, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import { Badge, Card, CardBody, CardHeader, Col, Row, Table, Modal, ModalBody, Button } from 'reactstrap';
+import CreateUser from './CreateUser';
 
-import usersData from './UsersData'
+import usersData from './UsersData';
 
 function UserRow(props) {
   const user = props.user
@@ -28,13 +29,35 @@ function UserRow(props) {
 }
 
 class Users extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      modal: false
+    };
+
+    this.onClose = this.onClose.bind(this);
+    this.onShow = this.onShow.bind(this);
+  }
+
+  onShow() {
+    this.setState({
+      modal: true
+    });
+  }
+
+  onClose() {
+    this.setState({
+      modal: false
+    });
+  }
 
   render() {
 
-    const userList = usersData.filter((user) => user.id < 10)
+    const userList = usersData.filter((user) => user.id < 10);
 
     return (
       <div className="animated fadeIn">
+        <Button type="button" color="primary" onClick={this.onShow}>CREATE_USER</Button>
         <Row>
           <Col xl={6}>
             <Card>
@@ -54,7 +77,7 @@ class Users extends Component {
                   </thead>
                   <tbody>
                     {userList.map((user, index) =>
-                      <UserRow key={index} user={user}/>
+                      <UserRow key={index} user={user} />
                     )}
                   </tbody>
                 </Table>
@@ -62,6 +85,12 @@ class Users extends Component {
             </Card>
           </Col>
         </Row>
+        <Modal isOpen={this.state.modal}>
+          <ModalBody>
+            <CreateUser onClose={this.onClose}>
+            </CreateUser>
+          </ModalBody>
+        </Modal>
       </div>
     )
   }

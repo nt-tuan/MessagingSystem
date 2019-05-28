@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CleanArchitecture.Core.Entities;
 using CleanArchitecture.Core.Entities.SMS;
 using CleanArchitecture.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -27,29 +28,11 @@ namespace CleanArchitecture.Web.Api
             return await _imessage.GetCategories();
         }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet]
+        [Route("customers")]
+        public async Task<List<Customer>> Customers()
         {
-            return "value";
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return await _imessage.GetCustomers();
         }
     }
 }

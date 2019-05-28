@@ -5,10 +5,12 @@ using CleanArchitecture.Core.Entities;
 using CleanArchitecture.Core.Entities.SMS;
 using CleanArchitecture.Core.Entities.HR;
 using CleanArchitecture.Core.SharedKernel;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CleanArchitecture.Core.Entities.Accounts;
 
 namespace CleanArchitecture.Infrastructure.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         private readonly IDomainEventDispatcher _dispatcher;
 
