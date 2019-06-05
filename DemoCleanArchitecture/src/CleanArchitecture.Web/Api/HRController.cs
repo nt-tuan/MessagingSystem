@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using CleanArchitecture.Web.ApiModels;
 
 namespace CleanArchitecture.Web.Api
 {
@@ -19,11 +20,11 @@ namespace CleanArchitecture.Web.Api
             _context = context;
         }
 
-        [HttpGet]
-        [Route("employees")]
-        public async Task<IActionResult> GetEmployees([FromQuery] int perpage = 30, [FromQuery]int page = 0, string search = null, string orderBy = "code", string direction = "asc")
+        [HttpPost]
+        [Route("emps")]
+        public async Task<IActionResult> GetEmployees([FromQuery] int perpage = 30, int page = 0, string search = null, string orderBy = "code", string direction = "asc")
         {
-            
+
             var query = _context.Employees.AsQueryable();
             if (!string.IsNullOrEmpty(search))
                 query = query.Where(u => u.FullName.Contains(search));
@@ -36,11 +37,34 @@ namespace CleanArchitecture.Web.Api
             await query.Skip(perpage * page).Take(perpage).ToListAsync();
 
             return Ok(new
+            ResponseModel(new
             {
-                data = list,
-                total = total,
-                page = page
-            });
+                emps = list,
+                total = total
+            }));
         }
+
+        [HttpPost]
+        [Route("emps/{id}")]
+        public async Task<IActionResult> GetEmployee(int id)
+        {
+            var emp = await _context.Employees.Where(u => !u.Removed && u.Id == id).FirstOrDefaultAsync();
+            if (emp != null)
+            {
+                return Ok(new ResponseModel(new
+                {
+                    code = emp.Code,
+                    firstname = emp.FirstName,
+                    lastname = emp.LastName,
+                    deptid = emp.DepartmentId,
+                    birthday = emp.Birthday,
+                    email = emp.Email
+                }));
+            }
+            return NotFound();
+        }
+
+        
+
     }
 }

@@ -124,7 +124,7 @@ namespace CleanArchitecture.Web.Api
                 var appuser = new AppUser();
                 if (String.IsNullOrEmpty(model.EmployeeCode))
                 {
-                    var emp = await _icore.GetEmployeeDetails(model.EmployeeCode);
+                    var emp = await _icore.GetEmployee(model.EmployeeCode);
                     if (emp != null)
                     {
                         return BadRequest(new
