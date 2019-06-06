@@ -7,6 +7,8 @@ using CleanArchitecture.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using CleanArchitecture.Web.ApiModels;
+using CleanArchitecture.Web.ApiModels.HR;
+using CleanArchitecture.Core.Interfaces;
 
 namespace CleanArchitecture.Web.Api
 {
@@ -15,32 +17,25 @@ namespace CleanArchitecture.Web.Api
     public class HRController : ControllerBase
     {
         AppDbContext _context;
-        public HRController(AppDbContext context)
+        ICoreRepository _coreRep;
+        public HRController(AppDbContext context, ICoreRepository coreRep)
         {
             _context = context;
+            _coreRep = coreRep;
         }
 
+        #region EMPLOYEE
         [HttpPost]
         [Route("emps")]
-        public async Task<IActionResult> GetEmployees([FromQuery] int perpage = 30, int page = 0, string search = null, string orderBy = "code", string direction = "asc")
+        public async Task<IActionResult> GetEmployees(TableParameter param)
         {
-
-            var query = _context.Employees.AsQueryable();
-            if (!string.IsNullOrEmpty(search))
-                query = query.Where(u => u.FullName.Contains(search));
-            if (direction == "asc")
-                query = query.OrderBy(u => orderBy);
-            else
-                query = query.OrderByDescending(u => orderBy);
-            var total = await query.CountAsync();
-            var list =
-            await query.Skip(perpage * page).Take(perpage).ToListAsync();
-
+            var list = await _coreRep.GetEmployees(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filters);
+            var count = await _coreRep.GetEmployeeCount();
             return Ok(new
             ResponseModel(new
             {
-                emps = list,
-                total = total
+                emps = list.Select(u => new EmployeeModel(u)),
+                total = count
             }));
         }
 
@@ -48,23 +43,39 @@ namespace CleanArchitecture.Web.Api
         [Route("emps/{id}")]
         public async Task<IActionResult> GetEmployee(int id)
         {
-            var emp = await _context.Employees.Where(u => !u.Removed && u.Id == id).FirstOrDefaultAsync();
+            var emp = await _coreRep.GetEmployee(id);
             if (emp != null)
             {
                 return Ok(new ResponseModel(new
-                {
-                    code = emp.Code,
-                    firstname = emp.FirstName,
-                    lastname = emp.LastName,
-                    deptid = emp.DepartmentId,
-                    birthday = emp.Birthday,
-                    email = emp.Email
-                }));
+                EmployeeModel(emp)));
             }
             return NotFound();
         }
+        #endregion
 
-        
+        #region DEPARTMENT
+        [HttpPost]
+        [Route("dept/{id}")]
+        public async Task<IActionResult> GetDepartment(int id)
+        {
+            var dept = await _coreRep.GetDepartment(id);
+            return Ok(new ResponseModel(new DepartmentModel(dept)));
+        }
+
+        [HttpPost]
+        [Route("depts")]
+        public async Task<IActionResult> GetDepartments(TableParameter param)
+        {
+            var depts = await _coreRep.GetDepartments(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filters);
+
+            var count = await _coreRep.GetDepartmentCount();
+            return Ok(new ResponseModel(new {
+                depts = depts,
+                total = count
+            }));
+
+        }
+        #endregion
 
     }
 }

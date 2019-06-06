@@ -12,7 +12,7 @@ namespace CleanArchitecture.Web.ApiModels
         private readonly string INFO_TYPE = "info";
         public string message { get; set; }
         public string type { get; set; }
-        dynamic result { get; set; }
+        public dynamic result { get; set; }
         public ResponseModel()
         {
 

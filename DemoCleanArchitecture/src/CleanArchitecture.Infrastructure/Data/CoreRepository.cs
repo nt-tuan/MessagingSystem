@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +16,9 @@ namespace CleanArchitecture.Infrastructure.Data
 {
     public class CoreRepository : ICoreRepository
     {
+        const int ORDER_ASC = 0;
+        const int ORDER_DESC = 1;
+
         AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         public CoreRepository(AppDbContext context, UserManager<AppUser> userManager)
@@ -55,8 +59,6 @@ namespace CleanArchitecture.Infrastructure.Data
             return entity;
         }
 
-
-
         //end support functions
         public async Task<Employee> GetEmployeeDetails(int id)
         {
@@ -74,9 +76,9 @@ namespace CleanArchitecture.Infrastructure.Data
             return employee;
         }
 
-        public async Task<ICollection<Employee>> GetEmployees(int perpage = 30, int page = 0, string search = null, string orderby = "code", string orderdir = "asc", IDictionary<string, string> filter = null)
+        public async Task<ICollection<Employee>> GetEmployees(int? perpage = 30, int? page = 0, string search = null, string orderby = "code", int? orderdir = 0, IDictionary<string, string> filter = null)
         {
-            var query = _context.Employees.AsQueryable();
+            var query = _context.Employees.Include(u => u.Department).AsQueryable();
             if (!string.IsNullOrEmpty(search))
                 query = query.Where(u => u.FullName.Contains(search));
             if (filter != null)
@@ -99,13 +101,14 @@ namespace CleanArchitecture.Infrastructure.Data
                     }
                 }
             }
-            if (orderdir == "asc")
-                query = query.OrderBy(u => orderby);
+
+            if (orderdir == ORDER_ASC)
+                query = query.OrderBy(getEmployeeProperyName(orderby));
             else
-                query = query.OrderByDescending(u => orderby);
+                query = query.OrderByDescending(getEmployeeProperyName(orderby));
             var total = await query.CountAsync();
             var list =
-            await query.Skip(perpage * page).Take(perpage).ToListAsync();
+            await query.Skip(perpage.Value * page.Value).Take(perpage.Value).ToListAsync();
 
             return list;
         }
@@ -120,6 +123,11 @@ namespace CleanArchitecture.Infrastructure.Data
         {
             var emp = await _context.Employees.FirstOrDefaultAsync(u => !u.Removed && u.Id == id);
             return emp;
+        }
+
+        public async Task<int> GetEmployeeCount()
+        {
+            return await _context.Employees.Where(u => !u.Removed).CountAsync();
         }
 
         public async Task AddEmployee(Employee employee)
@@ -192,7 +200,7 @@ namespace CleanArchitecture.Infrastructure.Data
             throw new Exception("ACCOUNT_NOTFOUND");
         }
 
-        public async Task<ICollection<Department>> GetDepartments(int perpage = 30, int page = 0, string search = null, string orderby = "code", string orderdir = "asc", IDictionary<string, string> filter = null)
+        public async Task<ICollection<Department>> GetDepartments(int? perpage = 30, int? page = 0, string search = null, string orderby = "code", int? orderdir = 0, IDictionary<string, string> filter = null)
         {
             var query = _context.Departments.AsQueryable();
             if (!string.IsNullOrEmpty(search))
@@ -217,12 +225,12 @@ namespace CleanArchitecture.Infrastructure.Data
                     }
                 }
             }
-            if (orderdir == "asc")
+            if (orderdir == ORDER_ASC)
                 query = query.OrderBy(u => orderby);
             else
                 query = query.OrderByDescending(u => orderby);
             var list =
-            await query.Skip(perpage * page).Take(perpage).ToListAsync();
+            await query.Skip(perpage.Value * page.Value).Take(perpage.Value).ToListAsync();
 
             return list;
         }
@@ -231,6 +239,12 @@ namespace CleanArchitecture.Infrastructure.Data
         {
             var dept = await _context.Departments.FirstOrDefaultAsync(u => u.Id == id);
             return dept;
+        }
+
+        public async Task<int> GetDepartmentCount()
+        {
+            var count = await _context.Departments.CountAsync(u => !u.Removed);
+            return count;
         }
 
         public async Task AddDepartment(Department department)
@@ -259,6 +273,25 @@ namespace CleanArchitecture.Infrastructure.Data
                 _context.Remove(dept);
             }
             throw new Exception("DEPARTMENT_NOTFOUND");
+        }
+
+        public Expression<Func<Employee, object>> getEmployeeProperyName(string modelname)
+        {
+            switch (modelname)
+            {
+                case "birthday":
+                    return (u => u.Birthday);
+                case "firstname":
+                    return (u => u.FirstName);
+                case "lastname":
+                    return (u => u.LastName);
+                case "fullname":
+                    return (u => u.LastName);
+                case "email":
+                    return (u => u.Email);
+                default:
+                    return (u => u.Code);
+            }
         }
     }
 }

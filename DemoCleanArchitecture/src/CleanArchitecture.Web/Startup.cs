@@ -39,7 +39,7 @@ namespace CleanArchitecture.Web
             });
             // TODO: Add DbContext and IOC
             //string dbName = Guid.NewGuid().ToString();
-            services.AddDbContext<AppDbContext> (options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppDbContext> (options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), x=>x.MigrationsAssembly("CleanArchitecture.Infrastructure")));
             services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options =>
             {
