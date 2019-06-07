@@ -14,7 +14,7 @@ class EmployeesList extends React.Component {
         { title: 'Ngày sinh', field: 'birthday' },
         {
           title: 'Bộ phận', render: rowData => {
-            return <Link to={`/employees/details/${rowData.deptid}`}>{rowData.deptname}</Link>
+            return <Link to={`/hr/employees/details/${rowData.deptid}`}>{rowData.deptname}</Link>
           }
         }
       ]} data={query => new Promise((resolve, reject) => {

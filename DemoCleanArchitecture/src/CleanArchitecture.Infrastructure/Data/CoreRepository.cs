@@ -121,7 +121,8 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<Employee> GetEmployee(int id)
         {
-            var emp = await _context.Employees.FirstOrDefaultAsync(u => !u.Removed && u.Id == id);
+            var emp = await _context.Employees.Include(u => u.Department)
+                .FirstOrDefaultAsync(u => !u.Removed && u.Id == id);
             return emp;
         }
 

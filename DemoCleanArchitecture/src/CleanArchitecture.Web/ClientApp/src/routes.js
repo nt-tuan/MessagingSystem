@@ -39,16 +39,21 @@ const User = React.lazy(() => import('./views/Users/User'));
 const Customers = React.lazy(() => import('./views/Base/Customers'));
 
 const Employees = React.lazy(() => import('./views/Employees/EmployeesList'));
+const EmployeeDetails = React.lazy(() => import('./views/Employees/EmployeeDetails'));
+
+//tesst
+const EmployeeUpdate = React.lazy(() => import('./views/Employees/Components/Update'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
-  { path: '/', exact: true, name: 'Home', component: DefaultLayout},
+  { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/theme', exact: true, name: 'Theme', component: Colors, authorize: 'admin'  },
+  { path: '/theme', exact: true, name: 'Theme', component: Colors, authorize: 'admin' },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },
   { path: '/base', exact: true, name: 'Base', component: Cards },
-  {path: '/base/Customers', name: 'Customers', component: Customers
+  {
+    path: '/base/Customers', name: 'Customers', component: Customers
   },
   { path: '/base/cards', name: 'Cards', component: Cards, authorize: 'admin' },
   { path: '/base/forms', name: 'Forms', component: Forms },
@@ -83,9 +88,11 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', component: Modals },
   { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/charts', name: 'Charts', component: Charts },
-  { path: '/users', exact: true,  name: 'Users', component: Users },
+  { path: '/users', exact: true, name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
-  {path: '/hr/employees', exact: true, name: 'Employees List', component: Employees}
+  { path: '/hr/employees', exact: true, name: 'Employees List', component: Employees },
+  { path: '/hr/employeesdetails/:id', exact: true, name: 'Employee details', component: EmployeeDetails },
+  { path: '/hr/employeeupdate', exact: true, name: 'Update employee', component: EmployeeUpdate }
 ];
 
 export default routes;
