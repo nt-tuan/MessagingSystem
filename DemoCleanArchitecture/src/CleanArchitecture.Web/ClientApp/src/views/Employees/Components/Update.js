@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Badge, Card, CardBody, CardHeader, Col, Row, Table, Modal, Input, InputGroup, Form, Alert, FormGroup, Label } from 'reactstrap';
-import Select from 'react-select';
+
+import { Form, Message } from 'semantic-ui-react';
 class EmployeeUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {
       formData: {
-      }
+      },
+      validated: false
     }
     this.onChage = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   onChange(event) {
@@ -21,32 +22,17 @@ class EmployeeUpdate extends Component {
     });
   }
 
+  onSubmit(event) {
+  }
+
   render() {
     return (<div>
-      <Form action="createUser" method="post" onSubmit={this.onSubmit}>
-        {this.state.error && <Alert color="danger">{this.state.error.message}</Alert>}
-        <FormGroup>
-          <Label htmlFor="input-code">Mã nhân viên</Label>
-          <Input type="text" id="input-code" name="code" value={this.state.formData.code} onChange={this.onChange}>
-          </Input>
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="input-firstname">Họ</Label>
-          <Input type="text" id="input-firstname" name="firstname" value={this.state.formData.firstname} onChange={this.onChange}></Input>
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="input-lastname">Tên</Label>
-          <Input type="text" id="input-lastname" name="lastname" value={this.state.formData.lastname} onChange={this.onchange}></Input>
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="input-dept">Phòng ban/bộ phận</Label>
-          <Select options={[{ value: 1, label: 'A' }, {value: 2, label: 'B'}]}>
-          </Select>
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="input-email">Email</Label>
-          <Input type="text" id="input-email" name="email" value={this.state.formData.email} onChange={this.onChange}></Input>
-        </FormGroup>
+      <Form>
+        {this.state.error && <Message negative>{this.state.error.message}</Message>}
+        <Form.Group widths="equal">
+          <Form.Field label="Code" id="input-code" control="input">
+          </Form.Field>
+        </Form.Group>
       </Form>
     </div>)
   }
