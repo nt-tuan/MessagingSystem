@@ -42,7 +42,7 @@ const Employees = React.lazy(() => import('./views/Employees/EmployeesList'));
 const EmployeeDetails = React.lazy(() => import('./views/Employees/EmployeeDetails'));
 
 //tesst
-const EmployeeUpdate = React.lazy(() => import('./views/Employees/Components/Update'));
+const EmployeeUpdate = React.lazy(() => import('./views/Employees/Components/DepartmentsSelection'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [

@@ -73,7 +73,17 @@ namespace CleanArchitecture.Web.Api
                 depts = depts,
                 total = count
             }));
+        }
 
+        [HttpPost]
+        [Route("deptsselection")]
+        public async Task<IActionResult> GetDepartmentsSelection(string queryString)
+        {
+            var dept  = await _coreRep.GetDepartments(1000, 0, queryString, "code", 0, null);
+            return Ok(new ResponseModel(dept.Select(u => new {
+                text = u.Name,
+                value = u.Id
+            })));
         }
         #endregion
 
