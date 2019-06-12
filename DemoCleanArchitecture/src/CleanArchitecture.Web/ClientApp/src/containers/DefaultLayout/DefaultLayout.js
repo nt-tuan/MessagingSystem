@@ -65,13 +65,20 @@ class DefaultLayout extends Component {
                         name={route.name}
                         render={(props) => {
                           const user = JSON.parse(localStorage.getItem('user'));
+                          let newprops;
+                          if (route.params) {
+                            newprops = { ...props, ...route.params };
+                          } else {
+                            newprops = { ...props };
+                          }
+                          
                           return route.authorize && (!user || !user.roles || !user.roles.includes(route.authorize)) ?
                             (<Redirect to={{
                               pathname: "/login",
                               state: { from: route.path }
                             }} />) :
                             (
-                              <route.component {...props} />
+                              <route.component {...newprops} />
                             )
                         }} />
                     ) : (null);

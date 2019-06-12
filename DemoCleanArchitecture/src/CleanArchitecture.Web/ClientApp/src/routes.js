@@ -42,8 +42,9 @@ const Employees = React.lazy(() => import('./views/Employees/EmployeesList'));
 const EmployeeDetails = React.lazy(() => import('./views/Employees/EmployeeDetails'));
 
 //tesst
-const EmployeeUpdate = React.lazy(() => import('./views/Employees/Components/DepartmentsSelection'));
+const EmployeeUpdate = React.lazy(() => import('./views/Employees/Components/Update'));
 
+const DepartmentSelection = React.lazy(() => import('./views/Employees/Components/DepartmentsSelection'));
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
@@ -92,7 +93,8 @@ const routes = [
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/hr/employees', exact: true, name: 'Employees List', component: Employees },
   { path: '/hr/employeesdetails/:id', exact: true, name: 'Employee details', component: EmployeeDetails },
-  { path: '/hr/employeeupdate', exact: true, name: 'Update employee', component: EmployeeUpdate }
+  { path: '/hr/employeeupdate', exact: true, name: 'Update employee', component: EmployeeUpdate, params: { id: 10 } },
+  { path: '/hr/dept/select', exact: true, name: 'Update employee', component: DepartmentSelection }
 ];
 
 export default routes;

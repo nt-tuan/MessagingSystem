@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using CleanArchitecture.Web.ApiModels;
 using CleanArchitecture.Web.ApiModels.HR;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Entities.HR;
 
 namespace CleanArchitecture.Web.Api
 {
@@ -50,6 +51,24 @@ namespace CleanArchitecture.Web.Api
                 EmployeeModel(emp)));
             }
             return NotFound();
+        }
+
+        [HttpPost]
+        [Route("emps/update/{id}")]
+        public async Task<IActionResult> UpdateEmployee(int id, EmployeeModel model)
+        {
+            var entity = new Employee {
+                Id = id,
+                FirstName = model.firstname,
+                LastName = model.lastname,
+                DepartmentId = model.deptid,
+                Code = model.code
+            };
+            await _coreRep.UpdateEmployee(id, entity);
+            return Ok(new ResponseModel(new {
+                result= true
+            }));
+
         }
         #endregion
 

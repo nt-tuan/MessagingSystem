@@ -1,6 +1,6 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Form, Label } from 'semantic-ui-react';
 
 class DepartmentSelection extends Component {
   constructor(props) {
@@ -10,12 +10,15 @@ class DepartmentSelection extends Component {
       multiple: true,
       search: true,
       searchQuery: null,
-      value: "asfasf",
-      options: []
+      vvalue: this.props.value,
+      options: [],
+      placeholder: 'SELECT_DEPARTMENT'
     }
 
-    this.handleChange = (e, { value }) => {
+    this.handleChange = (e, { value, name }) => {
       this.setState({ value });
+      if (this.props.onChange)
+        this.props.onChange(e, { value, name });
     };
     this.handleSearchChange = (e, { searchQuery }) => {
       this.setState({ searchQuery });
@@ -36,7 +39,8 @@ class DepartmentSelection extends Component {
     fetch("/api/hr/deptsselection", {
       method: 'POST',
       headers: {
-        Accept: 'application/json'
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
       body: { searchQuery: this.state.searchQuery }
     }).then(response => {
@@ -69,24 +73,35 @@ class DepartmentSelection extends Component {
 
   componentDidMount() {
     this.loadData();
+    this.setState({
+      value : this.props.value
+    });
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({ value: props.value })
   }
 
   render() {
-    const { multiple, options, isFetching, search, value } = this.state;
+    const { multiple, options, isFetching, search, value, placeholder } = this.state;
     return (
-      <Dropdown
-        fluid
-        selection
-        search={search}
-        options={options}
-        value={value}
-        placeholder='Add Users'
-        onChange={this.handleChange}
-        onSearchChange={this.handleSearchChange}
-        onOpen={this.handleOpen}
-        loading={isFetching}
-        noResultsMessage={this.state.error}
-      />
+      <Form.Field>
+        <Label>DEPARTMENT</Label>
+        <Dropdown
+          name={this.props.name}
+          fluid
+          selection
+          search={search}
+          options={options}
+          value={value}
+          placeholder={placeholder}
+          onChange={this.handleChange}
+          onSearchChange={this.handleSearchChange}
+          onOpen={this.handleOpen}
+          loading={isFetching}
+          noResultsMessage={this.state.error}
+        />
+      </Form.Field>
     );
   }
 };

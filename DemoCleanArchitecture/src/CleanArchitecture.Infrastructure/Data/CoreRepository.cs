@@ -139,13 +139,22 @@ namespace CleanArchitecture.Infrastructure.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditEmployee(int id, Employee updated)
+        public async Task UpdateEmployee(int id, Employee updated)
         {
             var emp = await GetEmployee(id);
             if (emp != null)
             {
-                updated.Id = id;
-                _context.Entry<Employee>(updated).State = EntityState.Modified;
+                emp.FirstName = updated.FirstName;
+                emp.LastName = updated.LastName;
+                emp.Phone = updated.Phone;
+                emp.FullName = $"{emp.FirstName} {emp.LastName}";
+                emp.Birthday = updated.Birthday;
+                emp.Address = updated.Address;
+                emp.Email = updated.Email;
+                emp.DepartmentId = updated.DepartmentId;
+                emp.Code = updated.Code;
+
+                _context.Update(emp);
                 await _context.SaveChangesAsync();
                 return;
             }
