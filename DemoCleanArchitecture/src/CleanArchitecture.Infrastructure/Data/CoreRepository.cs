@@ -167,7 +167,7 @@ namespace CleanArchitecture.Infrastructure.Data
             var emp = await GetEmployee(id);
             if (emp != null)
             {
-                _context.Entry(emp).State = EntityState.Deleted;
+                _context.Remove(emp);
                 await _context.SaveChangesAsync();
                 return;
             }

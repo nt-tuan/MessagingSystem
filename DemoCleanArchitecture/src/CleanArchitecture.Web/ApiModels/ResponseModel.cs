@@ -11,6 +11,7 @@ namespace CleanArchitecture.Web.ApiModels
         private readonly string ERROR_TYPE = "error";
         private readonly string INFO_TYPE = "info";
         public string message { get; set; }
+        public ICollection<string> messages { get; set; } = new List<string>();
         public string type { get; set; }
         public dynamic result { get; set; }
         public ResponseModel()

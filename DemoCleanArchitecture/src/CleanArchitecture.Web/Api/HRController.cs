@@ -70,6 +70,19 @@ namespace CleanArchitecture.Web.Api
             }));
 
         }
+
+        [HttpPost]
+        [Route("emps/delete")]
+        public async Task<IActionResult> DeleteEmployees(IntCollectionModel model)
+        {
+            foreach(var id in model.collection)
+            {
+                await _coreRep.RemoveEmployee(id);
+            }
+            return Ok(new ResponseModel());
+        }
+
+
         #endregion
 
         #region DEPARTMENT
