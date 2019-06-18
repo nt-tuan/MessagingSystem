@@ -102,7 +102,7 @@ namespace CleanArchitecture.Web.Api
 
             var count = await _coreRep.GetDepartmentCount();
             return Ok(new ResponseModel(new {
-                depts = depts,
+                depts = depts.Select(u => new DepartmentModel(u)),
                 total = count
             }));
         }

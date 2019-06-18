@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
+import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom';
-import MaterialTable from 'material-table'
 import { Button, ButtonGroup, Modal, Header, Icon, Confirm } from 'semantic-ui-react';
-import EmployeeUpdate from './Components/Update';
-import EmployeeDetails from './Components/Details'
 
-class EmployeesList extends Component {
+
+class DepartmentsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -52,7 +51,7 @@ class EmployeesList extends Component {
   handleEmployeeDetailsOpen() {
     if (this.state.openEmployeeDetails || this.checkSelectedMultipleRows())
       return;
-    
+
     if (!this.state.selectedRowId)
       return;
     this.setState({
@@ -61,9 +60,9 @@ class EmployeesList extends Component {
   }
 
   handleEmployeeUpdateOpen() {
-    if (this.state.openEmployeeUpdate || this.checkSelectedMultipleRows() )
+    if (this.state.openEmployeeUpdate || this.checkSelectedMultipleRows())
       return;
-    
+
     if (!this.state.selectedRowId)
       return;
     this.setState({
@@ -88,7 +87,7 @@ class EmployeesList extends Component {
     console.log(`DELETE ${this.state.selectedRows.map(u => u.id)}`);
     fetch('/api/hr/emps/delete', {
       method: 'POST',
-      body: JSON.stringify({collection: this.state.selectedRows.map(u => u.id) }),
+      body: JSON.stringify({ collection: this.state.selectedRows.map(u => u.id) }),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
@@ -101,7 +100,7 @@ class EmployeesList extends Component {
     if (this.state.confirm.callback) {
       this.state.confirm.callback();
     }
-    this.setState({ confirm: {...this.state.confirm, open: false}});
+    this.setState({ confirm: { ...this.state.confirm, open: false } });
   }
 
   render() {
@@ -111,7 +110,7 @@ class EmployeesList extends Component {
           <Modal.Header>EMPLOYEE_DETAILS_HEADER</Modal.Header>
           <Modal.Content scrolling>
             <Modal.Description>
-              <EmployeeDetails id={this.state.selectedRowId} />
+
             </Modal.Description>
           </Modal.Content>
           <Modal.Actions>
@@ -124,7 +123,6 @@ class EmployeesList extends Component {
           <Modal.Header>EMPLOYEE_UPDATE_HEADER</Modal.Header>
           <Modal.Content scrolling>
             <Modal.Description>
-              <EmployeeUpdate id={this.state.selectedRowId} onSuccess={() => { this.setState({ openEmployeeUpdate: false }); this.tableRef.current.onQueryChange(); }} />
             </Modal.Description>
           </Modal.Content>
           <Modal.Actions>
@@ -147,7 +145,7 @@ class EmployeesList extends Component {
         <Confirm
           open={this.state.confirm.open}
           content={this.state.confirm.content}
-          onCancel={() => { this.setState({ confirm: {...this.state.confirm, open: false}})}}
+          onCancel={() => { this.setState({ confirm: { ...this.state.confirm, open: false } }) }}
           onConfirm={this.handleConfirm}
         />
         <ButtonGroup>
@@ -160,26 +158,23 @@ class EmployeesList extends Component {
           title="Danh sách nhân viên"
           tableRef={this.tableRef}
           columns={[
-          { title: 'Mã', field: 'code' },
-          { title: 'Họ', field: 'firstname' },
-          { title: 'Tên', field: 'lastname' },
-          { title: 'Email', field: 'email' },
-          { title: 'Ngày sinh', field: 'birthday' },
-          {
-            title: 'Bộ phận', render: rowData => {
-              return <Link to={`/hr/depts/details/${rowData.deptid}`}>{rowData.deptname}</Link>
+            { title: 'Mã', field: 'code' },
+            { title: 'Tên bộ phận/ phòng ban', field: 'name' },
+            {
+              title: 'Quản lí', render: rowData => {
+                return <Link to={`/hr/emps/details/${rowData.managerID}`}>{rowData.managerId}</Link>
+              }
             }
-          }
-        ]}
+          ]}
           data={query => new Promise((resolve, reject) => {
             let postdata = {
-              pageSize: query.pageSize,
-              page: query.page,
+              pageSize: 1000,
+              page: 0,
               search: query.search,
               orderBy: query.orderBy ? query.orderBy.field : null,
               orderDirection: query.orderDirection === "asc" ? 0 : 1
             };
-            fetch(`/api/hr/emps`, {
+            fetch(`/api/hr/depts`, {
               method: 'POST',
               body: JSON.stringify(postdata),
               headers: {
@@ -190,15 +185,18 @@ class EmployeesList extends Component {
               .then(res => {
                 console.log(res);
                 resolve({
-                  data: res.result.emps,
-                  page: postdata.page,
+                  data: res.result.depts,
+                  page: 0,
                   totalCount: res.result.total
                 });
               })
           })}
+          parentChildData={(row, rows) => rows.find(a => a.id == row.parentid)}
           options={{
             debounceInterval: 1000,
-            selection: true
+            selection: true,
+            paging: false,
+            defaultExpanded: true
           }}
           onSelectionChange={this.handleSelectionChange}
         />
@@ -207,4 +205,4 @@ class EmployeesList extends Component {
   }
 }
 
-export default EmployeesList;
+export default DepartmentsList;
