@@ -30,8 +30,8 @@ namespace CleanArchitecture.Web.Api
         [Route("emps")]
         public async Task<IActionResult> GetEmployees(TableParameter param)
         {
-            var list = await _coreRep.GetEmployees(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filters);
-            var count = await _coreRep.GetEmployeeCount();
+            var list = await _coreRep.GetEmployees(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filter);
+            var count = await _coreRep.GetEmployeeCount(param.filter);
             return Ok(new
             ResponseModel(new
             {
@@ -98,13 +98,55 @@ namespace CleanArchitecture.Web.Api
         [Route("depts")]
         public async Task<IActionResult> GetDepartments(TableParameter param)
         {
-            var depts = await _coreRep.GetDepartments(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filters);
+            var depts = await _coreRep.GetDepartments(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filter);
 
             var count = await _coreRep.GetDepartmentCount();
             return Ok(new ResponseModel(new {
                 depts = depts.Select(u => new DepartmentModel(u)),
                 total = count
             }));
+        }
+
+        [HttpPost]
+        [Route("dept/update/{id}")]
+        public async Task<IActionResult> UpdateDepartment(int id, DepartmentModel model)
+        {
+            try
+            {
+                var entity = new Department
+                {
+                    Code = model.code,
+                    Name = model.name,
+                    ParentId = model.parentId
+                };
+                await _coreRep.UpdateDepartment(id, entity);
+                return Ok(new ResponseModel(new
+                {
+                    result = true
+                }));
+            }catch(Exception e)
+            {
+                return BadRequest(new ResponseModel(e.Message));
+            }
+        }
+
+        [HttpPost]
+        [Route("dept/delete")]
+        public async Task<IActionResult> DeleteDepartment(IntCollectionModel model)
+        {
+            try
+            {
+                foreach (var id in model.collection)
+                {
+                    await _coreRep.DeleteDepartment(id);
+                }
+                return Ok(new ResponseModel());
+            } catch(Exception e)
+            {
+                return Ok(new ResponseModel(e.Message, new {
+                    result = false
+                }));
+            }
         }
 
         [HttpPost]

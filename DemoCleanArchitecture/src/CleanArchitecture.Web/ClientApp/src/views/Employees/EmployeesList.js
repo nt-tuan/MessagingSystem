@@ -4,8 +4,9 @@ import MaterialTable from 'material-table'
 import { Button, ButtonGroup, Modal, Header, Icon, Confirm } from 'semantic-ui-react';
 import EmployeeUpdate from './Components/Update';
 import EmployeeDetails from './Components/Details'
-
-class EmployeesList extends Component {
+import EmployeeList from './Components/List'
+import EmployeeAdd from './Components/Add';
+class EmployeesView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -52,7 +53,7 @@ class EmployeesList extends Component {
   handleEmployeeDetailsOpen() {
     if (this.state.openEmployeeDetails || this.checkSelectedMultipleRows())
       return;
-    
+
     if (!this.state.selectedRowId)
       return;
     this.setState({
@@ -61,9 +62,9 @@ class EmployeesList extends Component {
   }
 
   handleEmployeeUpdateOpen() {
-    if (this.state.openEmployeeUpdate || this.checkSelectedMultipleRows() )
+    if (this.state.openEmployeeUpdate || this.checkSelectedMultipleRows())
       return;
-    
+
     if (!this.state.selectedRowId)
       return;
     this.setState({
@@ -88,7 +89,7 @@ class EmployeesList extends Component {
     console.log(`DELETE ${this.state.selectedRows.map(u => u.id)}`);
     fetch('/api/hr/emps/delete', {
       method: 'POST',
-      body: JSON.stringify({collection: this.state.selectedRows.map(u => u.id) }),
+      body: JSON.stringify({ collection: this.state.selectedRows.map(u => u.id) }),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
@@ -101,7 +102,7 @@ class EmployeesList extends Component {
     if (this.state.confirm.callback) {
       this.state.confirm.callback();
     }
-    this.setState({ confirm: {...this.state.confirm, open: false}});
+    this.setState({ confirm: { ...this.state.confirm, open: false } });
   }
 
   render() {
@@ -133,6 +134,19 @@ class EmployeesList extends Component {
       </Button>
           </Modal.Actions>
         </Modal>
+        <Modal open={this.state.openAdd}>
+          <Modal.Header>ADD_DEPARTMENT</Modal.Header>
+          <Modal.Content>
+            <Modal.Description>
+              <EmployeeAdd />
+            </Modal.Description>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color='green' onClick={() => this.setState({ openAdd: false })}>
+              CLOSE
+      </Button>
+          </Modal.Actions>
+        </Modal>
         <Modal open={this.state.error}>
           <Modal.Header>ERROR</Modal.Header>
           <Modal.Content>
@@ -147,64 +161,23 @@ class EmployeesList extends Component {
         <Confirm
           open={this.state.confirm.open}
           content={this.state.confirm.content}
-          onCancel={() => { this.setState({ confirm: {...this.state.confirm, open: false}})}}
+          onCancel={() => { this.setState({ confirm: { ...this.state.confirm, open: false } }) }}
           onConfirm={this.handleConfirm}
         />
         <ButtonGroup>
+          <Button onClick={() => this.setState({ openAdd: true })} color="green">New</Button>
           <Button onClick={this.handleEmployeeDetailsOpen} primary>Details</Button>
           <Button onClick={this.handleEmployeeUpdateOpen} primary>Edit</Button>
           <Button primary>Export All</Button>
           <Button onClick={this.handleEmployeeDeleteOpen} color="red">Delete</Button>
         </ButtonGroup>
-        <MaterialTable
-          title="Danh sách nhân viên"
-          tableRef={this.tableRef}
-          columns={[
-          { title: 'Mã', field: 'code' },
-          { title: 'Họ', field: 'firstname' },
-          { title: 'Tên', field: 'lastname' },
-          { title: 'Email', field: 'email' },
-          { title: 'Ngày sinh', field: 'birthday' },
-          {
-            title: 'Bộ phận', render: rowData => {
-              return <Link to={`/hr/depts/details/${rowData.deptid}`}>{rowData.deptname}</Link>
-            }
-          }
-        ]}
-          data={query => new Promise((resolve, reject) => {
-            let postdata = {
-              pageSize: query.pageSize,
-              page: query.page,
-              search: query.search,
-              orderBy: query.orderBy ? query.orderBy.field : null,
-              orderDirection: query.orderDirection === "asc" ? 0 : 1
-            };
-            fetch(`/api/hr/emps`, {
-              method: 'POST',
-              body: JSON.stringify(postdata),
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            })
-              .then(response => response.json())
-              .then(res => {
-                console.log(res);
-                resolve({
-                  data: res.result.emps,
-                  page: postdata.page,
-                  totalCount: res.result.total
-                });
-              })
-          })}
-          options={{
-            debounceInterval: 1000,
-            selection: true
-          }}
-          onSelectionChange={this.handleSelectionChange}
-        />
+        <EmployeeList tableRef={this.tableRef} onSelectionChange={this.handleSelectionChange} options={{
+          debounceInterval: 1000,
+          selection: true
+        }} />
       </div>
     );
   }
 }
 
-export default EmployeesList;
+export default EmployeesView;

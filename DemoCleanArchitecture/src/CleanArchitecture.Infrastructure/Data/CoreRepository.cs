@@ -59,6 +59,32 @@ namespace CleanArchitecture.Infrastructure.Data
             return entity;
         }
 
+        IQueryable<T> AddFilter<T>(IQueryable<T> query, IDictionary<string, string> filter = null)
+        {
+            if (filter != null)
+            {
+                foreach (var item in filter)
+                {
+                    var property = typeof(Employee).GetProperty(item.Key);
+                    var ptype = property.PropertyType;
+                    if (ptype == typeof(string))
+                    {
+                        query = query.Where(u => EF.Property<string>(u, item.Key) == item.Value);
+                    }
+                    else if (ptype == typeof(int) || ptype == typeof(int?))
+                    {
+
+                        query = query.Where(u => EF.Property<int>(u, item.Key) == int.Parse(item.Value));
+                    }
+                    else if (ptype == typeof(double) || ptype == typeof(double?))
+                    {
+                        query = query.Where(u => EF.Property<double>(u, item.Key) == double.Parse(item.Value));
+                    }
+                }
+            }
+            return query;
+        }
+
         //end support functions
         public async Task<Employee> GetEmployeeDetails(int id)
         {
@@ -81,26 +107,8 @@ namespace CleanArchitecture.Infrastructure.Data
             var query = _context.Employees.Include(u => u.Department).AsQueryable();
             if (!string.IsNullOrEmpty(search))
                 query = query.Where(u => u.FullName.Contains(search));
-            if (filter != null)
-            {
-                foreach (var item in filter)
-                {
-                    var property = typeof(Employee).GetProperty(item.Key);
-                    var ptype = property.DeclaringType;
-                    if (ptype == typeof(string))
-                    {
-                        query = query.Where(u => EF.Property<string>(u, item.Key) == item.Value);
-                    }
-                    else if (ptype == typeof(int))
-                    {
-                        query = query.Where(u => EF.Property<int>(u, item.Key) == int.Parse(item.Value));
-                    }
-                    else if (ptype == typeof(double))
-                    {
-                        query = query.Where(u => EF.Property<double>(u, item.Key) == double.Parse(item.Value));
-                    }
-                }
-            }
+
+            query = AddFilter<Employee>(query, filter);
 
             if (orderdir == ORDER_ASC)
                 query = query.OrderBy(getEmployeeProperyName(orderby));
@@ -126,9 +134,11 @@ namespace CleanArchitecture.Infrastructure.Data
             return emp;
         }
 
-        public async Task<int> GetEmployeeCount()
+        public async Task<int> GetEmployeeCount(IDictionary<string, string> filter = null)
         {
-            return await _context.Employees.Where(u => !u.Removed).CountAsync();
+            var query = _context.Employees.Where(u => !u.Removed);
+            query = AddFilter<Employee>(query, filter);
+            return await query.CountAsync();
         }
 
         public async Task AddEmployee(Employee employee)
@@ -247,7 +257,7 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<Department> GetDepartment(int id)
         {
-            var dept = await _context.Departments.FirstOrDefaultAsync(u => u.Id == id);
+            var dept = await _context.Departments.Include(u => u.Parent).FirstOrDefaultAsync(u => u.Id == id);
             return dept;
         }
 
@@ -265,22 +275,35 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task UpdateDepartment(int id, Department updated)
         {
-            var dept = GetDepartment(id);
+            var dept = await GetDepartment(id);
             if (dept != null)
             {
-                updated.Id = id;
-                _context.Update(updated);
+                dept.Name = updated.Name;
+                dept.ParentId = updated.ParentId;
+                dept.Code = updated.Code;
+                
+                _context.Update(dept);
                 await _context.SaveChangesAsync();
+                return;
             }
             throw new Exception("DEPARTMENT_NOTFOUND");
         }
 
-        public Task DeleteDepartment(int id)
+        public async Task DeleteDepartment(int id)
         {
-            var dept = GetDepartment(id);
+            var dept = await GetDepartment(id);
             if (dept != null)
             {
+                var filter = new Dictionary<string, string>();
+                filter.Add("DepartmentId", id.ToString());
+                var empCount = await GetEmployeeCount(filter);
+                if(empCount > 0)
+                {
+                    throw new Exception("THIS_DEPARTMENT_HAS_EMPLOYEES");
+                }
                 _context.Remove(dept);
+                await _context.SaveChangesAsync();
+                return;
             }
             throw new Exception("DEPARTMENT_NOTFOUND");
         }

@@ -15,6 +15,6 @@ namespace CleanArchitecture.Web.ApiModels
         public string orderBy { get; set; } = "id";
         public int orderDirection { get; set; } = 0;
 
-        public IDictionary<string, string> filters { get; set; } = null;
+        public IDictionary<string, string> filter { get; set; } = null;
     }
 }

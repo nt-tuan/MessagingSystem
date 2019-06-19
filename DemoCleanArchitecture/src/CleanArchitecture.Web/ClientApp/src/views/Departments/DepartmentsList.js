@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom';
+import DepartmentDetails from './Components/Details';
+import DepartmentUpdate from './Components/Update';
 import { Button, ButtonGroup, Modal, Header, Icon, Confirm } from 'semantic-ui-react';
-
 
 class DepartmentsList extends Component {
   constructor(props) {
@@ -11,8 +12,6 @@ class DepartmentsList extends Component {
       openEmployeeDetails: false,
       openEmployeeUpdate: false,
       openEmployeeDelete: false,
-      selectedRows: null,
-      selectedRowId: null,
       confirm: {
         open: false,
         content: false,
@@ -20,6 +19,8 @@ class DepartmentsList extends Component {
       }
     };
     this.tableRef = React.createRef();
+    this.selectedRows = null;
+    this.selectedRowId = null;
     this.handleSelectionChange = this.handleSelectionChange.bind(this);
     this.handleEmployeeDetailsOpen = this.handleEmployeeDetailsOpen.bind(this);
     this.handleEmployeeUpdateOpen = this.handleEmployeeUpdateOpen.bind(this);
@@ -27,51 +28,59 @@ class DepartmentsList extends Component {
     this.handleEmployeeDeleteOpen = this.handleEmployeeDeleteOpen.bind(this);
   }
 
-
-
   handleSelectionChange(rows) {
+    this.selectedRows = [];
     let selectedRow = null;
-    if (rows.length > 0)
-      selectedRow = rows[0];
-
-    this.setState({
-      selectedRows: rows,
-      selectedRowId: selectedRow ? selectedRow.id : null
+    rows.forEach(u => {
+      let dup = this.selectedRows.filter(v => v.id === u.id);
+      if (!dup || dup.length < 1)
+        this.selectedRows.push(u);
     });
+
+    if (this.selectedRows.length > 0)
+      selectedRow = this.selectedRows[0];
+
+    this.selectedRowId = selectedRow ? selectedRow.id : null;
   }
 
   checkSelectedMultipleRows() {
-    if (this.state.selectedRows.length > 1) {
-      this.setState({ error: "YOU_SELECT_TOO_MANY_EMPLOYEE" });
+    if (this.selectedRows.length < 1) {
+      this.setState({ error: "NO_DEPARTMENT_SELECTED" });
+      return true;
+    }
+    if (this.selectedRows.length > 1) {
+      this.setState({ error: "MULTIPLE_DEPARTMENTS_SELECTED" });
       return true;
     }
     return false;
   }
 
   handleEmployeeDetailsOpen() {
-    if (this.state.openEmployeeDetails || this.checkSelectedMultipleRows())
+    if (this.state.openDetails || this.checkSelectedMultipleRows())
+      return;
+    if (!this.selectedRowId)
       return;
 
-    if (!this.state.selectedRowId)
-      return;
     this.setState({
-      openEmployeeDetails: true
+      openDetailsId: this.selectedRowId,
+      openDetails: true
     });
   }
 
   handleEmployeeUpdateOpen() {
-    if (this.state.openEmployeeUpdate || this.checkSelectedMultipleRows())
+    if (this.state.openUpdate || this.checkSelectedMultipleRows())
       return;
 
-    if (!this.state.selectedRowId)
+    if (!this.selectedRowId)
       return;
     this.setState({
-      openEmployeeUpdate: true
+      openUpdateId: this.selectedRowId,
+      openUpdate: true
     });
   }
 
   handleEmployeeDeleteOpen() {
-    if (this.state.selectedRows.length == 0)
+    if (this.selectedRows.length == 0)
       return;
     this.setState({
       confirm: {
@@ -84,15 +93,23 @@ class DepartmentsList extends Component {
   }
 
   deleteEmployees() {
-    console.log(`DELETE ${this.state.selectedRows.map(u => u.id)}`);
-    fetch('/api/hr/emps/delete', {
+    console.log(`DELETE ${this.selectedRows.map(u => u.id)}`);
+    fetch('/api/hr/dept/delete', {
       method: 'POST',
-      body: JSON.stringify({ collection: this.state.selectedRows.map(u => u.id) }),
+      body: JSON.stringify({ collection: this.selectedRows.map(u => u.id) }),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       }
-    });
+    })
+      .then(response => response.json())
+      .then(jres => {
+        if (jres.message) {
+          this.setState({
+            error: jres.message
+          });
+        }
+      });
     this.tableRef.current.onQueryChange();
   }
 
@@ -106,32 +123,33 @@ class DepartmentsList extends Component {
   render() {
     return (
       <div>
-        <Modal open={this.state.openEmployeeDetails} centered>
-          <Modal.Header>EMPLOYEE_DETAILS_HEADER</Modal.Header>
+        <Modal open={this.state.openDetails} centered>
+          <Modal.Header>DEPARTMENT_DETAILS_HEADER</Modal.Header>
           <Modal.Content scrolling>
             <Modal.Description>
-
+              <DepartmentDetails id={this.state.openDetailsId} />
             </Modal.Description>
           </Modal.Content>
           <Modal.Actions>
-            <Button color='green' onClick={() => this.setState({ openEmployeeDetails: false })}>
+            <Button color='green' onClick={() => this.setState({ openDetails: false })}>
               CLOSE
       </Button>
           </Modal.Actions>
         </Modal>
-        <Modal open={this.state.openEmployeeUpdate} centered>
+        <Modal open={this.state.openUpdate} centered>
           <Modal.Header>EMPLOYEE_UPDATE_HEADER</Modal.Header>
           <Modal.Content scrolling>
             <Modal.Description>
+              <DepartmentUpdate id={this.state.openUpdateId} onSuccess={() => { this.setState({ openUpdate: false }); this.tableRef.current.onQueryChange(); }} />
             </Modal.Description>
           </Modal.Content>
           <Modal.Actions>
-            <Button color='green' onClick={() => this.setState({ openEmployeeUpdate: false })}>
+            <Button color='green' onClick={() => this.setState({ openUpdate: false })}>
               CLOSE
       </Button>
           </Modal.Actions>
         </Modal>
-        <Modal open={this.state.error}>
+        <Modal open={this.state.error != null}>
           <Modal.Header>ERROR</Modal.Header>
           <Modal.Content>
             <Modal.Description>
@@ -142,6 +160,13 @@ class DepartmentsList extends Component {
             <Button color="green" onClick={() => this.setState({ error: null })}>Close</Button>
           </Modal.Actions>
         </Modal>
+        <Modal open={this.state.openAdd}>
+          <Modal.Header>ADD_DEPARTMENT</Modal.Header>
+          <Modal.Content>
+            <Modal.Description>
+            </Modal.Description>
+          </Modal.Content>
+        </Modal>
         <Confirm
           open={this.state.confirm.open}
           content={this.state.confirm.content}
@@ -149,6 +174,7 @@ class DepartmentsList extends Component {
           onConfirm={this.handleConfirm}
         />
         <ButtonGroup>
+          <Button onClick={this.handleDepartmentAdd} color="green">New</Button>
           <Button onClick={this.handleEmployeeDetailsOpen} primary>Details</Button>
           <Button onClick={this.handleEmployeeUpdateOpen} primary>Edit</Button>
           <Button primary>Export All</Button>
@@ -160,6 +186,14 @@ class DepartmentsList extends Component {
           columns={[
             { title: 'Mã', field: 'code' },
             { title: 'Tên bộ phận/ phòng ban', field: 'name' },
+            {
+              'title': 'Trực thuộc', render: rowData => {
+                if (rowData.parentId) {
+                  return <Link to={`/hr/dept/details/${rowData.parentId}`}>{rowData.parentName}</Link>
+                }
+                return null;
+              }
+            },
             {
               title: 'Quản lí', render: rowData => {
                 return <Link to={`/hr/emps/details/${rowData.managerID}`}>{rowData.managerId}</Link>
@@ -191,7 +225,7 @@ class DepartmentsList extends Component {
                 });
               })
           })}
-          parentChildData={(row, rows) => rows.find(a => a.id == row.parentid)}
+          parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
           options={{
             debounceInterval: 1000,
             selection: true,

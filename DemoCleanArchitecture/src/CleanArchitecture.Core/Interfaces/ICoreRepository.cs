@@ -15,7 +15,7 @@ namespace CleanArchitecture.Core.Interfaces
         Task<ICollection<Employee>> GetEmployees(int? perpage, int? page, string search, string orderby, int? orderdir, IDictionary<string,string> fitler);
         Task<Employee> GetEmployee(string code);
         Task<Employee> GetEmployee(int id);
-        Task<int> GetEmployeeCount();
+        Task<int> GetEmployeeCount(IDictionary<string, string> filter = null);
         Task AddEmployee(Employee employee);
         Task UpdateEmployee(int id, Employee updated);
         Task RemoveEmployee(int id);
