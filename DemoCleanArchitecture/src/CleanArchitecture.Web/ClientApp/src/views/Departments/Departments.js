@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom';
 import DepartmentDetails from './Components/Details';
+import EmployeeDetails from '../Employees/Components/Details';
 import DepartmentUpdate from './Components/Update';
+import DepartmentList from './Components/List';
 import { Button, ButtonGroup, Modal, Header, Icon, Confirm } from 'semantic-ui-react';
+import MyModal from '../Modals/MyModal';
 
-class DepartmentsList extends Component {
+class Departments extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -136,7 +139,8 @@ class DepartmentsList extends Component {
       </Button>
           </Modal.Actions>
         </Modal>
-        <Modal open={this.state.openUpdate} centered>
+
+        < Modal open={this.state.openUpdate} centered>
           <Modal.Header>EMPLOYEE_UPDATE_HEADER</Modal.Header>
           <Modal.Content scrolling>
             <Modal.Description>
@@ -180,63 +184,16 @@ class DepartmentsList extends Component {
           <Button primary>Export All</Button>
           <Button onClick={this.handleEmployeeDeleteOpen} color="red">Delete</Button>
         </ButtonGroup>
-        <MaterialTable
-          title="Danh sách nhân viên"
-          tableRef={this.tableRef}
-          columns={[
-            { title: 'Mã', field: 'code' },
-            { title: 'Tên bộ phận/ phòng ban', field: 'name' },
-            {
-              'title': 'Trực thuộc', render: rowData => {
-                if (rowData.parentId) {
-                  return <Link to={`/hr/dept/details/${rowData.parentId}`}>{rowData.parentName}</Link>
-                }
-                return null;
-              }
-            },
-            {
-              title: 'Quản lí', render: rowData => {
-                return <Link to={`/hr/emps/details/${rowData.managerID}`}>{rowData.managerId}</Link>
-              }
-            }
-          ]}
-          data={query => new Promise((resolve, reject) => {
-            let postdata = {
-              pageSize: 1000,
-              page: 0,
-              search: query.search,
-              orderBy: query.orderBy ? query.orderBy.field : null,
-              orderDirection: query.orderDirection === "asc" ? 0 : 1
-            };
-            fetch(`/api/hr/depts`, {
-              method: 'POST',
-              body: JSON.stringify(postdata),
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            })
-              .then(response => response.json())
-              .then(res => {
-                console.log(res);
-                resolve({
-                  data: res.result.depts,
-                  page: 0,
-                  totalCount: res.result.total
-                });
-              })
-          })}
-          parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
-          options={{
+        <DepartmentList tableRef={this.tableRef} options={{
             debounceInterval: 1000,
             selection: true,
             paging: false,
             defaultExpanded: true
           }}
-          onSelectionChange={this.handleSelectionChange}
-        />
+          onSelectionChange={this.handleSelectionChange} />
       </div>
     );
   }
 }
 
-export default DepartmentsList;
+export default Departments;

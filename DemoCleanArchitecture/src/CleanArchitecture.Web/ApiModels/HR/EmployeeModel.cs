@@ -16,7 +16,8 @@ namespace CleanArchitecture.Web.ApiModels.HR
         public string deptname { get; set; }
         public DateTime birthday { get; set; }
         public string email { get; set; }
-
+        public string address { get; set; }
+        public string phone { get; set; }
         public EmployeeModel()
         {
 

@@ -12,7 +12,7 @@ namespace CleanArchitecture.Web.ApiModels.Accounts
         public string email { get; set; }
         public string fullname { get; set; }
         public string shortname { get; set; }
-
+        public string lastActiveTime { get; set; }
         public string employeeCode { get; set; }
 
         public DetailsModel()

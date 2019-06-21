@@ -144,6 +144,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\views\Accounts\Employees\" />
+    <Folder Include="ClientApp\src\views\Accounts\Roles\" />
+    <Folder Include="ClientApp\src\views\Prototypes\" />
     <Folder Include="ClientApp\src\views\Users\Components\" />
   </ItemGroup>
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Form, Message, Button, Label } from 'semantic-ui-react';
-import DepartmentSelection from '../../Employees/Components/DepartmentsSelection';
+import { default as DepartmentSelection } from './Selection';
 class DepartmentUpdate extends Component {
   constructor(props) {
     super(props);

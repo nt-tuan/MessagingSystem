@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Web.ApiModels;
 using CleanArchitecture.Web.ApiModels.Accounts;
 using DmcSupport.Models.Accounts;
 using Microsoft.AspNetCore.Authorization;
@@ -191,11 +192,10 @@ namespace CleanArchitecture.Web.Api
                 return NotFound();
             var userroles = await _userManager.GetRolesAsync(user);
             var roles = GetRoleSelection(userroles);
-            return Ok(new
+            return Ok(new ResponseModel(new
             {
-                roles = roles,
-                info = new DetailsModel(user)
-            });
+                account = new DetailsModel(user)
+            }));
         }
 
         [HttpPost]

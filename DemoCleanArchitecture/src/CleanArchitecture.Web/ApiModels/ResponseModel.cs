@@ -54,5 +54,10 @@ namespace CleanArchitecture.Web.ApiModels
             r.type = r.INFO_TYPE;
             return r;
         }
+
+        public override string ToString()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
     }
 }

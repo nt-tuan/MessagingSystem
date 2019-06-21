@@ -145,6 +145,9 @@ namespace CleanArchitecture.Infrastructure.Data
         {
             employee.Removed = false;
             employee.FullName = employee.FirstName + employee.LastName;
+            var empCount = await _context.Employees.Where(u => u.Code == employee.Code).CountAsync();
+            if (empCount > 0)
+                throw new RepositoryException("EMPLOYEE_CODE_EXIST");
             await _context.Employees.AddAsync(employee);
             await _context.SaveChangesAsync();
         }

@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.SharedKernel;
 using CleanArchitecture.Infrastructure.Data;
+using CleanArchitecture.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -122,7 +123,7 @@ namespace CleanArchitecture.Web
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSpaStaticFiles();
-
+            app.UseMiddleware<ExceptionMiddleware>();
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 

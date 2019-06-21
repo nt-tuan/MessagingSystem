@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import EmployeeList from '../../Employees/Components/List';
-
+import MyModal from '../../Modals/MyModal';
 class DepartmentDetails extends Component {
   constructor(props) {
     super(props);
@@ -70,7 +70,7 @@ class DepartmentDetails extends Component {
     } else {
       let renderParent = this.state.dept.parentId ? (<div><h6>PARENT_DEPARTMENT</h6>
         <h4>
-          <Link to={`/hr/depts/details/${this.state.dept.parentId}`}>{this.state.dept.parentName}</Link>
+          <MyModal label={this.state.dept.parentName} header={"DEPARTMENT_DETAILS"} component={<DepartmentDetails id={this.state.dept.parentId} />}  />
         </h4></div>): null;
       return (
         <div>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import MyModal from '../../Modals/MyModal';
+import EmployeeDetails from './Details';
 class EmployeeList extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +21,7 @@ class EmployeeList extends Component {
           { title: 'Ngày sinh', field: 'birthday' },
           {
             title: 'Bộ phận', render: rowData => {
-              return <Link to={`/hr/depts/details/${rowData.deptid}`}>{rowData.deptname}</Link>
+              return <MyModal label={rowData.deptname} header={"EMPLOYEE_DETAILS"} component={<EmployeeDetails id = { rowData.deptid } />} />
             }
           }
         ]}
@@ -32,14 +34,18 @@ class EmployeeList extends Component {
             orderDirection: query.orderDirection === "asc" ? 0 : 1,
             filter: this.props.filter
           };
-          fetch(`/api/hr/emps`, {
+          fetch(`/api/hr/emp`, {
             method: 'POST',
             body: JSON.stringify(postdata),
             headers: {
               'Content-Type': 'application/json'
             }
           })
-            .then(response => response.json())
+            .then(response => {
+              if (response.ok)
+                return response.json();
+              throw new Error(response.statusText);
+            })
             .then(res => {
               console.log(res);
               resolve({
@@ -48,6 +54,9 @@ class EmployeeList extends Component {
                 totalCount: res.result.total
               });
             })
+            .catch(error => {
+
+            });
         })}
         options={this.props.options}
         onSelectionChange={this.props.onSelectionChange}

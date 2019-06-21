@@ -27,7 +27,7 @@ namespace CleanArchitecture.Web.Api
 
         #region EMPLOYEE
         [HttpPost]
-        [Route("emps")]
+        [Route("emp")]
         public async Task<IActionResult> GetEmployees(TableParameter param)
         {
             var list = await _coreRep.GetEmployees(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filter);
@@ -41,7 +41,7 @@ namespace CleanArchitecture.Web.Api
         }
 
         [HttpPost]
-        [Route("emps/{id}")]
+        [Route("emp/{id}")]
         public async Task<IActionResult> GetEmployee(int id)
         {
             var emp = await _coreRep.GetEmployee(id);
@@ -54,10 +54,11 @@ namespace CleanArchitecture.Web.Api
         }
 
         [HttpPost]
-        [Route("emps/update/{id}")]
+        [Route("emp/update/{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, EmployeeModel model)
         {
-            var entity = new Employee {
+            var entity = new Employee
+            {
                 Id = id,
                 FirstName = model.firstname,
                 LastName = model.lastname,
@@ -65,23 +66,42 @@ namespace CleanArchitecture.Web.Api
                 Code = model.code
             };
             await _coreRep.UpdateEmployee(id, entity);
-            return Ok(new ResponseModel(new {
-                result= true
+            return Ok(new ResponseModel(new
+            {
+                result = true
             }));
 
         }
 
         [HttpPost]
-        [Route("emps/delete")]
+        [Route("emp/delete")]
         public async Task<IActionResult> DeleteEmployees(IntCollectionModel model)
         {
-            foreach(var id in model.collection)
+            foreach (var id in model.collection)
             {
                 await _coreRep.RemoveEmployee(id);
             }
             return Ok(new ResponseModel());
         }
 
+        [HttpPost]
+        [Route("emp/add")]
+        public async Task<IActionResult> AddEmployee(EmployeeModel model)
+        {
+            var employee = new Employee
+            {
+                Code = model.code,
+                FirstName = model.firstname,
+                LastName = model.lastname,
+                DepartmentId = model.deptid,
+                Address = model.address,
+                Phone = model.phone,
+                Birthday = model.birthday,
+                Email = model.email
+            };
+            await _coreRep.AddEmployee(employee);
+            return Ok(new ResponseModel(new { result = true }));
+        }
 
         #endregion
 
@@ -101,7 +121,8 @@ namespace CleanArchitecture.Web.Api
             var depts = await _coreRep.GetDepartments(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filter);
 
             var count = await _coreRep.GetDepartmentCount();
-            return Ok(new ResponseModel(new {
+            return Ok(new ResponseModel(new
+            {
                 depts = depts.Select(u => new DepartmentModel(u)),
                 total = count
             }));
@@ -124,7 +145,8 @@ namespace CleanArchitecture.Web.Api
                 {
                     result = true
                 }));
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 return BadRequest(new ResponseModel(e.Message));
             }
@@ -141,9 +163,11 @@ namespace CleanArchitecture.Web.Api
                     await _coreRep.DeleteDepartment(id);
                 }
                 return Ok(new ResponseModel());
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
-                return Ok(new ResponseModel(e.Message, new {
+                return Ok(new ResponseModel(e.Message, new
+                {
                     result = false
                 }));
             }
@@ -153,8 +177,9 @@ namespace CleanArchitecture.Web.Api
         [Route("deptsselection")]
         public async Task<IActionResult> GetDepartmentsSelection(string queryString)
         {
-            var dept  = await _coreRep.GetDepartments(1000, 0, queryString, "code", 0, null);
-            return Ok(new ResponseModel(dept.Select(u => new {
+            var dept = await _coreRep.GetDepartments(1000, 0, queryString, "code", 0, null);
+            return Ok(new ResponseModel(dept.Select(u => new
+            {
                 text = u.Name,
                 value = u.Id
             })));

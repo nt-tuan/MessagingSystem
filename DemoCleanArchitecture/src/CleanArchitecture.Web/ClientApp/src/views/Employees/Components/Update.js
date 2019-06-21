@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Form, Message, Button, Label } from 'semantic-ui-react';
-import DepartmentSelection from './DepartmentsSelection';
+import {default as DeparmentSelection} from '../../Departments/Components/Selection';
 class EmployeeUpdate extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +25,7 @@ class EmployeeUpdate extends Component {
     this.setState({
       isLoaded: false
     });
-    fetch(`/api/hr/emps/${this.props.id}`, {
+    fetch(`/api/hr/emp/${this.props.id}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -72,7 +72,7 @@ class EmployeeUpdate extends Component {
     event.preventDefault();
     console.log(this.state.formData);
     const { code, firstname, lastname, deptid } = this.state.formData;
-    fetch(`/api/hr/emps/update/${this.props.id}`, {
+    fetch(`/api/hr/emp/update/${this.props.id}`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -127,7 +127,7 @@ class EmployeeUpdate extends Component {
         </Form.Group>
 
         <Form.Group widths="equal">
-          <DepartmentSelection name="deptid" value={this.state.formData.deptid} onChange={this.handleChange}></DepartmentSelection>
+          <DeparmentSelection name="deptid" value={this.state.formData.deptid} onChange={this.handleChange} />
         </Form.Group>
 
         <Button type="submit" primary>Update</Button>

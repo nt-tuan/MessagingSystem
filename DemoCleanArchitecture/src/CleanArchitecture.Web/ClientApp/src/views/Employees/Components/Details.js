@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import MyModal from '../../Modals/MyModal';
+import DepartmentDetails from '../../Departments/Components/Details';
 
 class EmployeeDetails extends Component {
   constructor(props) {
@@ -23,7 +25,7 @@ class EmployeeDetails extends Component {
     this.setState({
       isLoaded: false
     });
-    fetch(`/api/hr/emps/${this.props.id}`, {
+    fetch(`/api/hr/emp/${this.props.id}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -36,6 +38,7 @@ class EmployeeDetails extends Component {
       .then(result => {
         let jresult = JSON.parse(result);
         if (jresult.result == null) {
+
           this.setState({
             isLoaded: true,
             error: jresult.message ? jresult.message : "NOT_FOUND"
@@ -45,6 +48,7 @@ class EmployeeDetails extends Component {
             isLoaded: true,
             emp: jresult.result
           });
+          this.props.onSuccess && this.props.onSuccess();
         }
       }).catch(error => {
         console.log(error);
@@ -75,7 +79,7 @@ class EmployeeDetails extends Component {
           <h4><strong>{`${this.state.emp.firstname} ${this.state.emp.lastname}`}</strong></h4>
           <h6>Thuộc bộ phận/phòng ban</h6>
           <h4>
-            <Link to={`/hr/depts/details/${this.state.emp.deptid}`}>{this.state.emp.deptname}</Link>
+            <MyModal label={this.state.emp.deptname} component={<DepartmentDetails id={this.state.emp.deptid} />} />
           </h4>
           <h6>Email</h6>
           <h4>{this.state.emp.email}</h4>

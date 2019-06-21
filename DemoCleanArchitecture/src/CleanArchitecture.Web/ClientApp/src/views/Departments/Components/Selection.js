@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Dropdown, Form, Label } from 'semantic-ui-react';
 
-class DepartmentSelection extends Component {
+class Selection extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -106,4 +106,4 @@ class DepartmentSelection extends Component {
   }
 };
 
-export default DepartmentSelection;
+export default Selection;
