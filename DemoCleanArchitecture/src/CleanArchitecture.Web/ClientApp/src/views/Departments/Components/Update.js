@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 
 import { Form, Message, Button, Label } from 'semantic-ui-react';
 import { default as DepartmentSelection } from './Selection';
+import { default as EmployeeSelection } from '../../Employees/Components/Selection';
 class DepartmentUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoaded: false,
       formData: {
         code: "",
         name: "",
         alias: "",
-        parentId: null
+        parentId: null,
+        managerId: null
       },
       validated: false,
       validationMessage: {
@@ -101,6 +104,9 @@ class DepartmentUpdate extends Component {
   }
 
   render() {
+    if (!this.state.isLoaded)
+      return <div>loading...</div>
+
     let validationObject = this.state.validationMessage;
     let errorKeys = Object.keys(validationObject);
     let errorMessages = [];
@@ -122,10 +128,12 @@ class DepartmentUpdate extends Component {
           <Label>DEPARTMENT_ALIAS</Label>
           <Form.Input name="alias" value={this.state.formData.alias || ''} onChange={this.handleChange} error={this.state.validationMessage.alias != null} />
         </Form.Field>
-        
 
         <Form.Group widths="equal">
           <DepartmentSelection name="parentId" value={this.state.formData.parentId} onChange={this.handleChange}></DepartmentSelection>
+        </Form.Group>
+        <Form.Group widths="equal">
+          <EmployeeSelection name="managerId" value={this.state.formData.managerId} onChange={this.handleChange}></EmployeeSelection>
         </Form.Group>
 
         <Button type="submit" primary>Update</Button>

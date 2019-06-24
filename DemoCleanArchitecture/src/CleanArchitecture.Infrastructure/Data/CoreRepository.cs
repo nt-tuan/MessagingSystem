@@ -284,7 +284,7 @@ namespace CleanArchitecture.Infrastructure.Data
                 dept.Name = updated.Name;
                 dept.ParentId = updated.ParentId;
                 dept.Code = updated.Code;
-                
+                dept.ManagerId = updated.ManagerId;
                 _context.Update(dept);
                 await _context.SaveChangesAsync();
                 return;

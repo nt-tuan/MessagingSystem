@@ -138,7 +138,8 @@ namespace CleanArchitecture.Web.Api
                 {
                     Code = model.code,
                     Name = model.name,
-                    ParentId = model.parentId
+                    ParentId = model.parentId,
+                    ManagerId = model.managerId
                 };
                 await _coreRep.UpdateDepartment(id, entity);
                 return Ok(new ResponseModel(new

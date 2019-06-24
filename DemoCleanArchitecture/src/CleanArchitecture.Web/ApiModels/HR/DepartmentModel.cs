@@ -14,6 +14,9 @@ namespace CleanArchitecture.Web.ApiModels.HR
         public string alias { get; set; }
         public int? parentId { get; set; }
         public string parentName { get; set; }
+        public int? managerId { get; set; }
+        public string managerName { get; set; }
+
         public DepartmentModel()
         {
 
@@ -26,6 +29,8 @@ namespace CleanArchitecture.Web.ApiModels.HR
             name = entity.Name;
             //alias = entity.Name;
             parentId = entity.ParentId;
+            managerId = entity.ManagerId;
+            managerName = entity.Manager!=null? entity.Manager.FullName : null;
             if (entity.Parent != null)
                 parentName = entity.Parent.Name;
         }
