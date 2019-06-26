@@ -68,10 +68,14 @@ class DepartmentDetails extends Component {
         <div>Loading...</div>
       );
     } else {
-      let renderParent = this.state.dept.parentId ? (<div><h6>PARENT_DEPARTMENT</h6>
+      const renderParent = this.state.dept.parentId ? (<div><h6>PARENT_DEPARTMENT</h6>
         <h4>
           <MyModal label={this.state.dept.parentName} header={"DEPARTMENT_DETAILS"} component={<DepartmentDetails id={this.state.dept.parentId} />}  />
-        </h4></div>): null;
+        </h4></div>) : null;
+      const renderManager = this.state.dept.managerId ? (<div><h6>MANAGER</h6>
+        <h4>
+          <MyModal label={this.state.dept.managerName} header={"MANAGER_DETAILS"} component={<DepartmentDetails id={this.state.dept.managerId} />} />
+        </h4></div>) : null;
       return (
         <div>
           <h6>DEPARTMENT_CODE</h6>
@@ -79,6 +83,7 @@ class DepartmentDetails extends Component {
           <h6>DEPARTMENT_NAME</h6>
           <h4><strong>{this.state.dept.name}</strong></h4>
           {renderParent}
+          {renderManager}
           <h6>EMPLOYEES_LIST</h6>
           <EmployeeList filter={{ "DepartmentId": this.props.id }} />
         </div>

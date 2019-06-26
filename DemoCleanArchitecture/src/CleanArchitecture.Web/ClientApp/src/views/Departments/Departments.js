@@ -12,9 +12,9 @@ class Departments extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openEmployeeDetails: false,
-      openEmployeeUpdate: false,
-      openEmployeeDelete: false,
+      modalOpen: false,
+      modal: {
+      },
       confirm: {
         open: false,
         content: false,
@@ -25,10 +25,10 @@ class Departments extends Component {
     this.selectedRows = null;
     this.selectedRowId = null;
     this.handleSelectionChange = this.handleSelectionChange.bind(this);
-    this.handleEmployeeDetailsOpen = this.handleEmployeeDetailsOpen.bind(this);
-    this.handleEmployeeUpdateOpen = this.handleEmployeeUpdateOpen.bind(this);
+    this.handleDetailsOpen = this.handleDetailsOpen.bind(this);
+    this.handleUpdateOpen = this.handleUpdateOpen.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
-    this.handleEmployeeDeleteOpen = this.handleEmployeeDeleteOpen.bind(this);
+    this.handleDeleteOpen = this.handleDeleteOpen.bind(this);
   }
 
   handleSelectionChange(rows) {
@@ -58,31 +58,45 @@ class Departments extends Component {
     return false;
   }
 
-  handleEmployeeDetailsOpen() {
-    if (this.state.openDetails || this.checkSelectedMultipleRows())
+  handleDetailsOpen() {
+    if (this.state.openModal || this.checkSelectedMultipleRows())
       return;
     if (!this.selectedRowId)
       return;
+    let com = <DepartmentDetails id={this.selectedRowId} />;
+    let expandable = `/hr/departments/${this.selectedRowId}`;
+    let header = `DEPARTMENT_DETAILS`;
 
     this.setState({
-      openDetailsId: this.selectedRowId,
-      openDetails: true
+      modalOpen: true,
+      modal: {
+        com,
+        expandable,
+        header
+      }
     });
   }
 
-  handleEmployeeUpdateOpen() {
+  handleUpdateOpen() {
     if (this.state.openUpdate || this.checkSelectedMultipleRows())
       return;
-
     if (!this.selectedRowId)
       return;
+    let com = <DepartmentUpdate id={this.selectedRowId} />;
+    let expandable = `/hr/departments/update/${this.selectedRowId}`;
+    let header = `DEPARTMENT_UPDATE`;
+
     this.setState({
-      openUpdateId: this.selectedRowId,
-      openUpdate: true
+      modalOpen: true,
+      modal: {
+        com,
+        expandable,
+        header
+      }
     });
   }
 
-  handleEmployeeDeleteOpen() {
+  handleDeleteOpen() {
     if (this.selectedRows.length == 0)
       return;
     this.setState({
@@ -90,12 +104,12 @@ class Departments extends Component {
         ...this.state.confirm,
         open: true,
         content: 'CONFIRM_DELETE',
-        callback: this.deleteEmployees.bind(this)
+        callback: this.deleteDepartments.bind(this)
       }
     });
   }
 
-  deleteEmployees() {
+  deleteDepartments() {
     console.log(`DELETE ${this.selectedRows.map(u => u.id)}`);
     fetch('/api/hr/dept/delete', {
       method: 'POST',
@@ -109,7 +123,12 @@ class Departments extends Component {
       .then(jres => {
         if (jres.message) {
           this.setState({
-            error: jres.message
+            modalOpen: true,
+            modal: {
+              com: <div>{jres.message}</div>,
+              expanable: null,
+              header: "ERROR"
+            }
           });
         }
       });
@@ -126,51 +145,8 @@ class Departments extends Component {
   render() {
     return (
       <div>
-        <Modal open={this.state.openDetails} centered>
-          <Modal.Header>DEPARTMENT_DETAILS_HEADER</Modal.Header>
-          <Modal.Content scrolling>
-            <Modal.Description>
-              <DepartmentDetails id={this.state.openDetailsId} />
-            </Modal.Description>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button color='green' onClick={() => this.setState({ openDetails: false })}>
-              CLOSE
-      </Button>
-          </Modal.Actions>
-        </Modal>
+        <MyModal open={this.state.modalOpen} component={this.state.modal.com} onClose={() => this.setState({ modalOpen: false })} expandable={this.state.modal.expandable} header={this.state.modal.header} />
 
-        < Modal open={this.state.openUpdate} centered>
-          <Modal.Header>EMPLOYEE_UPDATE_HEADER</Modal.Header>
-          <Modal.Content scrolling>
-            <Modal.Description>
-              <DepartmentUpdate id={this.state.openUpdateId} onSuccess={() => { this.setState({ openUpdate: false }); this.tableRef.current.onQueryChange(); }} />
-            </Modal.Description>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button color='green' onClick={() => this.setState({ openUpdate: false })}>
-              CLOSE
-      </Button>
-          </Modal.Actions>
-        </Modal>
-        <Modal open={this.state.error != null}>
-          <Modal.Header>ERROR</Modal.Header>
-          <Modal.Content>
-            <Modal.Description>
-              {this.state.error}
-            </Modal.Description>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button color="green" onClick={() => this.setState({ error: null })}>Close</Button>
-          </Modal.Actions>
-        </Modal>
-        <Modal open={this.state.openAdd}>
-          <Modal.Header>ADD_DEPARTMENT</Modal.Header>
-          <Modal.Content>
-            <Modal.Description>
-            </Modal.Description>
-          </Modal.Content>
-        </Modal>
         <Confirm
           open={this.state.confirm.open}
           content={this.state.confirm.content}
@@ -178,18 +154,18 @@ class Departments extends Component {
           onConfirm={this.handleConfirm}
         />
         <ButtonGroup>
-          <Button onClick={this.handleDepartmentAdd} color="green">New</Button>
-          <Button onClick={this.handleEmployeeDetailsOpen} primary>Details</Button>
-          <Button onClick={this.handleEmployeeUpdateOpen} primary>Edit</Button>
+          <Button onClick={this.handleAddOpen} color="green">New</Button>
+          <Button onClick={this.handleDetailsOpen} primary>Details</Button>
+          <Button onClick={this.handleUpdateOpen} primary>Edit</Button>
           <Button primary>Export All</Button>
-          <Button onClick={this.handleEmployeeDeleteOpen} color="red">Delete</Button>
+          <Button onClick={this.handleDeleteOpen} color="red">Delete</Button>
         </ButtonGroup>
         <DepartmentList tableRef={this.tableRef} options={{
-            debounceInterval: 1000,
-            selection: true,
-            paging: false,
-            defaultExpanded: true
-          }}
+          debounceInterval: 1000,
+          selection: true,
+          paging: false,
+          defaultExpanded: true
+        }}
           onSelectionChange={this.handleSelectionChange} />
       </div>
     );

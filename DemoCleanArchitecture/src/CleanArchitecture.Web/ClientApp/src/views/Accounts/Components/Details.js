@@ -1,7 +1,7 @@
 import React from 'react';
-import { Segment, Message } from 'semantic-ui-react';
-
-export default class AccountDetails extends ReactComponent {
+import { Segment, Message, Divider } from 'semantic-ui-react';
+import EmployeeDetails from '../../Employees/Components/Details';
+export default class AccountDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,7 +11,11 @@ export default class AccountDetails extends ReactComponent {
   }
 
   componentDidMount() {
-    fetch(`/api/account/${this.props.id}`, {
+
+  }
+
+  loadAccount() {
+    fetch(`/api/account/details/${this.props.id}`, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -21,13 +25,13 @@ export default class AccountDetails extends ReactComponent {
         if (response.ok) {
           return response.json();
         }
-        throw new Error(repsonse.statusText);
+        throw new Error(response.statusText);
       })
       .then(result => {
         if (result.account) {
           this.setState({
             isLoading: false,
-            data: result.account
+            data: result.data
           });
         } else {
           this.setState({
@@ -51,10 +55,12 @@ export default class AccountDetails extends ReactComponent {
           <h4>{this.state.data.email}</h4>
           <h6>LAST_ACTIVE_TIME</h6>
           <h4>{this.state.lastActiveTime}</h4>
+          <Divider />
+          {this.state.data.employeeid && <EmployeeDetails id={this.state.data.employeeid} />}
         </div>}
       </Segment>
     );
-  }
-}
-
-
+      }
+    }
+    
+    

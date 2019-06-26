@@ -106,7 +106,7 @@ namespace CleanArchitecture.Infrastructure.Data
         {
             var query = _context.Employees.Include(u => u.Department).AsQueryable();
             if (!string.IsNullOrEmpty(search))
-                query = query.Where(u => u.FullName.Contains(search));
+                query = query.Where(u => u.FullName.Contains(search) || u.Code.Contains(search) || u.Email.Contains(search));
 
             query = AddFilter<Employee>(query, filter);
 
@@ -225,7 +225,7 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<ICollection<Department>> GetDepartments(int? perpage = 30, int? page = 0, string search = null, string orderby = "code", int? orderdir = 0, IDictionary<string, string> filter = null)
         {
-            var query = _context.Departments.AsQueryable();
+            var query = _context.Departments.Include(u => u.Manager).AsQueryable();
             if (!string.IsNullOrEmpty(search))
                 query = query.Where(u => !u.Removed && u.Code.Contains(search) || u.Name.Contains(search));
             if (filter != null)
@@ -260,7 +260,7 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<Department> GetDepartment(int id)
         {
-            var dept = await _context.Departments.Include(u => u.Parent).FirstOrDefaultAsync(u => u.Id == id);
+            var dept = await _context.Departments.Include(u => u.Parent).Include(u => u.Manager).FirstOrDefaultAsync(u => u.Id == id);
             return dept;
         }
 

@@ -1,23 +1,44 @@
 import React, { Component } from 'react';
-import { Modal, Button } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { Modal, Button, Icon, Label, Rail } from 'semantic-ui-react';
 
 class MyModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openDetails: false
+      openDetails: this.props.open ? this.props.open : false
     };
   }
 
-  open = () => this.setState({ openDetails: true })
-  close = () => this.setState({ openDetails: false })
+  componentWillReceiveProps(props) {
+    this.setState({ openDetails: props.open });
+  }
+
+  open = () => {
+    if (this.props.onOpen)
+      this.props.onOpen();
+    else
+      this.setState({ openDetails: true });
+  }
+  close = () => {
+    if (this.props.onClose)
+      this.props.onClose();
+    else
+      this.setState({ openDetails: false });
+  }
 
   render() {
     return (
       <div>
         <a href="#" onClick={(e) => { e.preventDefault(); this.setState({ openDetails: true }); }}>{this.props.label}</a>
         <Modal open={this.state.openDetails} onOpen={this.open} onClose={this.close} centered>
-          <Modal.Header>{this.props.header}</Modal.Header>
+          <Modal.Header>
+            {this.props.header}
+            {this.props.expandable &&
+              <Link to={this.props.expandable}>
+                <Icon className="float-right" name="expand" />               
+              </Link>}
+          </Modal.Header>
           <Modal.Content scrolling>
             <Modal.Description>
               {this.props.component}

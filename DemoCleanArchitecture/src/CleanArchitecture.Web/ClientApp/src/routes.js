@@ -1,6 +1,7 @@
 import React from 'react';
 import DefaultLayout from './containers/DefaultLayout';
 
+
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/Base/Cards'));
 const Carousels = React.lazy(() => import('./views/Base/Carousels'));
@@ -40,7 +41,12 @@ const Customers = React.lazy(() => import('./views/Base/Customers'));
 
 const Employees = React.lazy(() => import('./views/Employees/Employees'));
 
+const DepartmentDetail = React.lazy(() => import('./views/Departments/DepartmentDetailsView'));
+const DepartmentUpdate = React.lazy(() => import('./views/Departments/DepartmentUpdateView'));
 const DepartmentsList = React.lazy(() => import('./views/Departments/Departments'));
+const AccountDetails = React.lazy(() => import('./views/Accounts/Components/Details'));
+const AddAccount = React.lazy(() => import('./views/Accounts/Components/Add'))
+
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -89,7 +95,18 @@ const routes = [
   { path: '/users', exact: true, name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/hr/employees', exact: true, name: 'Employees List', component: Employees },
-  { path: '/hr/departments', exact: true, name: "Department list", component: DepartmentsList }
+  { path: '/hr/departments', exact: true, name: "Department list", component: DepartmentsList },
+  {
+    path: '/hr/departments/:id', exact: true, name: "Department detail", component: DepartmentDetail
+  },
+  {
+    path: '/hr/departments/update/:id', exact: true, name: "Department update", component: DepartmentUpdate
+  },
+  {
+    path: '/accounts/details/:id', exact: true, name: "Account info", component: AccountDetails
+  }, {
+    path: '/accounts/add', exact: true, name: "Add account", component: AddAccount
+  }
 ];
 
 export default routes;

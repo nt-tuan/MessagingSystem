@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Core.Entities.Accounts;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace CleanArchitecture.Web.ApiModels.Accounts
         public string shortname { get; set; }
         public string lastActiveTime { get; set; }
         public string employeeCode { get; set; }
-
+        public int? employeeId { get; set; }
+        public ICollection<string> roles { get; set; }
         public DetailsModel()
         {
 
@@ -26,7 +28,13 @@ namespace CleanArchitecture.Web.ApiModels.Accounts
             email = user.Email;
             fullname = user.Employee == null ? "" : user.Employee.GetFullname();
             shortname = user.Employee == null ? "" : user.Employee.GetShortName();
+            employeeId = user.EmployeeId;
             employeeCode = user.Employee == null ? "" : user.Employee.Code;
+        }
+
+        public void SetRoles(ICollection<string> roles)
+        {
+            this.roles = roles;
         }
     }
 }

@@ -6,14 +6,16 @@ class Selection extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isFetching: false,
+      isLoaded: false,
+      isLoadedCurrentValue: false,
       multiple: true,
       search: true,
-      searchQuery: null,
       value: this.props.value,
       options: [],
       placeholder: 'SELECT_EMPLOYEE'
     }
+
+    this.searchQuery = null;
 
     this.handleChange = (e, { value, name }) => {
       this.setState({ value });
@@ -21,7 +23,7 @@ class Selection extends Component {
         this.props.onChange(e, { value, name });
     };
     this.handleSearchChange = (e, { searchQuery }) => {
-      this.setState({ searchQuery });
+      this.searchQuery = searchQuery;
       console.log(searchQuery);
       this.loadData();
     };
@@ -35,7 +37,29 @@ class Selection extends Component {
     this.loadData();
   }
 
+  appendSelected(options) {
+    let emps = options;
+    if (this.selected) {
+      if (emps.filter(u => u.value === this.selected.value).length === 0) {
+        emps.push({
+          text: this.selected.text,
+          value: this.selected.value
+        });
+      }
+    }
+    return emps;
+  }
+
   loadCurrentValue() {
+    if (!this.state.value) {
+      this.setState({
+        isLoadedCurrentValue: true
+      });
+      return;
+    }
+    this.setState({
+      isLoadedCurrentValue: false
+    });
     fetch(`/api/hr/emp/${this.state.value}`, {
       method: 'POST',
       headers: {
@@ -57,18 +81,11 @@ class Selection extends Component {
             text: `${emp.code} - ${emp.firstname} ${emp.lastname}`,
             value: emp.id
           };
-          let emps = this.state.options;
-          if (this.selected) {
-            if (emps.filter(u => u.value === this.selected.value).length === 0) {
-              emps.push({
-                text: this.selected.text,
-                value: this.selected.value
-              });
-            }
-          }
+          let emps = this.appendSelected(this.state.options);          
           this.setState({
             options: emps,
-            value: this.props.value
+            value: this.props.value,
+            isLoadedCurrentValue: true
           });
         }
       }).catch(error => {
@@ -79,7 +96,7 @@ class Selection extends Component {
 
   loadData() {
     this.setState({
-      isFetching: true
+      isLoaded: false
     });
     fetch("/api/hr/emp", {
       method: 'POST',
@@ -88,7 +105,7 @@ class Selection extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        search: this.state.searchQuery,
+        search: this.searchQuery,
         page: 0,
         pageSize: 100,
         orderBy: 'lastname',
@@ -108,9 +125,10 @@ class Selection extends Component {
               value: u.id
             };
           });
+          emps = this.appendSelected(emps);
           this.setState({
             options: emps,
-            isFetching: false
+            isLoaded: true
           });
         } else {
           if (json && json.message)
@@ -122,7 +140,7 @@ class Selection extends Component {
       .catch(error => {
         this.setState({
           options: [],
-          isFetching: false,
+          isLoaded: true,
           error: error.message
         });
       });
@@ -131,20 +149,18 @@ class Selection extends Component {
   componentDidMount() {
     this.loadData();
     this.loadCurrentValue();
-    this.setState({
-      value: this.props.value
-    });
   }
 
   componentWillReceiveProps(props) {
+    this.loadCurrentValue();
     this.setState({ value: props.value })
   }
 
   render() {
-    const { multiple, options, isFetching, search, value, placeholder } = this.state;
+    const { multiple, options, isLoaded, search, value, placeholder, isLoadedCurrentValue } = this.state;
     return (
       <Form.Field>
-        <Label>{this.props.label && 'EMPLOYEE'}</Label>
+        <Label>{!this.props.label && 'EMPLOYEE'}</Label>
         <Dropdown
           name={this.props.name}
           fluid
@@ -156,7 +172,7 @@ class Selection extends Component {
           onChange={this.handleChange}
           onSearchChange={this.handleSearchChange}
           onOpen={this.handleOpen}
-          loading={isFetching}
+          loading={!(isLoaded && isLoadedCurrentValue)}
           noResultsMessage={this.state.error}
         />
       </Form.Field>

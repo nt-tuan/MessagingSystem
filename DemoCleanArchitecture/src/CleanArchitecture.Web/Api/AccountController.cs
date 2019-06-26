@@ -173,14 +173,19 @@ namespace CleanArchitecture.Web.Api
         public async Task<ActionResult> list()
         {
             var accounts = await _userManager.Users.Include(u => u.Employee).ToListAsync();
-            return Ok(accounts.Select(u => new
+            var data = new
             {
-                username = u.UserName,
-                employeeid = u.EmployeeId,
-                employeename = u.Employee != null ? u.Employee.FullName : null,
-                email = u.Email,
-                id = u.Id
-            }));
+                data = accounts.Select(async u => new
+                {
+                    username = u.UserName,
+                    employeeId = u.EmployeeId,
+                    employeeCode = u.Employee == null ? null : u.Employee.Code,
+                    email = u.Email,
+                    id = u.Id,
+                    roles = (await _userManager.GetRolesAsync(u))
+                })
+            };
+            return Ok(new ResponseModel(data));
         }
 
         [HttpGet]
@@ -191,10 +196,11 @@ namespace CleanArchitecture.Web.Api
             if (user == null)
                 return NotFound();
             var userroles = await _userManager.GetRolesAsync(user);
-            var roles = GetRoleSelection(userroles);
+            var data = new DetailsModel(user);
+            data.SetRoles(userroles);
             return Ok(new ResponseModel(new
             {
-                account = new DetailsModel(user)
+                data = data
             }));
         }
 
@@ -221,13 +227,14 @@ namespace CleanArchitecture.Web.Api
                     await _userManager.AddToRolesAsync(user, model.Roles);
 
                 return Ok();
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 return BadRequest(new { message = e.Message });
             }
-            
+
         }
-        
+
         [HttpPost]
         [Route("changepassword")]
         public async Task<IActionResult> ChangePassword(RegisterModel model)
@@ -282,15 +289,15 @@ namespace CleanArchitecture.Web.Api
 
         private class SelectionItem
         {
-            public bool _checked {get;set;}
+            public bool _checked { get; set; }
             public string value { get; set; }
         }
 
         private class RoleSelectionItem
         {
-            public string description { get; set; }   
+            public string description { get; set; }
         }
-    
+
 
         private async Task<IEnumerable<SelectionItem>> GetRoleSelection(ICollection<string> userroles)
         {

@@ -38,7 +38,6 @@ class EmployeeDetails extends Component {
       .then(result => {
         let jresult = JSON.parse(result);
         if (jresult.result == null) {
-
           this.setState({
             isLoaded: true,
             error: jresult.message ? jresult.message : "NOT_FOUND"
@@ -81,8 +80,9 @@ class EmployeeDetails extends Component {
           <h4>
             <MyModal label={this.state.emp.deptname} component={<DepartmentDetails id={this.state.emp.deptid} />} />
           </h4>
-          <h6>Email</h6>
-          <h4>{this.state.emp.email}</h4>
+          {this.state.emp.email && <div>
+            <h6>Email</h6>
+            <h4>{this.state.emp.email}</h4></div>}
           <h6>Ngày sinh</h6>
           <h4>{this.state.emp.birthday}</h4>
         </div>
