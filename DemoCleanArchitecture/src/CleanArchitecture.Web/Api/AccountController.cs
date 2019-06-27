@@ -16,8 +16,8 @@ using Microsoft.EntityFrameworkCore;
 namespace CleanArchitecture.Web.Api
 {
     [Route("api/[controller]")]
-    [Produces("json/application")]
-    public class AccountController : Controller
+    [ApiController]
+    public class AccountController : ControllerBase
     {
         //private readonly ApplicationDbContext _context;
         private readonly SignInManager<AppUser> _signinManager;
@@ -116,56 +116,34 @@ namespace CleanArchitecture.Web.Api
         }
 
         [HttpPost]
-        [Route("register")]
-        [Authorize]
+        [Route("add")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            if (ModelState.IsValid)
+
+            var appuser = new AppUser();
+            if (model.employeeId != null)
             {
-                var appuser = new AppUser();
-                if (String.IsNullOrEmpty(model.EmployeeCode))
+                var emp = await _icore.GetEmployee(model.employeeId.Value);
+                if (emp != null)
                 {
-                    var emp = await _icore.GetEmployee(model.EmployeeCode);
-                    if (emp != null)
-                    {
-                        return BadRequest(new
-                        {
-                            message = ""
-                        });
-
-                    }
-                }
-                appuser.UserName = model.Username;
-                appuser.Email = model.Email;
-
-                var r = await _userManager.CreateAsync(appuser, model.Password);
-                var mlist = new List<string>();
-
-                if (!r.Succeeded)
-                {
-                    return BadRequest(new
-                    {
-                        messages = r.Errors.Select(u => new
-                        {
-                            key = u.Code,
-                            value = u.Description
-                        })
-                    });
-                }
-                else
-                {
-                    return Ok();
+                    appuser.EmployeeId = model.employeeId;
                 }
             }
-            return BadRequest(new
+            appuser.UserName = model.username;
+            appuser.Email = model.email;
+
+            var r = await _userManager.CreateAsync(appuser, model.password);
+            var mlist = new List<string>();
+
+            if (!r.Succeeded)
             {
-                result = false,
-                messages = ModelState.Select(u => new
-                {
-                    key = u.Key,
-                    value = u.Value
-                })
-            });
+                var messages = r.Errors.Select(u => u.Description).ToArray();
+                return Ok(new ResponseModel(messages));
+            }
+            else
+            {
+                return Ok(new ResponseModel(true));
+            }
         }
 
         [HttpGet]
@@ -242,7 +220,7 @@ namespace CleanArchitecture.Web.Api
             var user = await _userManager.FindByNameAsync(_signinManager.Context.User.Identity.Name);
             if (user == null)
                 return NotFound();
-            var rs = await _userManager.ChangePasswordAsync(user, model.Password, model.ConfirmPassword);
+            var rs = await _userManager.ChangePasswordAsync(user, model.password, model.newPassword);
             if (rs.Succeeded)
                 return Ok();
             else

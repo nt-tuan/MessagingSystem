@@ -10,7 +10,6 @@ namespace CleanArchitecture.Web.ApiModels
         private readonly string WARNING_TYPE = "warning";
         private readonly string ERROR_TYPE = "error";
         private readonly string INFO_TYPE = "info";
-        public string message { get; set; }
         public ICollection<string> messages { get; set; } = new List<string>();
         public string type { get; set; }
         public dynamic result { get; set; }
@@ -19,9 +18,17 @@ namespace CleanArchitecture.Web.ApiModels
 
         }
 
+        public ResponseModel(ICollection<string> mes)
+        {
+            if(mes != null)
+                messages = mes;
+            type = ERROR_TYPE;
+        }
+
         public ResponseModel(string mes)
         {
-            message = mes;
+            messages.Add(mes);
+            type = ERROR_TYPE;
         }
 
         public ResponseModel(string mes, dynamic re) : this(mes)
