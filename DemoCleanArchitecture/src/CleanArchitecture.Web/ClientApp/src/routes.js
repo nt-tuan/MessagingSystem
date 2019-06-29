@@ -46,6 +46,7 @@ const DepartmentUpdate = React.lazy(() => import('./views/Departments/Department
 const DepartmentsList = React.lazy(() => import('./views/Departments/Departments'));
 const AccountDetails = React.lazy(() => import('./views/Accounts/Components/Details'));
 const AddAccount = React.lazy(() => import('./views/Accounts/Components/Add'))
+const TestingCom = React.lazy(() => import('./views/Accounts/Accounts'))
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -106,6 +107,8 @@ const routes = [
     path: '/accounts/details/:id', exact: true, name: "Account info", component: AccountDetails
   }, {
     path: '/accounts/add', exact: true, name: "Add account", component: AddAccount
+  }, {
+    path: '/test', exact: true, name: 'Test', component: TestingCom
   }
 ];
 

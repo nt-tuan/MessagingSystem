@@ -119,7 +119,7 @@ class EmployeesView extends Component {
   render() {
     return (
       <div>
-        <MyModal open={this.state.modalOpen} component={this.state.modal.com} onClose={() => this.setState({ modalOpen: false })} expandable={this.state.modal.expandable} header={this.state.modal.header} />
+        <MyModal open={this.state.modalOpen} component={this.state.modal.com} onClose={() => this.setState({ modalOpen: false })} expandable={this.state.modal.expandLink} header={this.state.modal.header} />
 
         <Confirm
           open={this.state.confirm.open}

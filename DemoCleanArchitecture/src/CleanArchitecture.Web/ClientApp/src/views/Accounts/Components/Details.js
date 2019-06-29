@@ -1,5 +1,5 @@
 import React from 'react';
-import { Segment, Message, Divider } from 'semantic-ui-react';
+import { Segment, Message, Divider, Label, List } from 'semantic-ui-react';
 import EmployeeDetails from '../../Employees/Components/Details';
 export default class AccountDetails extends React.Component {
   constructor(props) {
@@ -11,11 +11,12 @@ export default class AccountDetails extends React.Component {
   }
 
   componentDidMount() {
-
+    this.loadAccount();
   }
 
   loadAccount() {
     fetch(`/api/account/details/${this.props.id}`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -28,10 +29,10 @@ export default class AccountDetails extends React.Component {
         throw new Error(response.statusText);
       })
       .then(result => {
-        if (result.account) {
+        if (result && result.result) {
           this.setState({
             isLoading: false,
-            data: result.data
+            data: result.result.data
           });
         } else {
           this.setState({
@@ -49,18 +50,25 @@ export default class AccountDetails extends React.Component {
       <Segment loading={this.state.isLoading}>
         {this.state.message && <Message error>{this.state.message}</Message>}
         {this.state.data && <div>
-          <h6>ACCOUNT_NAME</h6>
-          <h4>{this.state.data.username}</h4>
-          <h6>EMAIL</h6>
-          <h4>{this.state.data.email}</h4>
-          <h6>LAST_ACTIVE_TIME</h6>
-          <h4>{this.state.lastActiveTime}</h4>
+          <List divided selection>
+            <List.Item>
+              <Label horizontal color="blue">ACCOUNT_NAME</Label>{this.state.data.username}
+            </List.Item>
+            <List.Item>
+              <Label horizontal color="blue">EMAIL</Label>
+              {this.state.data.email}
+            </List.Item>
+          </List>
           <Divider />
-          {this.state.data.employeeid && <EmployeeDetails id={this.state.data.employeeid} />}
-        </div>}
+          {this.state.data.employeeId &&
+            <div>
+              <h6>EMPLOYEE_DETAILS</h6>
+              <EmployeeDetails id={this.state.data.employeeId} /></div>}
+        </div>
+        }
       </Segment>
     );
-      }
-    }
-    
-    
+  }
+}
+
+

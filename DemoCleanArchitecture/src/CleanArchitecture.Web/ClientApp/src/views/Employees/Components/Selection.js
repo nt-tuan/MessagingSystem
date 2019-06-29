@@ -50,8 +50,12 @@ class Selection extends Component {
     return emps;
   }
 
-  loadCurrentValue() {
-    if (!this.state.value) {
+  loadCurrentValue(value) {
+    if (!value) {
+      value = this.state.value;
+    }
+    
+    if (!value) {
       this.setState({
         isLoadedCurrentValue: true
       });
@@ -60,7 +64,8 @@ class Selection extends Component {
     this.setState({
       isLoadedCurrentValue: false
     });
-    fetch(`/api/hr/emp/${this.state.value}`, {
+
+    fetch(`/api/hr/emp/${value}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -72,7 +77,7 @@ class Selection extends Component {
     })
       .then(result => {
         let jresult = JSON.parse(result);
-        
+
         if (jresult.result == null) {
           this.selected = null;
         } else {
@@ -81,10 +86,10 @@ class Selection extends Component {
             text: `${emp.code} - ${emp.firstname} ${emp.lastname}`,
             value: emp.id
           };
-          let emps = this.appendSelected(this.state.options);          
+          let emps = this.appendSelected(this.state.options);
           this.setState({
             options: emps,
-            value: this.props.value,
+            value: value,
             isLoadedCurrentValue: true
           });
         }
@@ -148,12 +153,11 @@ class Selection extends Component {
 
   componentDidMount() {
     this.loadData();
-    this.loadCurrentValue();
+    this.loadCurrentValue(this.state.value);
   }
 
   componentWillReceiveProps(props) {
-    this.loadCurrentValue();
-    this.setState({ value: props.value })
+    this.loadCurrentValue(props.value);
   }
 
   render() {

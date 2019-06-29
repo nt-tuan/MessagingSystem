@@ -146,27 +146,31 @@ namespace CleanArchitecture.Web.Api
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("list")]
         public async Task<ActionResult> list()
         {
             var accounts = await _userManager.Users.Include(u => u.Employee).ToListAsync();
+
             var data = new
             {
-                data = accounts.Select(async u => new
+                data = accounts.Select((async u => new
                 {
                     username = u.UserName,
                     employeeId = u.EmployeeId,
                     employeeCode = u.Employee == null ? null : u.Employee.Code,
+                    employeeName = u.GetFullname(),
                     email = u.Email,
                     id = u.Id,
                     roles = (await _userManager.GetRolesAsync(u))
-                })
+                })).Select(u => u.Result),
+                total = accounts.Count,
+                page = 0
             };
             return Ok(new ResponseModel(data));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("details/{id}")]
         public async Task<IActionResult> Detail(string id)
         {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Label, Segment, Divider, ButtonGroup, Button } from 'semantic-ui-react';
+import { default as Message } from '../../Base/Messages/Message';
 
 export default class ChangePassword extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ export default class ChangePassword extends React.Component {
         }
         throw new Error(response.statusText);
       })
-      .then(resposne => {
+      .then(response => {
         if (response && response.result && this.props.onSuccess) {
           this.props.onSuccess();
         } else {
