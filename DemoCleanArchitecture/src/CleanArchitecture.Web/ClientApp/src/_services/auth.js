@@ -10,10 +10,14 @@ export const UserService = {
   delete: _delete
 };
 
+const fixedRequestOptions = {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' }
+};
+
 function login(username, password) {
   const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    ...fixedRequestOptions,
     body: JSON.stringify({ username, password })
   };
   return fetch(config.apiUrl + '/api/account/login', requestOptions)
@@ -71,8 +75,7 @@ function getById(_id) {
 
 function register(user) {
   const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    ...fixedRequestOptions,
     body: JSON.stringify(user)
   };
 
@@ -103,12 +106,7 @@ function handleResponse(response) {
   return new Promise((resolve, reject) => {
     if (response.ok) {
       // return json if it was returned in the response
-      var contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        response.json().then(json => resolve(json));
-      } else {
-        resolve();
-      }
+      response.json().then(json => resolve(json));
     } else {
       // return error message from response body
       response.text().then(text => reject(text));

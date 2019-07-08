@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CleanArchitecture.Core.Entities
+namespace CleanArchitecture.Core.Entities.Sales
 {
     public class Customer : BaseEntity
     {
@@ -11,6 +11,9 @@ namespace CleanArchitecture.Core.Entities
         public string Fullname { get; set; }
         public string Shortname { get; set; }
         public string Phone { get; set; }
+
+        public int? DistributorId { get; set; }
+        public Distributor Distributor { get; set; }
         public string DistributorCode { get; set; }
         public string Owner { get; set; }
         public string Receiver { get; set; }

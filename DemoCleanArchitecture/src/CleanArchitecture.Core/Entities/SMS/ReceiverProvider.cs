@@ -9,11 +9,11 @@ namespace CleanArchitecture.Core.Entities.SMS
     {
         public int MessageReceiverId { get; set; }
         public MessageReceiver MessageReceiver { get; set; }
-        public int SendMessageProviderId { get; set; }
+        public int MessageServiceProviderId { get; set; }
         public MessageServiceProvider MessageServiceProvider { get; set; }
 
         public string ReceiverAddress { get; set; }
-
+        
         //Meta data
         public DateTime CreatedTime { get; set; }
         public int? CreatedBy { get; set; }

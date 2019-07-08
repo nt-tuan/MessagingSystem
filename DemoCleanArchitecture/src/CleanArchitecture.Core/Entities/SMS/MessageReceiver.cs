@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using CleanArchitecture.Core.Entities.Sales;
 
 namespace CleanArchitecture.Core.Entities.SMS
 {
@@ -19,10 +21,16 @@ namespace CleanArchitecture.Core.Entities.SMS
         public string FullName { get; set; }
         public string ShortName { get; set; }
 
-        public ICollection<MessageReceiverGroup> MessageReceiverGroups { get; set; }
+        public ICollection<MessageReceiverGroupMessageReceiver> MessageReceiverGroupMessageReceivers { get; set; }
+        public ICollection<ReceiverProvider> ReceiverProviders { get; set; }
 
         //Meta data
         public DateTime CreatedTime { get; set; }
-        public int CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
+
+        public ICollection<MessageReceiverGroup> GetMessageReceiverGroups()
+        {
+            return MessageReceiverGroupMessageReceivers.Select(u => u.MessageReceiverGroup).ToList();
+        }
     }
 }

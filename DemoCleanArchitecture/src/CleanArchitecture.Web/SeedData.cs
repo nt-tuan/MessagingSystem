@@ -8,14 +8,14 @@ namespace CleanArchitecture.Web
     {
         public static void PopulateInitData(AppDbContext dbContext)
         {
-            if (!dbContext.ReceiverCategory.ToList().Any())
+            if (!dbContext.ReceiverCategories.ToList().Any())
             {
-                dbContext.ReceiverCategory.Add(new Core.Entities.SMS.ReceiverCategory
+                dbContext.ReceiverCategories.Add(new Core.Entities.SMS.ReceiverCategory
                 {
                     Code = "E",
                     Name = "Nhân viên"
                 });
-                dbContext.ReceiverCategory.Add(new Core.Entities.SMS.ReceiverCategory
+                dbContext.ReceiverCategories.Add(new Core.Entities.SMS.ReceiverCategory
                 {
                     Code = "C",
                     Name = "Khách hàng"

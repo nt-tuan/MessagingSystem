@@ -62,6 +62,7 @@ class DepartmentUpdate extends Component {
 
   handleChange = (e, { name, value }) => {
     //const value = event.type === 'checkbox' ? target.checked : target.value;
+
     console.log(`${name}: ${value}`);
 
     /*let name = e.target.name;*/

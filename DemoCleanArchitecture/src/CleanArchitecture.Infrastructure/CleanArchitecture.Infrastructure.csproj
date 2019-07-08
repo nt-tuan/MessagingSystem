@@ -4,6 +4,10 @@
     <AssemblyName>CleanArchitecture.Infrastructure</AssemblyName>
     <PackageId>CleanArchitecture.Infrastructure</PackageId>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20190708051010_add message entities.cs" />
+    <Compile Remove="Migrations\20190708051010_add message entities.Designer.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CleanArchitecture.Core\CleanArchitecture.Core.csproj" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.Entities;
+using CleanArchitecture.Core.Entities.Sales;
 using CleanArchitecture.Core.Entities.SMS;
 using CleanArchitecture.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace CleanArchitecture.Web.Api
     [Route("api/[controller]")]
     public class MessageController : Controller
     {
-        IMessageRepository _imessage;
-        public MessageController(IMessageRepository imessage)
+        readonly IMessageRepository _imessage;
+        readonly ICoreRepository _icore;
+        public MessageController(IMessageRepository imessage, ICoreRepository icore)
         {
             _imessage = imessage;
+            _icore = icore;
         }
 
         // GET: api/<controller>
@@ -30,9 +33,9 @@ namespace CleanArchitecture.Web.Api
 
         [HttpGet]
         [Route("customers")]
-        public async Task<List<Customer>> Customers()
+        public async Task<ICollection<Customer>> Customers()
         {
-            return await _imessage.GetCustomers();
+            return await _icore.GetCustomers(null, "");
         }
     }
 }
