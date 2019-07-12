@@ -28,6 +28,8 @@ namespace CleanArchitecture.Core.Entities.SMS
         public DateTime CreatedTime { get; set; }
         public int? CreatedBy { get; set; }
 
+        public bool Removed { get; set; }
+
         public ICollection<MessageReceiverGroup> GetMessageReceiverGroups()
         {
             return MessageReceiverGroupMessageReceivers.Select(u => u.MessageReceiverGroup).ToList();

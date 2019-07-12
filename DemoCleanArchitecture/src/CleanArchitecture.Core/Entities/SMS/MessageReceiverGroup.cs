@@ -15,7 +15,7 @@ namespace CleanArchitecture.Core.Entities.SMS
         //Meta data
         public DateTime CreatedTime { get; set; }
         public int? CreatedBy { get; set; }
-
+        public bool Removed { get; set; } = false;
         public Boolean IsPrivate { get; set; }
         public ICollection<MessageReceiver> GetMessageReceivers()
         {

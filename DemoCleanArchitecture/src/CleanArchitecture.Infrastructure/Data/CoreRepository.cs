@@ -3,6 +3,7 @@ using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.Entities.HR;
 using CleanArchitecture.Core.Entities.Sales;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Infrastructure.Data.Exceptions.Messages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,7 +27,13 @@ namespace CleanArchitecture.Infrastructure.Data
             _context = context;
             _userManager = userManager;
         }
-
+        public async Task<Customer> GetCustomer(int id, bool throwException)
+        {
+            var entity = await _context.Customers.FirstOrDefaultAsync(u => u.Id == id);
+            if (entity == null && throwException)
+                throw new EntityNotFound(typeof(Customer), id);
+            return entity;
+        }
         public Task<ICollection<Customer>> GetCustomers(int? distributorId, string search, int? page = 1, int? take = 30)
         {
             throw new NotImplementedException();
@@ -127,10 +134,12 @@ namespace CleanArchitecture.Infrastructure.Data
             return emp;
         }
 
-        public async Task<Employee> GetEmployee(int id)
+        public async Task<Employee> GetEmployee(int id, bool throwException = false)
         {
             var emp = await _context.Employees.Include(u => u.Department)
                 .FirstOrDefaultAsync(u => !u.Removed && u.Id == id);
+            if (emp == null && throwException)
+                throw new EntityNotFound(typeof(Employee), id);
             return emp;
         }
 
