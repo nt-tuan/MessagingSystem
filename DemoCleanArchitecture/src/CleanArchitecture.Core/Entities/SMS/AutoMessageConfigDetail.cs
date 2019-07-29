@@ -5,30 +5,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CleanArchitecture.Core.Entities.SMS
+namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class AutoMessageConfigDetails : BaseEntity
+    public class AutoMessageConfigDetail : BaseDetailEntity
     {
         public int AutoMessageConfigId { get; set; }
         public AutoMessageConfig AutoMessageConfig { get; set; }
+        public string Title { get; set; }
         public string Period { get; set; }
         public string Content { get; set; }
+        public ICollection<AutoMessageConfigDetailMessageReceiver> AutoMessageConfigDetailMessageReceivers { get; set; }
+        public ICollection<AutoMessageConfigDetailMessageReceiverGroup> AutoMessageConfigDetailsMessageReceiverGroups { get; set; }
 
-        public ICollection<AutoMessageConfigDetailsMessageReceiver> AutoMessageConfigDetailsMessageReceivers { get; set; }
-        public ICollection<AutoMessageConfigDetailsMessageReceiverGroup> AutoMessageConfigDetailsMessageReceiverGroups { get; set; }
-
-        public ICollection<AutoMessageConfigDetailsProvider> AutoMessageConfigDetailsProviders { get; set; }
-
-        public int VersionNumber { get; set; }
-
-        //Meta data
-        public DateTime CreatedTime { get; set; }
-        public int? CreatedById { get; set; }
-        public Employee CreatedBy { get; set; }
+        public ICollection<AutoMessageConfigDetailProvider> AutoMessageConfigDetailsProviders { get; set; }
 
         public ICollection<MessageReceiver> GetMessageReceivers()
         {
-            return AutoMessageConfigDetailsMessageReceivers.Select(u => u.MessageReceiver).ToList();
+            return AutoMessageConfigDetailMessageReceivers.Select(u => u.MessageReceiver).ToList();
         }
 
         public ICollection<MessageReceiverGroup> GetMessageReceiverGroups()

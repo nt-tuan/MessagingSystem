@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CleanArchitecture.Core.Entities.SMS
+namespace CleanArchitecture.Core.Entities.Messaging
 {
     public class MessageReceiverGroupMessageReceiver : BaseEntity
     {
@@ -11,6 +11,6 @@ namespace CleanArchitecture.Core.Entities.SMS
         public MessageReceiver MessageReceiver { get; set; }
 
         public int MessageReceiverGroupId { get; set; }
-        public MessageReceiverGroup MessageReceiverGroup { get; set; }
+        public MessageReceiverGroupDetail MessageReceiverGroupDetail { get; set; }
     }
 }

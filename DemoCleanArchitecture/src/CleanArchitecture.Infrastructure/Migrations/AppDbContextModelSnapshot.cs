@@ -237,7 +237,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("Distributors");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfig", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfig", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,7 +258,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("AutoMessageConfigs");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -285,7 +285,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("AutoMessageConfigDetails");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsMessageReceiver", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailsMessageReceiver", b =>
                 {
                     b.Property<int>("MessageReceiverId");
 
@@ -298,7 +298,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("AutoMesasgeConfigDetailsMessageReceivers");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsMessageReceiverGroup", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailsMessageReceiverGroup", b =>
                 {
                     b.Property<int>("AutoMessageConfigDetailsId");
 
@@ -311,7 +311,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("AutoMessageConfigDetailsMessageReceiverGroups");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsProvider", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailsProvider", b =>
                 {
                     b.Property<int>("AutoMessageConfigDetailsId");
 
@@ -324,7 +324,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("AutoMessageConfigDetailsProviders");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.MessageReceiver", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.MessageReceiver", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -355,7 +355,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("MessageReceivers");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.MessageReceiverGroup", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.MessageReceiverGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -372,7 +372,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("MessageReceiverGroups");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.MessageReceiverGroupMessageReceiver", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.MessageReceiverGroupMessageReceiver", b =>
                 {
                     b.Property<int>("MessageReceiverGroupId");
 
@@ -385,7 +385,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("MessageReceiverGroupMessageReceivers");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.MessageServiceProvider", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.MessageServiceProvider", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -402,7 +402,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("MessageServiceProviders");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.ReceiverCategory", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.ReceiverCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -417,7 +417,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("ReceiverCategories");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.ReceiverProvider", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.ReceiverProvider", b =>
                 {
                     b.Property<int>("MessageServiceProviderId");
 
@@ -436,7 +436,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("ReceiverProviders");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.SentMessage", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.SentMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -632,16 +632,16 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .HasForeignKey("DistributorId");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfig", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfig", b =>
                 {
                     b.HasOne("CleanArchitecture.Core.Entities.HR.Employee", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetails", b =>
                 {
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.AutoMessageConfig", "AutoMessageConfig")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfig", "AutoMessageConfig")
                         .WithMany("Versions")
                         .HasForeignKey("AutoMessageConfigId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -651,46 +651,46 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .HasForeignKey("CreatedById");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsMessageReceiver", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailsMessageReceiver", b =>
                 {
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails", "AutoMessageConfigDetails")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetails", "AutoMessageConfigDetails")
                         .WithMany("AutoMessageConfigDetailsMessageReceivers")
                         .HasForeignKey("AutoMessageConfigDetailsId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.MessageReceiver", "MessageReceiver")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.MessageReceiver", "MessageReceiver")
                         .WithMany()
                         .HasForeignKey("MessageReceiverId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsMessageReceiverGroup", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailsMessageReceiverGroup", b =>
                 {
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails", "AutoMessaegConfigDetails")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetails", "AutoMessaegConfigDetails")
                         .WithMany("AutoMessageConfigDetailsMessageReceiverGroups")
                         .HasForeignKey("AutoMessageConfigDetailsId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.MessageReceiverGroup", "MessageReceiveGroup")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.MessageReceiverGroup", "MessageReceiveGroup")
                         .WithMany()
                         .HasForeignKey("MessageReceiverGroupId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsProvider", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailsProvider", b =>
                 {
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails", "AutoMessageConfigDetails")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetails", "AutoMessageConfigDetails")
                         .WithMany("AutoMessageConfigDetailsProviders")
                         .HasForeignKey("AutoMessageConfigDetailsId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.MessageServiceProvider", "MessageServiceProvider")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.MessageServiceProvider", "MessageServiceProvider")
                         .WithMany()
                         .HasForeignKey("MessageServiceProviderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.MessageReceiver", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.MessageReceiver", b =>
                 {
                     b.HasOne("CleanArchitecture.Core.Entities.Sales.Customer", "Customer")
                         .WithMany()
@@ -700,44 +700,44 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("EmployeeId");
 
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.ReceiverCategory", "ReceiverCategory")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.ReceiverCategory", "ReceiverCategory")
                         .WithMany("MessageReceivers")
                         .HasForeignKey("ReceiverCategoryId");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.MessageReceiverGroupMessageReceiver", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.MessageReceiverGroupMessageReceiver", b =>
                 {
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.MessageReceiverGroup", "MessageReceiverGroup")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.MessageReceiverGroup", "MessageReceiverGroup")
                         .WithMany("MessageReceiverGroupMessageReceivers")
                         .HasForeignKey("MessageReceiverGroupId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.MessageReceiver", "MessageReceiver")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.MessageReceiver", "MessageReceiver")
                         .WithMany("MessageReceiverGroupMessageReceivers")
                         .HasForeignKey("MessageReceiverId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.ReceiverProvider", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.ReceiverProvider", b =>
                 {
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.MessageReceiver", "MessageReceiver")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.MessageReceiver", "MessageReceiver")
                         .WithMany("ReceiverProviders")
                         .HasForeignKey("MessageReceiverId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.MessageServiceProvider", "MessageServiceProvider")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.MessageServiceProvider", "MessageServiceProvider")
                         .WithMany("ReceiverProviders")
                         .HasForeignKey("MessageServiceProviderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.SentMessage", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.SentMessage", b =>
                 {
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails", "AutoMessageConfigDetails")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetails", "AutoMessageConfigDetails")
                         .WithMany()
                         .HasForeignKey("AutoMessageConfigDetailsId");
 
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.ReceiverProvider", "ReceiverProvider")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.ReceiverProvider", "ReceiverProvider")
                         .WithMany()
                         .HasForeignKey("ReceiverProviderMessageServiceProviderId", "ReceiverProviderMessageReceiverId");
                 });

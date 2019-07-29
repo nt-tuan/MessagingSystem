@@ -10,10 +10,7 @@ namespace CleanArchitecture.Core.Interfaces
 {
     public interface ICoreRepository
     {
-        Task<Customer> GetCustomer(int id, bool throwException = false);
-        Task<ICollection<Customer>> GetCustomers(int? distributorId, string search, int? page = 1, int? take = 30);
-        Task<ICollection<Distributor>> GetDistributors();
-        Task<ICollection<Employee>> GetEmployees(int? perpage, int? page, string search, string orderby, int? orderdir, IDictionary<string,string> fitler);
+        Task<ICollection<Employee>> GetEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, IDictionary<string,string> filter);
         Task<Employee> GetEmployee(string code);
         Task<Employee> GetEmployee(int id, bool throwException = false);
         Task<int> GetEmployeeCount(IDictionary<string, string> filter = null);

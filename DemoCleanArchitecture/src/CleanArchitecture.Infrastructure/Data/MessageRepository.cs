@@ -1,7 +1,7 @@
 ﻿using CleanArchitecture.Core.Entities;
 using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.Entities.Sales;
-using CleanArchitecture.Core.Entities.SMS;
+using CleanArchitecture.Core.Entities.Messaging;
 using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Infrastructure.Data.Exceptions;
 using CleanArchitecture.Infrastructure.Data.Exceptions.Messages;
@@ -36,8 +36,8 @@ namespace CleanArchitecture.Infrastructure.Data
             return entity;
         }
 
-        //Add a message receiver who is a customer. If that customer has a phone number, add receiver sms provider infomation.
-        public async Task<MessageReceiver> AddCustomerReceiver(int customerid, AppUser user)
+        //Add a message receiver who is a customer. If that customer has a phone number, add receiver Messaging provider infomation.
+        public async Task<MessageReceiver> AddCustomerReceiver(int customerid, int? user)
         {
             var e = await _icore.GetCustomer(customerid, true);
             var cate = await GetCategory(CUSTOMER_CATEGORY, true);
@@ -49,7 +49,7 @@ namespace CleanArchitecture.Infrastructure.Data
                 ReceiverCategoryId = cate.Id,
                 CustomerId = customerid,
                 CreatedTime = DateTime.Now,
-                CreatedBy = user == null ? null : user.EmployeeId
+                CreatedBy = user
             };
             await _context.AddAsync(receiver);
 
@@ -58,7 +58,7 @@ namespace CleanArchitecture.Infrastructure.Data
             return receiver;
         }
 
-        public async Task<MessageReceiver> AddEmployeeReceiver(int employeeid, AppUser user)
+        public async Task<MessageReceiver> AddEmployeeReceiver(int employeeid, int? user)
         {
             var emp = await _icore.GetEmployee(employeeid, true);
             var category = await GetCategory(EMPLOYEE_CATEGORY, true);
@@ -70,7 +70,7 @@ namespace CleanArchitecture.Infrastructure.Data
                 ReceiverCategoryId = category.Id,
                 EmployeeId = employeeid,
                 CreatedTime = DateTime.Now,
-                CreatedBy = user == null ? null : user.EmployeeId
+                CreatedBy = user
             };
             await _context.AddAsync(receiver);
 
@@ -92,7 +92,7 @@ namespace CleanArchitecture.Infrastructure.Data
             return group;
         }
 
-        public async Task<MessageReceiver> AddReceiver(string fullname, string shortname, int category, int createdby)
+        public async Task<MessageReceiver> AddReceiver(string fullname, string shortname, int category, int? createdby)
         {
             var receiver = new MessageReceiver
             {
@@ -122,10 +122,11 @@ namespace CleanArchitecture.Infrastructure.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteReceiver(int id)
+        public async Task DeleteReceiver(int id, int? createdby)
         {
             var receiver = await GetReceiverById(id, throwException: true);
             receiver.Removed = true;
+            receiver.RemovedBy = createdby;
             var sentmessagesCount = await _context.SentMessages.CountAsync(u => u.ReceiverProvider.MessageReceiverId == id);
             var automessageCount = await _context.AutoMesasgeConfigDetailsMessageReceivers.CountAsync(u => u.MessageReceiverId == id);
             var automessageGroupCount = await _context.AutoMessageConfigDetailsMessageReceiverGroups.CountAsync(u => u.MessageReceiveGroup.MessageReceiverGroupMessageReceivers.Any(v => v.MessageReceiverId == id));
@@ -224,12 +225,12 @@ namespace CleanArchitecture.Infrastructure.Data
             await _context.AddRangeAsync(mr);
         }
 
-        public async Task<MessageReceiver> UpdateReceiver(int id, MessageReceiver receiver)
+        public async Task<MessageReceiver> UpdateReceiver(int id, MessageReceiver receiver, int? modifiedby)
         {
             var current = await GetReceiverById(id, throwException: true);
             current.FullName = receiver.FullName;
             current.ShortName = receiver.ShortName;
-
+            current.LastModifiedBy = modifiedby;
             _context.Update(current);
             await _context.SaveChangesAsync();
             return current;

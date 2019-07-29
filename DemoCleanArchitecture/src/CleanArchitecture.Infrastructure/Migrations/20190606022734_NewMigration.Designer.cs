@@ -218,7 +218,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("JobRequirements");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.MessageReceiver", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.MessageReceiver", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -249,7 +249,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("MessageReceivers");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.ReceiverCategory", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.ReceiverCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -420,7 +420,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Core.Entities.SMS.MessageReceiver", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Entities.Messaging.MessageReceiver", b =>
                 {
                     b.HasOne("CleanArchitecture.Core.Entities.Customer", "Customer")
                         .WithMany()
@@ -430,7 +430,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("EmployeeId");
 
-                    b.HasOne("CleanArchitecture.Core.Entities.SMS.ReceiverCategory", "ReceiverCategory")
+                    b.HasOne("CleanArchitecture.Core.Entities.Messaging.ReceiverCategory", "ReceiverCategory")
                         .WithMany("MessageReceivers")
                         .HasForeignKey("ReceiverCategoryId");
                 });

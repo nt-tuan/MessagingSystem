@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="CleanArchitecture.Core.Entities.Accounts.AppUser" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="6.25" Y="6.75" Width="1.5" />
     <AssociationLine Name="Employee" Type="CleanArchitecture.Core.Entities.HR.Employee" FixedToPoint="true">
       <Path>
-        <Point X="1.25" Y="1.191" />
-        <Point X="1.25" Y="1.75" />
+        <Point X="7" Y="7.441" />
+        <Point X="7" Y="8" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -16,154 +16,135 @@
       <Property Name="Employee" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.AutoMessageConfig">
-    <Position X="7.5" Y="0.5" Width="1.5" />
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfig" Collapsed="true">
+    <Position X="16.5" Y="4" Width="1.5" />
     <NestedTypes>
-      <Enum Name="CleanArchitecture.Core.Entities.SMS.AutoMessageConfig.AutoMessageStatus" Collapsed="true">
+      <Enum Name="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfig.AutoMessageStatus" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>Entities\SMS\AutoMessageConfig.cs</NewMemberFileName>
+          <NewMemberFileName>Entities\Messaging\AutoMessageConfig.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAEACAAAEAAAAAAAAAAAAEAAAEAAAAAAAAAAAE=</HashCode>
-      <FileName>Entities\SMS\AutoMessageConfig.cs</FileName>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Messaging\AutoMessageConfig.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails">
-    <Position X="10.75" Y="0.5" Width="1.5" />
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetail">
+    <Position X="16.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAiAAAEAAAAAAAIAIAAAQAAgAAAAEQACAAAM=</HashCode>
-      <FileName>Entities\SMS\AutoMessageConfigDetails.cs</FileName>
+      <HashCode>AAAAAAAAAiAAAEAAAAAAAIAIAAAQAAgAAAAEQACAAAI=</HashCode>
+      <FileName>Entities\Messaging\AutoMessageConfigDetail.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="AutoMessageConfig" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.MessageReceiver">
-    <Position X="3.5" Y="3.5" Width="1.5" />
-    <AssociationLine Name="Customer" Type="CleanArchitecture.Core.Entities.Sales.Customer" FixedFromPoint="true">
-      <Path>
-        <Point X="4.062" Y="6.723" />
-        <Point X="4.062" Y="7.5" />
-      </Path>
-    </AssociationLine>
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.MessageReceiver">
+    <Position X="9.25" Y="8.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAECAAAAIAAAAAAAAAACAAAAJABAAAAQAAKAAE=</HashCode>
-      <FileName>Entities\SMS\MessageReceiver.cs</FileName>
+      <HashCode>AAEAAAAECAAAAgAAAAAAAAAACAAAABABAAAAQAAKAAA=</HashCode>
+      <FileName>Entities\Messaging\MessageReceiver.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
+      <Property Name="Customer" />
       <Property Name="Employee" />
       <Property Name="ReceiverCategory" />
-      <Property Name="Customer" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.MessageReceiverGroup">
-    <Position X="7.5" Y="13.75" Width="1.5" />
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.MessageReceiverGroup">
+    <Position X="16.5" Y="17" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAEQAAAAAAAAAAAAAQAAAAAAAgAAAAAAAAAAAE=</HashCode>
-      <FileName>Entities\SMS\MessageReceiverGroup.cs</FileName>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Messaging\MessageReceiverGroup.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.MessageServiceProvider">
-    <Position X="7.5" Y="8.75" Width="1.5" />
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.MessageServiceProvider">
+    <Position X="13.5" Y="12" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAACAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAE=</HashCode>
-      <FileName>Entities\SMS\MessageServiceProvider.cs</FileName>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Messaging\MessageServiceProvider.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.ReceiverCategory">
-    <Position X="3.5" Y="0.5" Width="1.5" />
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.ReceiverCategory">
+    <Position X="9.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAgAAQAgAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\SMS\ReceiverCategory.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Messaging\ReceiverCategory.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.ReceiverProvider">
-    <Position X="7.5" Y="5.75" Width="1.5" />
-    <AssociationLine Name="MessageServiceProvider" Type="CleanArchitecture.Core.Entities.SMS.MessageServiceProvider" FixedFromPoint="true">
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.ReceiverProvider">
+    <Position X="13.5" Y="9.5" Width="1.5" />
+    <AssociationLine Name="MessageServiceProvider" Type="CleanArchitecture.Core.Entities.Messaging.MessageServiceProvider" FixedFromPoint="true">
       <Path>
-        <Point X="8.5" Y="7.752" />
-        <Point X="8.5" Y="8.75" />
+        <Point X="14.5" Y="10.925" />
+        <Point X="14.5" Y="12" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAEAAAAAYAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAAAE=</HashCode>
-      <FileName>Entities\SMS\ReceiverProvider.cs</FileName>
+      <HashCode>AAEAAAAAYAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Messaging\ReceiverProvider.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="MessageReceiver" />
       <Property Name="MessageServiceProvider" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.SentMessage">
-    <Position X="10.75" Y="5.75" Width="1.5" />
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.SentMessage">
+    <Position X="16.5" Y="9.5" Width="1.5" />
     <NestedTypes>
-      <Enum Name="CleanArchitecture.Core.Entities.SMS.SentMessage.SentMessageStatus" Collapsed="true">
+      <Enum Name="CleanArchitecture.Core.Entities.Messaging.SentMessage.SentMessageStatus" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>Entities\SMS\SentMessage.cs</NewMemberFileName>
+          <NewMemberFileName>Entities\Messaging\SentMessage.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAQAABEBgAAAIAAAAAAAAAAAAAAAAAAAAAACAAAFAA=</HashCode>
-      <FileName>Entities\SMS\SentMessage.cs</FileName>
+      <HashCode>AAAQAABEBgAAAIAAAAAAAAAAAAAAAAAAAAAACAAABAA=</HashCode>
+      <FileName>Entities\Messaging\SentMessage.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="AutoMessageConfigDetails" />
       <Property Name="ReceiverProvider" />
     </ShowAsAssociation>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.Sales.Customer">
-    <Position X="3.5" Y="7.5" Width="1.5" />
-    <AssociationLine Name="Distributor" Type="CleanArchitecture.Core.Entities.Sales.Distributor" FixedFromPoint="true">
-      <Path>
-        <Point X="4.25" Y="10.464" />
-        <Point X="4.25" Y="11.75" />
-      </Path>
-    </AssociationLine>
+    <Position X="9.25" Y="12.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAACAAAAAAAAAAAggBAABAAEEAIACAAAAIAAAAAA=</HashCode>
+      <HashCode>QIAAAAAAAEAAAAAEAAggAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Sales\Customer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Distributor" />
+      <Property Name="Business" />
+      <Property Name="Person" />
     </ShowAsAssociation>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.Sales.Distributor">
-    <Position X="3.5" Y="11.75" Width="1.5" />
+    <Position X="9.25" Y="15" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAgAAQAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Entities\Sales\Distributor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.HR.Department">
-    <Position X="0.5" Y="6.25" Width="1.5" />
+    <Position X="6.25" Y="11.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAAIsQAQACAAABAAAAgAAIAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAkAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\HR\Department.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.HR.Employee">
-    <Position X="0.5" Y="1.75" Width="1.5" />
+    <Position X="6.25" Y="8" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAACEAAACAAgMAAAACgAAAAEAAIAAACAAAAJAAAAAg=</HashCode>
+      <HashCode>AIAAAAAAAAAAAAAEAAAgAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Entities\HR\Employee.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Department" />
+      <Property Name="Person" />
     </ShowAsAssociation>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.HR.EmployeeJob">
-    <Position X="0.5" Y="10.5" Width="1.5" />
-    <AssociationLine Name="Employee" Type="CleanArchitecture.Core.Entities.HR.Employee" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="0.5" Y="11.437" />
-        <Point X="0.125" Y="11.437" />
-        <Point X="0.125" Y="4.688" />
-        <Point X="0.5" Y="4.688" />
-      </Path>
-    </AssociationLine>
+    <Position X="3.25" Y="14.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQACAAAAAAQAAAAAAACAAA=</HashCode>
       <FileName>Entities\HR\EmployeeJob.cs</FileName>
@@ -173,7 +154,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.HR.EmployeeJobRequirement">
-    <Position X="0.5" Y="12.5" Width="1.5" />
+    <Position X="3.25" Y="16.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAARAAAAAA=</HashCode>
       <FileName>Entities\HR\EmployeeJobRequirement.cs</FileName>
@@ -184,76 +165,206 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.HR.JobRequirement">
-    <Position X="0.5" Y="14.75" Width="1.5" />
+    <Position X="6.25" Y="16.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>Entities\HR\JobRequirement.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsMessageReceiver">
-    <Position X="7.5" Y="3.5" Width="1.5" />
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailMessageReceiver">
+    <Position X="13.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAARAAAAIAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\SMS\AutoMessageConfigDetailsMessageReceiver.cs</FileName>
+      <FileName>Entities\Messaging\AutoMessageConfigDetailMessageReceiver.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="AutoMessageConfigDetails" />
       <Property Name="MessageReceiver" />
+      <Property Name="AutoMessageConfigDetails" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsMessageReceiverGroup">
-    <Position X="10.75" Y="13.75" Width="1.5" />
-    <AssociationLine Name="AutoMessaegConfigDetails" Type="CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailsMessageReceiverGroup">
+    <Position X="16.5" Y="14.75" Width="1.5" />
+    <AssociationLine Name="AutoMessaegConfigDetails" Type="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetail" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="12.25" Y="14.463" />
-        <Point X="13.079" Y="14.463" />
-        <Point X="13.079" Y="2.5" />
-        <Point X="12.25" Y="2.5" />
+        <Point X="18" Y="15.463" />
+        <Point X="18.829" Y="15.463" />
+        <Point X="18.829" Y="7.196" />
+        <Point X="18" Y="7.196" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAAAQAAAACAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\SMS\AutoMessageConfigDetailsMessageReceiverGroup.cs</FileName>
+      <FileName>Entities\Messaging\AutoMessageConfigDetailMessageReceiverGroup.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="AutoMessaegConfigDetails" />
       <Property Name="MessageReceiveGroup" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetailsProvider">
-    <Position X="10.75" Y="9" Width="1.5" />
-    <AssociationLine Name="AutoMessageConfigDetails" Type="CleanArchitecture.Core.Entities.SMS.AutoMessageConfigDetails" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetailsProvider">
+    <Position X="16.5" Y="12.75" Width="1.5" />
+    <AssociationLine Name="AutoMessageConfigDetails" Type="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfigDetail" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="12.25" Y="9.825" />
-        <Point X="12.718" Y="9.825" />
-        <Point X="12.718" Y="2.938" />
-        <Point X="12.25" Y="2.938" />
+        <Point X="18" Y="13.575" />
+        <Point X="18.468" Y="13.575" />
+        <Point X="18.468" Y="7.568" />
+        <Point X="18" Y="7.568" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAEAAAAAJAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\SMS\AutoMessageConfigDetailsProvider.cs</FileName>
+      <FileName>Entities\Messaging\AutoMessageConfigDetailProvider.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="AutoMessageConfigDetails" />
       <Property Name="MessageServiceProvider" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="CleanArchitecture.Core.Entities.SMS.MessageReceiverGroupMessageReceiver">
-    <Position X="3.5" Y="14.5" Width="1.5" />
-    <AssociationLine Name="MessageReceiverGroup" Type="CleanArchitecture.Core.Entities.SMS.MessageReceiverGroup" FixedFromPoint="true">
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.MessageReceiverGroupMessageReceiver">
+    <Position X="9.25" Y="17" Width="1.5" />
+    <AssociationLine Name="MessageReceiver" Type="CleanArchitecture.Core.Entities.Messaging.MessageReceiver" ManuallyRouted="true">
       <Path>
-        <Point X="5" Y="15.188" />
-        <Point X="7.5" Y="15.188" />
+        <Point X="9.25" Y="17.713" />
+        <Point X="8.31" Y="17.713" />
+        <Point X="8.31" Y="10.287" />
+        <Point X="8.792" Y="10.287" Type="JumpStart" />
+        <Point X="8.958" Y="10.287" Type="JumpEnd" />
+        <Point X="9.25" Y="10.287" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAAQAAAAAAAAAAAAAACQAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\SMS\MessageReceiverGroupMessageReceiver.cs</FileName>
+      <HashCode>AAAAAAAAQAAEAAQAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Messaging\MessageReceiverGroupMessageReceiver.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="MessageReceiver" />
+      <Property Name="MessageReceiverGroupDetail" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.MessageReceiverDetail">
+    <Position X="11.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAIAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Messaging\MessageReceiverDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="MessageReceiver" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Core.PersonDetail">
+    <Position X="3.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAECAAACAAAIAAAAAAAAAAAAAIAAACAAAAIAAAAAA=</HashCode>
+      <FileName>Entities\Core\PersonDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Person" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Core.Person">
+    <Position X="3.25" Y="7.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="CleanArchitecture.Core.Entities.Core.Person.PersonGender" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Entities\Core\Person.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAIQAEAAAAAAAAAAABA=</HashCode>
+      <FileName>Entities\Core\Person.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Country" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Core.Country">
+    <Position X="0.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAgAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Core\Country.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Core.Business">
+    <Position X="0.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAIAAAAAAAAAAAAIQAMACAAAAIAAAAAA=</HashCode>
+      <FileName>Entities\Core\Business.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Country" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.HR.EmployeeDetail">
+    <Position X="6.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAgAAAAAAIAAAAGAAAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>Entities\HR\EmployeeDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Department" />
+      <Property Name="Employee" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.HR.DepartmentDetail">
+    <Position X="3.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgIAAAAIIQAAAEAAABIAAAgAAIAAAAAA=</HashCode>
+      <FileName>Entities\HR\DepartmentDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Manager" />
+      <Property Name="Department" />
+      <Property Name="Parent" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.MessageReceiverGroupDetail">
+    <Position X="13.25" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAQAAAAAAAQAAAAAAAwAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Messaging\MessageReceiverGroupDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
       <Property Name="MessageReceiverGroup" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.MessageServiceProviderDetail">
+    <Position X="13.5" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAIAABAAAAAAAAgAQAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Entities\Messaging\MessageServiceProviderDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="MessageServiceProvider" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.ReceiverProviderDetail">
+    <Position X="13.5" Y="7.25" Width="1.5" />
+    <AssociationLine Name="ReceiverProvider" Type="CleanArchitecture.Core.Entities.Messaging.ReceiverProvider" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.5" Y="7.963" />
+        <Point X="13.25" Y="7.963" />
+        <Point X="13.25" Y="8.925" />
+        <Point X="14.25" Y="8.925" />
+        <Point X="14.25" Y="9.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAACAAABAA=</HashCode>
+      <FileName>Entities\Messaging\ReceiverProviderDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ReceiverProvider" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CleanArchitecture.Core.Entities.Messaging.ReceiverCategoryDetail" Collapsed="true">
+    <Position X="9.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAABAAAAAAAIAAA=</HashCode>
+      <FileName>Entities\Messaging\ReceiverCategoryDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ReceiverCategory" />
     </ShowAsAssociation>
   </Class>
   <Font Name="Segoe UI" Size="9" />

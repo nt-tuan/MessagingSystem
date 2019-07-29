@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using CleanArchitecture.Core.Entities;
-using CleanArchitecture.Core.Entities.SMS;
+using CleanArchitecture.Core.Entities.Messaging;
 using CleanArchitecture.Core.Entities.HR;
 using CleanArchitecture.Core.SharedKernel;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -21,7 +21,7 @@ namespace CleanArchitecture.Infrastructure.Data
             _dispatcher = dispatcher;
         }
 
-        //SMS Module
+        //Messaging Module
         //public DbSet<AutoMessageConfig> AutoMessageConfigs { get; set; }
         //public DbSet<AutoMessageConfigDetails> AutoMessageConfigDetails { get; set; }
         public DbSet<AutoMessageConfig> AutoMessageConfigs { get; set; }
@@ -83,7 +83,7 @@ namespace CleanArchitecture.Infrastructure.Data
             modelBuilder.Entity<EmployeeJob>().HasMany(u => u.EmployeeJobRequirements).WithOne(u => u.EmployeeJob).HasForeignKey(u => u.EmployeeJobId);
             modelBuilder.Entity<JobRequirement>().HasMany(u => u.EmployeeJobRequirements).WithOne(u => u.JobRequirement).HasForeignKey(u => u.JobRequirementId);
 
-            //SMS constraints
+            //Messaging constraints
             modelBuilder.Entity<AutoMessageConfig>().HasOne(u => u.CreatedBy).WithMany().HasForeignKey(u => u.CreatedById);
 
             modelBuilder.Entity<AutoMessageConfigDetails>().HasOne(u => u.AutoMessageConfig).WithMany(u => u.Versions).HasForeignKey(u => u.AutoMessageConfigId);
@@ -129,8 +129,6 @@ namespace CleanArchitecture.Infrastructure.Data
             modelBuilder.Entity<MessageReceiverGroupMessageReceiver>().HasOne(u => u.MessageReceiver).WithMany(u => u.MessageReceiverGroupMessageReceivers).HasForeignKey(u => u.MessageReceiverId);
 
             modelBuilder.Entity<MessageReceiverGroupMessageReceiver>().HasKey(u => new {u.MessageReceiverGroupId, u.MessageReceiverId });
-
-
 
             modelBuilder.Entity<MessageReceiver>().HasOne(u => u.ReceiverCategory).WithMany(u => u.MessageReceivers).HasForeignKey(u => u.ReceiverCategoryId);
             

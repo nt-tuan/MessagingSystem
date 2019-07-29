@@ -10,12 +10,12 @@ namespace CleanArchitecture.Web
         {
             if (!dbContext.ReceiverCategories.ToList().Any())
             {
-                dbContext.ReceiverCategories.Add(new Core.Entities.SMS.ReceiverCategory
+                dbContext.ReceiverCategories.Add(new Core.Entities.Messaging.ReceiverCategory
                 {
                     Code = "E",
                     Name = "Nhân viên"
                 });
-                dbContext.ReceiverCategories.Add(new Core.Entities.SMS.ReceiverCategory
+                dbContext.ReceiverCategories.Add(new Core.Entities.Messaging.ReceiverCategory
                 {
                     Code = "C",
                     Name = "Khách hàng"

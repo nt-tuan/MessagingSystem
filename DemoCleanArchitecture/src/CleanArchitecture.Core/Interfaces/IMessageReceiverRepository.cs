@@ -1,7 +1,7 @@
 ﻿using CleanArchitecture.Core.Entities;
 using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.Entities.Sales;
-using CleanArchitecture.Core.Entities.SMS;
+using CleanArchitecture.Core.Entities.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -62,7 +62,7 @@ namespace CleanArchitecture.Core.Interfaces
         /// <param name="groupid"></param>
         /// <param name="cateid"></param>
         /// <returns></returns>
-        Task<ICollection<MessageReceiver>> GetReceivers(int? pageCount = null, int? page = null, string search = null, int? groupid = null, int? cateid);
+        Task<ICollection<MessageReceiver>> GetReceivers(int? pageCount = null, int? page = null, string search = null, int? groupid = null, int? cateid = null);
         /// <summary>
         /// Get a receiver specified by id
         /// </summary>
@@ -74,16 +74,16 @@ namespace CleanArchitecture.Core.Interfaces
         /// </summary>
         /// <param name="customerid"></param>
         /// <returns></returns>
-        Task<MessageReceiver> AddCustomerReceiver(int customerid, AppUser creator);
+        Task<MessageReceiver> AddCustomerReceiver(int customerid, int? createdby);
         /// <summary>
         /// Add a receiver who is an employee
         /// </summary>
         /// <param name="employeeid"></param>
         /// <returns></returns>
-        Task<MessageReceiver> AddEmployeeReceiver(int employeeid, AppUser creator);
-        Task<MessageReceiver> AddReceiver(string fullname, string shortname, int category, int createdby);
-        Task<MessageReceiver> UpdateReceiver(int id, MessageReceiver receiver);
-        Task DeleteReceiver(int id);
+        Task<MessageReceiver> AddEmployeeReceiver(int employeeid, int? createdby);
+        Task<MessageReceiver> AddReceiver(string fullname, string shortname, int category, int? createdby);
+        Task<MessageReceiver> UpdateReceiver(int id, MessageReceiver receiver, int? createdby);
+        Task DeleteReceiver(int id, int? createdby);
 
         Task<ReceiverProvider> AddReceiverProvider(int receiverid, int providerid, string address, int? createdby);
         Task<MessageServiceProvider> GetProviderById(int id, bool throwException);

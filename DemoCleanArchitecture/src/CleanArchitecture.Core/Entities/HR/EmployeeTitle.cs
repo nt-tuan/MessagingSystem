@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CleanArchitecture.Core.Entities.Messaging
+namespace CleanArchitecture.Core.Entities.HR
 {
-    public class Tag : BaseEntity
+    public class EmployeeTitle : BaseEntity
     {
         public string Name { get; set; }
     }

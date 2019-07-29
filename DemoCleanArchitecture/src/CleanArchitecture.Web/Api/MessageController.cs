@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.Entities;
 using CleanArchitecture.Core.Entities.Sales;
-using CleanArchitecture.Core.Entities.SMS;
+using CleanArchitecture.Core.Entities.Messaging;
 using CleanArchitecture.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

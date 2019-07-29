@@ -5,8 +5,10 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class Tag : BaseEntity
+    public class ReceiverCategoryDetail : BaseDetailEntity
     {
+        public int ReceiverCategoryId { get; set; }
+        public ReceiverCategory ReceiverCategory { get; set; }
         public string Name { get; set; }
     }
 }

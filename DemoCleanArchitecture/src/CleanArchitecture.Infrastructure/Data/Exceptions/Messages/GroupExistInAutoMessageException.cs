@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Core.Entities.SMS;
+﻿using CleanArchitecture.Core.Entities.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Text;
