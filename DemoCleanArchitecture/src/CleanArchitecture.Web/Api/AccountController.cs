@@ -126,7 +126,7 @@ namespace CleanArchitecture.Web.Api
                 var emp = await _icore.GetEmployee(model.employeeId.Value);
                 if (emp != null)
                 {
-                    appuser.EmployeeId = model.employeeId;
+                    //appuser.EmployeeId = model.employeeId;
                 }
             }
             appuser.UserName = model.username;
@@ -150,8 +150,8 @@ namespace CleanArchitecture.Web.Api
         [Route("list")]
         public async Task<ActionResult> list()
         {
-            var accounts = await _userManager.Users.Include(u => u.Employee).ToListAsync();
-
+            var accounts = await _userManager.Users.Include(u => u.Person).ToListAsync();
+            /*
             var data = new
             {
                 data = accounts.Select((async u => new
@@ -168,12 +168,15 @@ namespace CleanArchitecture.Web.Api
                 page = 0
             };
             return Ok(new ResponseModel(data));
+            */
+            return null;
         }
 
         [HttpPost]
         [Route("details/{id}")]
         public async Task<IActionResult> Detail(string id)
         {
+            /*
             var user = await _userManager.Users.Include(u => u.Employee).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
                 return NotFound();
@@ -184,6 +187,8 @@ namespace CleanArchitecture.Web.Api
             {
                 data = data
             }));
+            */
+            return null;
         }
 
         [HttpPost]
@@ -200,7 +205,7 @@ namespace CleanArchitecture.Web.Api
                 user.UserName = model.UserName;
                 user.Email = model.Email;
                 user.PhoneNumber = model.PhoneNumber;
-                user.EmployeeId = model.EmployeeId;
+                //user.EmployeeId = model.EmployeeId;
                 await _userManager.UpdateAsync(user);
 
                 var aroles = await _userManager.GetRolesAsync(user);

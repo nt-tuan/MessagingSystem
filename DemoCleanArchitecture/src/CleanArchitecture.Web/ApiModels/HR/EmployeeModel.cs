@@ -14,7 +14,7 @@ namespace CleanArchitecture.Web.ApiModels.HR
         public string lastname { get; set; }
         public int? deptid { get; set; }
         public string deptname { get; set; }
-        public DateTime birthday { get; set; }
+        public DateTime? birthday { get; set; }
         public string email { get; set; }
         public string address { get; set; }
         public string phone { get; set; }
@@ -27,12 +27,12 @@ namespace CleanArchitecture.Web.ApiModels.HR
         {
             id = entity.Id;
             code = entity.Code;
-            firstname = entity.FirstName;
-            lastname = entity.LastName;
+            firstname = entity.Person.FirstName;
+            lastname = entity.Person.LastName;
             deptid = entity.DepartmentId.Value;
-            deptname = entity.Department.Name;
-            birthday = entity.Birthday;
-            email = entity.Email;
+            deptname = entity.Department.FullName;
+            birthday = entity.Person.Birthday;
+            email = entity.Person.Email;
         }
     }
 }

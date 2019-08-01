@@ -6,10 +6,8 @@ using System.Text.RegularExpressions;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    class MessageServiceProviderDetail : BaseDetailEntity
+    public class MessageServiceProvider : BaseDetailEntity
     {
-        public int MessageServiceProviderId { get; set; }
-        public MessageServiceProvider MessageServiceProvider { get; set; }
         public string Name { get; set; }
 
         public string AddressRegex { get; set; }
@@ -20,5 +18,6 @@ namespace CleanArchitecture.Core.Entities.Messaging
         {
             return Regex.IsMatch(address, AddressRegex);
         }
+        public ICollection<ReceiverProvider> ReceiverProviders { get; set; }
     }
 }

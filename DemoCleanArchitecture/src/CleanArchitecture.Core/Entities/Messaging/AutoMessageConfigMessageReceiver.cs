@@ -5,11 +5,12 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class ReceiverProvider : BaseEntity
+    public class AutoMessageConfigMessageReceiver
     {
         public int MessageReceiverId { get; set; }
         public MessageReceiver MessageReceiver { get; set; }
-        public int MessageServiceProviderId { get; set; }
-        public MessageServiceProvider MessageServiceProvider { get; set; }
+
+        public int AutoMessageConfigId { get; set; }
+        public AutoMessageConfig AutoMessageConfig { get; set; }
     }
 }

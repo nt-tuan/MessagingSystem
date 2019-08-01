@@ -19,6 +19,5 @@ namespace CleanArchitecture.Core.Entities.Messaging
         public int Status { get; set; }
 
         public int ReceiverProviderId { get; set; }
-        public ReceiverProviderDetail ReceiverProvider { get; set; }
     }
 }

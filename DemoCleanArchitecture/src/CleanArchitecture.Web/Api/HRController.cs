@@ -30,6 +30,7 @@ namespace CleanArchitecture.Web.Api
         [Route("emp")]
         public async Task<IActionResult> GetEmployees(TableParameter param)
         {
+            /*
             var list = await _coreRep.GetEmployees(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filter);
             var count = await _coreRep.GetEmployeeCount(param.filter);
             return Ok(new
@@ -38,6 +39,8 @@ namespace CleanArchitecture.Web.Api
                 emps = list.Select(u => new EmployeeModel(u)),
                 total = count
             }));
+            */
+            return null;
         }
 
         [HttpPost]
@@ -57,6 +60,7 @@ namespace CleanArchitecture.Web.Api
         [Route("emp/update/{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, EmployeeModel model)
         {
+            /*
             var entity = new Employee
             {
                 Id = id,
@@ -70,7 +74,8 @@ namespace CleanArchitecture.Web.Api
             {
                 result = true
             }));
-
+            */
+            return null;
         }
 
         [HttpPost]
@@ -88,6 +93,7 @@ namespace CleanArchitecture.Web.Api
         [Route("emp/add")]
         public async Task<IActionResult> AddEmployee(EmployeeModel model)
         {
+            /*
             var employee = new Employee
             {
                 Code = model.code,
@@ -101,6 +107,8 @@ namespace CleanArchitecture.Web.Api
             };
             await _coreRep.AddEmployee(employee);
             return Ok(new ResponseModel(new { result = true }));
+            */
+            return null;
         }
 
         #endregion
@@ -132,6 +140,7 @@ namespace CleanArchitecture.Web.Api
         [Route("dept/update/{id}")]
         public async Task<IActionResult> UpdateDepartment(int id, DepartmentModel model)
         {
+            /*
             try
             {
                 var entity = new Department
@@ -151,6 +160,8 @@ namespace CleanArchitecture.Web.Api
             {
                 return BadRequest(new ResponseModel(e.Message));
             }
+            */
+            return null;
         }
 
         [HttpPost]
@@ -181,7 +192,7 @@ namespace CleanArchitecture.Web.Api
             var dept = await _coreRep.GetDepartments(1000, 0, queryString, "code", 0, null);
             return Ok(new ResponseModel(dept.Select(u => new
             {
-                text = u.Name,
+                text = u.FullName,
                 value = u.Id
             })));
         }

@@ -12,7 +12,7 @@ namespace DmcSupport.Models.Accounts
         public string username { get; set; }
         public string email { get; set; }
         public string password { get; set; }
-        public Employee employee { get; set; }
+        //public Employee employee { get; set; }
         public CreateAccountSuccessfulModel()
         {
 
@@ -22,10 +22,6 @@ namespace DmcSupport.Models.Accounts
             username = user.UserName;
             email = user.Email;
             this.password = password;
-            if (user.Employee != null)
-            {
-                employee = user.Employee;
-            }
         }
     }
 }

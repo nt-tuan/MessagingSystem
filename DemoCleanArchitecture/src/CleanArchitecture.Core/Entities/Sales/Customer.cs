@@ -6,12 +6,20 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Sales
 {
-    public class Customer : BaseEntity
+    public class Customer : BaseDetailEntity
     {
         public Person Person { get; set; }
         public int? PersonId { get; set; }
         public Business Business { get; set; }
         public int? BusinessId { get; set; }
         public string Code { get; set; }
+
+        public int? DistributorId { get; set; }
+        public Distributor Distributor { get; set; }
+
+        public float? CoordinateX { get; set; }
+        public float? CoordinateY { get; set; }
+
+        public Customer Origin { get; set; }
     }
 }

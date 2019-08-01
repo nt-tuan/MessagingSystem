@@ -26,10 +26,7 @@ namespace CleanArchitecture.Web.ApiModels.Accounts
         {
             username = user.UserName;
             email = user.Email;
-            fullname = user.Employee == null ? "" : user.Employee.GetFullname();
-            shortname = user.Employee == null ? "" : user.Employee.GetShortName();
-            employeeId = user.EmployeeId;
-            employeeCode = user.Employee == null ? "" : user.Employee.Code;
+
         }
 
         public void SetRoles(ICollection<string> roles)

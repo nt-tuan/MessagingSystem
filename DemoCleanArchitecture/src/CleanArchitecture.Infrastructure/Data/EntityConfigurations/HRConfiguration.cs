@@ -8,18 +8,22 @@ using System.Text;
 namespace CleanArchitecture.Infrastructure.Data.EntityConfigurations
 {
     class HRConfiguration : IEntityTypeConfiguration<Department>,
-        IEntityTypeConfiguration<DepartmentDetail>
+        IEntityTypeConfiguration<Employee>
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
-            builder.HasIndex(u => new { u.Code, u.Removed });
+            builder.HasIndex(u => new { u.OriginId });
+            builder.HasOne(u => u.Origin).WithMany().HasForeignKey(u => u.OriginId);
+            builder.HasOne(u => u.Parent).WithMany(u => u.Children).HasForeignKey(u => u.ParentId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(u => u.Manager).WithMany().HasForeignKey(u => u.ManagerId);
+            
         }
 
-        public void Configure(EntityTypeBuilder<DepartmentDetail> builder)
+        public void Configure(EntityTypeBuilder<Employee> builder)
         {
-            builder.HasOne(u => u.Department).WithMany().HasForeignKey(u => u.DepartmentId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(u => u.Parent).WithMany(u => u.Children).HasForeignKey(u => u.ParentId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(u => u.Manager).WithMany().HasForeignKey(u => u.ManagerId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasIndex(u => u.OriginId);
+            builder.HasOne(u => u.Origin).WithMany().HasForeignKey(u => u.OriginId);
+            builder.HasOne(u => u.Department).WithMany(u => u.Employees).HasForeignKey(u => u.DepartmentId);
         }
     }
 }

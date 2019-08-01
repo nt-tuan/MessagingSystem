@@ -26,13 +26,13 @@ namespace CleanArchitecture.Web.ApiModels.HR
         {
             id = entity.Id;
             code = entity.Code;
-            name = entity.Name;
+            name = entity.FullName;
             //alias = entity.Name;
             parentId = entity.ParentId;
             managerId = entity.ManagerId;
-            managerName = entity.Manager!=null? entity.Manager.FullName : null;
+            managerName = entity.Manager!=null? entity.Manager.Person.FullName : null;
             if (entity.Parent != null)
-                parentName = entity.Parent.Name;
+                parentName = entity.Parent.FullName;
         }
     }
 }

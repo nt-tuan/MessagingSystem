@@ -5,10 +5,10 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class AutoMessageConfigDetailMessageReceiverGroup : BaseEntity
+    public class AutoMessageConfigMessageReceiverGroup
     {
-        public int AutoMessageConfigDetailId { get; set; }
-        public AutoMessageConfigDetail AutoMessageConfigDetail { get; set; }
+        public int AutoMessageConfigId { get; set; }
+        public AutoMessageConfig AutoMessageConfig { get; set; }
 
         public int MessageReceiverGroupId { get; set; }
         public MessageReceiverGroup MessageReceiverGroup { get; set; }

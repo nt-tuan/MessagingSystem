@@ -15,9 +15,9 @@ namespace CleanArchitecture.Web.Api
     [Route("api/[controller]")]
     public class MessageController : Controller
     {
-        readonly IMessageRepository _imessage;
+        readonly IMessageReceiverRepository _imessage;
         readonly ICoreRepository _icore;
-        public MessageController(IMessageRepository imessage, ICoreRepository icore)
+        public MessageController(IMessageReceiverRepository imessage, ICoreRepository icore)
         {
             _imessage = imessage;
             _icore = icore;
@@ -28,14 +28,16 @@ namespace CleanArchitecture.Web.Api
         [Route("ReceiverCategories")]
         public async Task<List<ReceiverCategory>> Get()
         {
-            return await _imessage.GetCategories();
+            return null;
+            //return await _imessage.GetCategories();
         }
 
         [HttpGet]
         [Route("customers")]
         public async Task<ICollection<Customer>> Customers()
         {
-            return await _icore.GetCustomers(null, "");
+            return null;
+            //return await _icore.GetCustomers(null, "");
         }
     }
 }

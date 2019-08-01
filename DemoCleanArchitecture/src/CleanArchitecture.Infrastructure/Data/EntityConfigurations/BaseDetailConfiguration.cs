@@ -11,7 +11,8 @@ namespace CleanArchitecture.Infrastructure.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<T> builder)
         {
-            builder.HasIndex(u => u.Effective).IsUnique();
+            builder.HasIndex(u => u.DateEffective);
+            builder.HasIndex(u => u.DateEnd);
         }
     }
 }

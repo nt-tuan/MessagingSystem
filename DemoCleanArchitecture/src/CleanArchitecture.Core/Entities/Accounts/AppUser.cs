@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Core.Entities.HR;
+﻿using CleanArchitecture.Core.Entities.Core;
+using CleanArchitecture.Core.Entities.HR;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -11,20 +12,22 @@ namespace CleanArchitecture.Core.Entities.Accounts
     public class AppUser : IdentityUser
     {
 
-        public int? EmployeeId { get; set; }
+        public int? PersonId { get; set; }
+        public int? BusinessId { get; set; }
 
-        [ForeignKey("EmployeeId")]
-        public virtual Employee Employee { get; set; }
-
+        [ForeignKey("PersonId")]
+        public virtual Person Person { get; set; }
+        [ForeignKey("BusinessId")]
+        public virtual Business Business { get; set; }
 
         public string GetFullname()
         {
-            return Employee == null ? UserName : Employee.GetFullname();
+            return Person == null ? UserName : Person.FullName;
         }
 
         public string GetShortName()
         {
-            return Employee == null ? UserName : Employee.GetShortName();
+            return Person == null ? UserName : Person.FullName;
         }
     }
 }

@@ -5,9 +5,10 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class ReceiverCategory : BaseEntity
+    public class ReceiverCategory : BaseDetailEntity
     {
         public string Code { get; set; }
         public ICollection<MessageReceiver> MessageReceivers { get; set; }
+        public string Name { get; set; }
     }
 }
