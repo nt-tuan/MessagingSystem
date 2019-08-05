@@ -16,7 +16,7 @@ namespace CleanArchitecture.Core.Interfaces
         Task<Employee> GetEmployee(string code);
         Task<Employee> GetEmployee(int id, bool throwException = false);
         Task<int> GetEmployeeCount(IDictionary<string, string> filter = null);
-        Task AddEmployee(Employee employee);
+        Task<Employee> AddEmployee(Employee employee);
         Task UpdateEmployee(int id, Employee updated);
         Task RemoveEmployee(int id);
         Task AddEmployeeAccount(int id, string username);
