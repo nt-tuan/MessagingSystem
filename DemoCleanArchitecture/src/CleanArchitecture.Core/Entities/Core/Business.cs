@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Core.SharedKernel;
+﻿using CleanArchitecture.Core.Entities.Accounts;
+using CleanArchitecture.Core.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,5 +18,7 @@ namespace CleanArchitecture.Core.Entities.Core
         public string TaxNumber { get; set; }
         public int CountryId { get; set; }
         public Country Country { get; set; }
+
+        public AppUser AppUser { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.Entities.Sales;
 using CleanArchitecture.Infrastructure.Data.EntityConfigurations;
+using CleanArchitecture.Core.Entities.Core;
 
 namespace CleanArchitecture.Infrastructure.Data
 {
@@ -80,18 +81,25 @@ namespace CleanArchitecture.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            var coreConf = new CoreConfiguration();
+            modelBuilder.ApplyConfiguration<Person>(coreConf);
+            modelBuilder.ApplyConfiguration<Business>(coreConf);
+
             var hrConf = new HRConfiguration();
             modelBuilder.ApplyConfiguration<Employee>(hrConf);
             modelBuilder.ApplyConfiguration<Department>(hrConf);
+
             var saleConf = new SaleConfiguration();
             modelBuilder.ApplyConfiguration<Distributor>(saleConf);
             modelBuilder.ApplyConfiguration<Customer>(saleConf);
+
             var messagingConf = new MessagingConfiguration();
             modelBuilder.ApplyConfiguration<AutoMessageConfig>(messagingConf);
             modelBuilder.ApplyConfiguration<AutoMessageConfigDetail>(messagingConf);
             modelBuilder.ApplyConfiguration<AutoMessageConfigMessageReceiver>(messagingConf);
             modelBuilder.ApplyConfiguration<AutoMessageConfigMessageReceiverGroup>(messagingConf);
             modelBuilder.ApplyConfiguration<AutoMessageConfigProvider>(messagingConf);
+
             var receiverConf = new MessageReceiverConfiguration();
             modelBuilder.ApplyConfiguration<MessageReceiverGroupMessageReceiver>(receiverConf);
             modelBuilder.ApplyConfiguration<ReceiverProvider>(receiverConf);

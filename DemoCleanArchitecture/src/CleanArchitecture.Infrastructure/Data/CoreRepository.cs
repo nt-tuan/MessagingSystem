@@ -28,11 +28,9 @@ namespace CleanArchitecture.Infrastructure.Data
             _repos = repos;
         }
 
-
-
         public async Task AddDepartment(Department department)
         {
-            _repos.AddDetail(department);
+            await _repos.AddDetailAsync(department);
         }
 
         public async Task<Employee> AddEmployee(Employee employee)
@@ -47,47 +45,52 @@ namespace CleanArchitecture.Infrastructure.Data
             return employee;
         }
 
-        public Task AddEmployeeAccount(int id, string username)
+        public async Task AddEmployeeAccount(int id, string username)
         {
-            throw new NotImplementedException();
+            var emp = await GetEmployee(id);
+            
         }
 
         public async Task DeleteDepartment(int id)
         {
-            _repos.DeleteDetail<Department>(id);            
+            await _repos.DeleteDetailAsync<Department>(id);            
         }
 
-        public Task<Department> GetDepartment(int id)
+        public async Task<Department> GetDepartment(int id)
         {
-            throw new NotImplementedException();
+            var dept = await _repos.GetByIdAsync<Department>(id);
+            return dept;
         }
 
-        public Task<int> GetDepartmentCount(IDictionary<string, string> filter)
+        public async Task<int> GetDepartmentCount(dynamic filter)
         {
-            throw new NotImplementedException();
+            var count = await _repos.CountAsync<Department>(filter);
+            return count;
         }
 
-        public Task<ICollection<Department>> GetDepartments(string search, int? page, int? pageRows, string orderby, int? orderdir, IDictionary<string, string> filter)
+        public async Task<ICollection<Department>> GetDepartments(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter)
         {
-            throw new NotImplementedException();
+            var list = _repos.List<Department>(search, page, pageRows, orderby, orderdir, filter, DateTime.Now);
+            return list;
         }
 
-        public Task<Employee> GetEmployee(string code)
+        public async Task<Employee> GetEmployee(string code)
         {
-            throw new NotImplementedException();
+            var employee = await _repos.ListAsync<Employee>(filter : new {Code = code });
+            return employee.Count > 0 ? employee[0] : null;
         }
 
-        public Task<Employee> GetEmployee(int id, bool throwException = false)
+        public async Task<Employee> GetEmployee(int id, bool throwException = false)
         {
-            throw new NotImplementedException();
+            return await _repos.GetByIdAsync<Employee>(id);
         }
 
-        public Task<int> GetEmployeeCount(IDictionary<string, string> filter = null)
+        public async Task<int> GetEmployeeCount(dynamic filter = null)
         {
-            throw new NotImplementedException();
+            return await _repos.Count<Employee>(filter);
         }
 
-        public Task<ICollection<Employee>> GetEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, IDictionary<string, string> filter)
+        public Task<ICollection<Employee>> GetEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter)
         {
             throw new NotImplementedException();
         }

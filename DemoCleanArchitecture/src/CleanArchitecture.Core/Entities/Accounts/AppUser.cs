@@ -15,9 +15,8 @@ namespace CleanArchitecture.Core.Entities.Accounts
         public int? PersonId { get; set; }
         public int? BusinessId { get; set; }
 
-        [ForeignKey("PersonId")]
         public virtual Person Person { get; set; }
-        [ForeignKey("BusinessId")]
+        
         public virtual Business Business { get; set; }
 
         public string GetFullname()

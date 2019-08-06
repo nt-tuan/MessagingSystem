@@ -7,22 +7,29 @@ namespace CleanArchitecture.Core.Interfaces
 {
     public interface IRepository
     {
-        T GetById<T>(int id) where T : BaseEntity;
-        Task<T> GetByIdAsync<T>(int id) where T : BaseEntity;
-        T GetById<T>(int id, DateTime time) where T : BaseDetailEntity;
-        List<T> List<T>() where T : BaseEntity;
-        List<T> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, IDictionary<string, string> filter) where T : BaseEntity;
-        List<T> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, IDictionary<string, string> filter, DateTime time) where T : BaseDetailEntity;
-        int Count<T>(Dictionary<string, string> filter) where T : BaseEntity;
-        int Count<T>(Dictionary<string, string> filter, DateTime time) where T : BaseDetailEntity;
-        T Add<T>(T entity) where T : BaseEntity;
-        Task<T> AddAsync<T>(T entity) where T : BaseEntity;
-        T AddDetail<T>(T entity) where T : BaseDetailEntity;
-        void Update<T>(T entity) where T : BaseEntity;
-        void Update<T>(int id) where T : BaseEntity;
-        void UpdateDetail<T>(int id) where T : BaseDetailEntity;
-        void Delete<T>(T entity) where T : BaseEntity;
-        void Delete<T>(int id) where T : BaseDetailEntity;
-        void DeleteDetail<T>(int id) where T : BaseDetailEntity;
+        //Get by Id
+        Task<T> GetById<T>(int id) where T : BaseEntity;
+        Task<T> GetByIdAsync<T>(int id, DateTime? at = null) where T : BaseEntity;
+
+        //List
+        Task<List<T>> List<T>(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null) where T : BaseEntity;
+        
+        Task<List<T>> List<T>(string search, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null, DateTime? at = null) where T : BaseDetailEntity;
+
+        //Count
+        Task<int> Count<T>(dynamic filter) where T : BaseEntity;
+        Task<int> Count<T>(dynamic filter, DateTime? time = null) where T : BaseDetailEntity;
+
+        //Add
+        Task<T> Add<T>(T entity) where T : BaseEntity;
+        Task<T> AddDetail<T>(T entity, DateTime? at = null) where T : BaseDetailEntity;
+
+        //Update
+        Task Update<T>(T entity) where T : BaseEntity;
+        Task UpdateDetail<T>(T entity, DateTime? at = null) where T : BaseDetailEntity;
+
+        //Delete
+        Task Delete<T>(T entity) where T : BaseEntity;
+        Task DeleteDetail<T>(T entity, DateTime? at = null) where T : BaseDetailEntity;
     }
 }

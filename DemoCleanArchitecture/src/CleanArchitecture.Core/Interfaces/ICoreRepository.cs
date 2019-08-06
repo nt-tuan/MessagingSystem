@@ -12,10 +12,10 @@ namespace CleanArchitecture.Core.Interfaces
 {
     public interface ICoreRepository
     {  
-        Task<ICollection<Employee>> GetEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, IDictionary<string,string> filter);
+        Task<ICollection<Employee>> GetEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter);
         Task<Employee> GetEmployee(string code);
         Task<Employee> GetEmployee(int id, bool throwException = false);
-        Task<int> GetEmployeeCount(IDictionary<string, string> filter = null);
+        Task<int> GetEmployeeCount(dynamic filter = null);
         Task<Employee> AddEmployee(Employee employee);
         Task UpdateEmployee(int id, Employee updated);
         Task RemoveEmployee(int id);
@@ -24,9 +24,9 @@ namespace CleanArchitecture.Core.Interfaces
 
         
         
-        Task<ICollection<Department>> GetDepartments(string search, int? page, int? pageRows, string orderby, int? orderdir, IDictionary<string, string> filter);
+        Task<ICollection<Department>> GetDepartments(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter);
         Task<Department> GetDepartment(int id);
-        Task<int> GetDepartmentCount(IDictionary<string, string> filter);
+        Task<int> GetDepartmentCount(dynamic filter);
         Task AddDepartment(Department department);
         Task UpdateDepartment(int id, Department department);
         Task DeleteDepartment(int id);
