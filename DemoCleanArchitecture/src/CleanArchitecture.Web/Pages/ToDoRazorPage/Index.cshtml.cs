@@ -18,7 +18,7 @@ namespace CleanArchitecture.Web.Pages.ToDoRazorPage
 
         public void OnGet()
         {
-            ToDoItems = _repository.List<ToDoItem>();
+            //ToDoItems = _repository.List<ToDoItem>();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace CleanArchitecture.Tests.Integration.Data
 
             return builder.Options;
         }
-
+        /*
         [Fact]
         public void AddItemAndSetId()
         {
@@ -101,5 +101,6 @@ namespace CleanArchitecture.Tests.Integration.Data
             _dbContext = new AppDbContext(options, mockDispatcher.Object);
             return new EfRepository(_dbContext);
         }
+        */
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.SharedKernel;
+using CleanArchitecture.Infrastructure.Data.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,17 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task<T> GetById<T>(int id) where T : BaseEntity
         {
             return await _dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
+        }
+
+        public async Task<T> GetById<T>(int id, DateTime? at) where T : BaseDetailEntity
+        {
+            var query = ApplyDefaultWhere<T>(_dbContext.Set<T>(), at ?? DateTime.Now);
+            var lst = await query.ToListAsync();
+            if (lst == null || lst.Count == 0)
+                throw new EntityNotFound(typeof(T), id);
+            if (lst.Count > 1)
+                throw new EntityDuplicate(typeof(T), id);
+            return lst[0];
         }
 
         public async Task<List<T>> List<T>() where T : BaseEntity
@@ -46,16 +58,17 @@ namespace CleanArchitecture.Infrastructure.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<T> GetById<T>(int id, DateTime time) where T : BaseDetailEntity
+        public async Task<T> GetById<T>(int id, DateTime at) where T : BaseDetailEntity
         {
-            var entity = await _dbContext.Set<T>().FirstOrDefaultAsync(u => u.DateEffective <= time && (u.Id == id || u.OriginId == id) && (u.DateEnd == null || u.DateEnd > time));
+            var query = ApplyDefaultWhere<T>(_dbContext.Set<T>().AsQueryable(), at);
+            var entity = await query.FirstOrDefaultAsync(u => u.Id == id || u.OriginId == id);
             return entity;
         }
 
         public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter) where T : BaseEntity
         {
             var query = _dbContext.Set<T>().AsQueryable();
-            
+
             return await query.ToListAsync();
         }
 
@@ -63,8 +76,7 @@ namespace CleanArchitecture.Infrastructure.Data
         {
             var query = _dbContext.Set<T>().AsQueryable<T>();
             query = ApplyFitlerToQuery<T>(filter, query);
-            at = at?? DateTime.Now;
-            query = query.Where(u => u.DateEffective <= at && (u.DateEnd == null || u.DateEnd >=at));
+            query = ApplyDefaultWhere<T>(query, at ?? DateTime.Now);
             if (page != null && pageRows != null)
             {
                 if (orderdir == null || orderdir == 1)
@@ -90,7 +102,7 @@ namespace CleanArchitecture.Infrastructure.Data
                     {
                         rs = rs.Where(u => EF.Property<int>(u, item.Key) == (int)value);
                     }
-                    else if(value is int?)
+                    else if (value is int?)
                     {
                         rs = rs.Where(u => EF.Property<int>(u, item.Key) == (int?)value);
                     }
@@ -121,39 +133,65 @@ namespace CleanArchitecture.Infrastructure.Data
             return rs;
         }
 
-        public int Count<T>(Dictionary<string, string> filter) where T : BaseEntity
+        public IQueryable<T> ApplyDefaultWhere<T>(IQueryable<T> query, DateTime at) where T : BaseDetailEntity
         {
-            throw new NotImplementedException();
+            var rs = query.Where(u => u.DateEffective <= at && (u.DateEnd == null || u.DateEnd > at));
+            return rs;
         }
 
-        public int Count<T>(Dictionary<string, string> filter, DateTime time) where T : BaseDetailEntity
+        public async Task<int> Count<T>(dynamic filter) where T : BaseEntity
         {
-            throw new NotImplementedException();
+            var query = _dbContext.Set<T>().AsQueryable();
+            query = ApplyFitlerToQuery<T>(filter, query);
+            var count = await query.CountAsync();
+            return count;
         }
 
-        public T AddDetail<T>(T entity) where T : BaseDetailEntity
+        public async Task<int> Count<T>(dynamic filter, DateTime? at) where T : BaseDetailEntity
         {
-            throw new NotImplementedException();
+            var query = ApplyDefaultWhere<T>(_dbContext.Set<T>().AsQueryable(), at ?? DateTime.Now);
+            query = ApplyFitlerToQuery<T>(query, filter);
+            return await query.CountAsync();
         }
 
-        public void Update<T>(int id) where T : BaseEntity
+        public async Task<T> AddDetail<T>(T entity, DateTime? at) where T : BaseDetailEntity
         {
-            throw new NotImplementedException();
+            entity.OriginId = null;
+            entity.DateCreated = DateTime.Now;
+            entity.DateEffective = at ?? DateTime.Now;
+            _dbContext.Set<T>().Add(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
 
-        public void UpdateDetail<T>(int id) where T : BaseDetailEntity
+        public async Task UpdateDetail<T>(T entity, DateTime? at) where T : BaseDetailEntity
         {
-            throw new NotImplementedException();
+            at = at ?? DateTime.Now;
+            var current = await GetById<T>(entity.Id, at);
+            entity.OriginId = current.OriginId ?? current.Id;
+            current.DateEnd = DateTime.Now;
+            current.DateReplaced = DateTime.Now;
+            entity.DateEffective = at??DateTime.Now;
+            entity.DateCreated = DateTime.Now;
+            _dbContext.Set<T>().Update(current);
+            _dbContext.Set<T>().Add(current);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void Delete<T>(int id) where T : BaseDetailEntity
+        public async Task Delete<T>(int id) where T : BaseDetailEntity
         {
-            throw new NotImplementedException();
+            var current = await GetById<T>(id);
+            _dbContext.Set<T>().Remove(current);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void DeleteDetail<T>(int id) where T : BaseDetailEntity
+        public async Task DeleteDetail<T>(T entity, DateTime? at = null) where T : BaseDetailEntity
         {
-            throw new NotImplementedException();
+            at = at ?? DateTime.Now;
+            var current = await GetById<T>(entity.Id, at);
+            current.DateEnd = at;
+            _dbContext.Set<T>().Update(current);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

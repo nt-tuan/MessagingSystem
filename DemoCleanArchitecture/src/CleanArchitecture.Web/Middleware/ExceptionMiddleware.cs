@@ -39,6 +39,7 @@ namespace CleanArchitecture.Web.Middleware
 
         public static Task HandleExceptionAsync(HttpContext context, Exception e)
         {
+
             context.Response.ContentType = "application/json";
             if(e is RepositoryException)
             {

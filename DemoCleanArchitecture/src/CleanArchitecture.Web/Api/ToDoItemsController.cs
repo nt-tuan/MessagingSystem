@@ -12,7 +12,7 @@ namespace CleanArchitecture.Web.Api
     public class ToDoItemsController : Controller
     {
         private readonly IRepository _repository;
-
+        /*
         public ToDoItemsController(IRepository repository)
         {
             _repository = repository;
@@ -57,5 +57,6 @@ namespace CleanArchitecture.Web.Api
 
             return Ok(ToDoItemDTO.FromToDoItem(toDoItem));
         }
+        */
     }
 }

@@ -9,8 +9,7 @@ namespace CleanArchitecture.Core.Interfaces
     {
         //Get by Id
         Task<T> GetById<T>(int id) where T : BaseEntity;
-        Task<T> GetByIdAsync<T>(int id, DateTime? at = null) where T : BaseEntity;
-
+        Task<T> GetById<T>(int id, DateTime? at = null) where T : BaseDetailEntity;
         //List
         Task<List<T>> List<T>(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null) where T : BaseEntity;
         

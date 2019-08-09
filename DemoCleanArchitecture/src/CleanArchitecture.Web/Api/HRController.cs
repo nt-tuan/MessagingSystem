@@ -19,19 +19,21 @@ namespace CleanArchitecture.Web.Api
     {
         AppDbContext _context;
         ICoreRepository _coreRep;
-        public HRController(AppDbContext context, ICoreRepository coreRep)
+        IRepository _repos;
+        public HRController(AppDbContext context, ICoreRepository coreRep, IRepository repos)
         {
             _context = context;
             _coreRep = coreRep;
+            _repos = repos;
         }
 
         #region EMPLOYEE
         [HttpPost]
         [Route("emp")]
-        public async Task<IActionResult> GetEmployees(TableParameter param)
+        public async Task<IActionResult> Employees(TableParameter param)
         {
-            /*
-            var list = await _coreRep.GetEmployees(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filter);
+
+            var list = await _coreRep.ListEmployees(param.search, param.pageSize, param.page, param.orderBy, param.orderDirection, param.filter);
             var count = await _coreRep.GetEmployeeCount(param.filter);
             return Ok(new
             ResponseModel(new
@@ -39,15 +41,13 @@ namespace CleanArchitecture.Web.Api
                 emps = list.Select(u => new EmployeeModel(u)),
                 total = count
             }));
-            */
-            return null;
         }
 
         [HttpPost]
         [Route("emp/{id}")]
         public async Task<IActionResult> GetEmployee(int id)
         {
-            var emp = await _coreRep.GetEmployee(id);
+            var emp = await _coreRep.GetEmployeeById(id);
             if (emp != null)
             {
                 return Ok(new ResponseModel(new
@@ -58,24 +58,14 @@ namespace CleanArchitecture.Web.Api
 
         [HttpPost]
         [Route("emp/update/{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id, EmployeeModel model)
+        public async Task<IActionResult> UpdateEmployee(EmployeeModel model)
         {
-            /*
-            var entity = new Employee
-            {
-                Id = id,
-                FirstName = model.firstname,
-                LastName = model.lastname,
-                DepartmentId = model.deptid,
-                Code = model.code
-            };
-            await _coreRep.UpdateEmployee(id, entity);
+            var entity = model.ToEmployee();
+            await _coreRep.UpdateEmployee(entity);
             return Ok(new ResponseModel(new
             {
                 result = true
             }));
-            */
-            return null;
         }
 
         [HttpPost]
@@ -84,7 +74,7 @@ namespace CleanArchitecture.Web.Api
         {
             foreach (var id in model.collection)
             {
-                await _coreRep.RemoveEmployee(id);
+                await _coreRep.DeleteEmployee(id);
             }
             return Ok(new ResponseModel());
         }
@@ -93,22 +83,9 @@ namespace CleanArchitecture.Web.Api
         [Route("emp/add")]
         public async Task<IActionResult> AddEmployee(EmployeeModel model)
         {
-            /*
-            var employee = new Employee
-            {
-                Code = model.code,
-                FirstName = model.firstname,
-                LastName = model.lastname,
-                DepartmentId = model.deptid,
-                Address = model.address,
-                Phone = model.phone,
-                Birthday = model.birthday,
-                Email = model.email
-            };
-            await _coreRep.AddEmployee(employee);
+            var entity = model.ToEmployee();
+            await _coreRep.AddEmployee(entity);
             return Ok(new ResponseModel(new { result = true }));
-            */
-            return null;
         }
 
         #endregion
@@ -118,7 +95,7 @@ namespace CleanArchitecture.Web.Api
         [Route("dept/{id}")]
         public async Task<IActionResult> GetDepartment(int id)
         {
-            var dept = await _coreRep.GetDepartment(id);
+            var dept = await _coreRep.GetDepartmentById(id);
             return Ok(new ResponseModel(new DepartmentModel(dept)));
         }
 
@@ -126,9 +103,9 @@ namespace CleanArchitecture.Web.Api
         [Route("depts")]
         public async Task<IActionResult> GetDepartments(TableParameter param)
         {
-            var depts = await _coreRep.GetDepartments(param.pageSize, param.page, param.search, param.orderBy, param.orderDirection, param.filter);
+            var depts = await _coreRep.GetDepartments(param.search, param.pageSize, param.page, param.orderBy, param.orderDirection, param.filter);
 
-            var count = await _coreRep.GetDepartmentCount();
+            var count = await _coreRep.GetDepartmentCount(param.filter);
             return Ok(new ResponseModel(new
             {
                 depts = depts.Select(u => new DepartmentModel(u)),
@@ -140,56 +117,43 @@ namespace CleanArchitecture.Web.Api
         [Route("dept/update/{id}")]
         public async Task<IActionResult> UpdateDepartment(int id, DepartmentModel model)
         {
-            /*
-            try
+            var entity = new Department
             {
-                var entity = new Department
-                {
-                    Code = model.code,
-                    Name = model.name,
-                    ParentId = model.parentId,
-                    ManagerId = model.managerId
-                };
-                await _coreRep.UpdateDepartment(id, entity);
-                return Ok(new ResponseModel(new
-                {
-                    result = true
-                }));
-            }
-            catch (Exception e)
+                Id = id,
+                Code = model.code,
+                FullName = model.name,
+                ShortName = model.shortname,
+                ParentId = model.parentId,
+                ManagerId = model.managerId
+            };
+            await _coreRep.UpdateDepartment(entity);
+            return Ok(new ResponseModel(new
             {
-                return BadRequest(new ResponseModel(e.Message));
-            }
-            */
-            return null;
+                result = true
+            }));
         }
 
         [HttpPost]
         [Route("dept/delete")]
-        public async Task<IActionResult> DeleteDepartment(IntCollectionModel model)
+        public async Task<IActionResult> DeleteDepartments(IntCollectionModel model)
         {
-            try
+            foreach (var id in model.collection)
             {
-                foreach (var id in model.collection)
-                {
-                    await _coreRep.DeleteDepartment(id);
-                }
-                return Ok(new ResponseModel());
+                await _coreRep.DeleteDepartment(id);
             }
-            catch (Exception e)
-            {
-                return Ok(new ResponseModel(e.Message, new
-                {
-                    result = false
-                }));
-            }
+            return Ok(new ResponseModel());
         }
 
         [HttpPost]
         [Route("deptsselection")]
         public async Task<IActionResult> GetDepartmentsSelection(string queryString)
         {
-            var dept = await _coreRep.GetDepartments(1000, 0, queryString, "code", 0, null);
+            var dept = await _coreRep.GetDepartments(queryString, 1000, 0, "code", 0, new
+            {
+                Code = queryString,
+                FullName = queryString,
+                ShortName = queryString
+            });
             return Ok(new ResponseModel(dept.Select(u => new
             {
                 text = u.FullName,

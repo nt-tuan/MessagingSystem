@@ -1,13 +1,18 @@
 ﻿using CleanArchitecture.Core.Entities;
+using CleanArchitecture.Core.Entities.HR;
 using CleanArchitecture.Core.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using System.Linq;
 
 namespace CleanArchitecture.Core
 {
     public static class DatabasePopulator
     {
-        public static int PopulateDatabase(IRepository todoRepository)
+        public static int PopulateDatabase(ICoreRepository repos, IHostingEnvironment env)
         {
+           
+            return 0;
+            /*
             if (todoRepository.List<ToDoItem>().Any()) return 0;
 
             todoRepository.Add(new ToDoItem
@@ -27,6 +32,7 @@ namespace CleanArchitecture.Core
             });
 
             return todoRepository.List<ToDoItem>().Count;
+            */
         }
     }
 }

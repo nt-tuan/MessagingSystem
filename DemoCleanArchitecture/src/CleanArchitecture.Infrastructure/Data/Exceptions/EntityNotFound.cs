@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CleanArchitecture.Infrastructure.Data.Exceptions.Messages
+namespace CleanArchitecture.Infrastructure.Data.Exceptions
 {
     class EntityNotFound : Exception
     {

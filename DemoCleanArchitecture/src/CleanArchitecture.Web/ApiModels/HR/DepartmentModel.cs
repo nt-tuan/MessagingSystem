@@ -11,6 +11,7 @@ namespace CleanArchitecture.Web.ApiModels.HR
         public int id { get; set; }
         public string code { get; set; }
         public string name { get; set; }
+        public string shortname { get; set; }
         public string alias { get; set; }
         public int? parentId { get; set; }
         public string parentName { get; set; }

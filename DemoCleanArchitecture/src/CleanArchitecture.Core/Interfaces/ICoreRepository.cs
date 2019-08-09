@@ -11,24 +11,28 @@ using System.Threading.Tasks;
 namespace CleanArchitecture.Core.Interfaces
 {
     public interface ICoreRepository
-    {  
-        Task<ICollection<Employee>> GetEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter);
-        Task<Employee> GetEmployee(string code);
-        Task<Employee> GetEmployee(int id, bool throwException = false);
+    {
+        #region Employee
+        Task<ICollection<Employee>> ListEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter);
+        Task<Employee> GetEmployeeByCode(string code);
+        Task<Employee> GetEmployeeById(int id);
         Task<int> GetEmployeeCount(dynamic filter = null);
         Task<Employee> AddEmployee(Employee employee);
-        Task UpdateEmployee(int id, Employee updated);
-        Task RemoveEmployee(int id);
+        Task UpdateEmployee(Employee updated);
+        Task DeleteEmployee(int id);
         Task AddEmployeeAccount(int id, string username);
-        Task RemoveEmployeeAccount(int id);
-
-        
-        
+        Task RevokeEmployeeAccount(int id);
+        //End employee interface
+        #endregion 
+        #region Department
         Task<ICollection<Department>> GetDepartments(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter);
-        Task<Department> GetDepartment(int id);
+        Task<IDictionary<int,Department>> GetDepartmentsTree();
+        Task<Department> GetDepartmentById(int id);
+        Task<Department> GetDepartmentTreeById(int id);
         Task<int> GetDepartmentCount(dynamic filter);
         Task AddDepartment(Department department);
-        Task UpdateDepartment(int id, Department department);
+        Task UpdateDepartment(Department department);
         Task DeleteDepartment(int id);
+        #endregion
     }
 }

@@ -123,7 +123,7 @@ namespace CleanArchitecture.Web.Api
             var appuser = new AppUser();
             if (model.employeeId != null)
             {
-                var emp = await _icore.GetEmployee(model.employeeId.Value);
+                var emp = await _icore.GetEmployeeById(model.employeeId.Value);
                 if (emp != null)
                 {
                     //appuser.EmployeeId = model.employeeId;
