@@ -10,8 +10,8 @@ namespace CleanArchitecture.Core.Entities.Messaging
         public enum SentMessageStatus { SENDING = 1, SENT = 2, ERROR = -1}
 
         public string Content { get; set; }
-        public int? AutoMessageConfigDetailsId { get; set; }
-        public AutoMessageConfigDetail AutoMessageConfigDetails { get; set; }
+        public int? AutoMessageConfigId { get; set; }
+        public AutoMessageConfig AutoMessageDetails { get; set; }
 
         public DateTime SendTime { get; set; }
         public DateTime? ReceiveTime { get; set; }

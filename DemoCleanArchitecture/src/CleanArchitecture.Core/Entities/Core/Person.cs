@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Core
 {
-    public class Person : BaseDetailEntity
+    public class Person : BaseDetailEntity<Person>
     {
         public enum PersonGender {MALE = 0, FEMALE = 1}
         public string IdentityNumber { get; set; }

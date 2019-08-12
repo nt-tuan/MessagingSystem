@@ -10,7 +10,7 @@
   <Class Name="CleanArchitecture.Core.Entities.Messaging.AutoMessageConfig" Collapsed="true">
     <Position X="16.5" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AACAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAAAEQAgABAA=</HashCode>
+      <HashCode>AACAAAAEAgAAgEAAAAAAAAAAAAAAAAgAAAAEQAAABAI=</HashCode>
       <FileName>Entities\Messaging\AutoMessageConfig.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -68,14 +68,14 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAQAABEBgAAAIAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <HashCode>AEAQAABEAgAAAAAAAAAAAIAAAAAAAAAAAAAACAAAAAA=</HashCode>
       <FileName>Entities\Messaging\SentMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.Sales.Customer">
     <Position X="9.25" Y="12.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QIAAAAAAAEAAAAAEAAggAAAAAAAAIAACAAAAAAhAAAA=</HashCode>
+      <HashCode>QIAAAAAAAEAAAAAEAAggAAAAAAAAIAACAAAAAABAAAA=</HashCode>
       <FileName>Entities\Sales\Customer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -87,21 +87,21 @@
   <Class Name="CleanArchitecture.Core.Entities.Sales.Distributor">
     <Position X="9.25" Y="15" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAgAAQAAAIQAAACAAAAIAgAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAQAAAIQAAACAAAAIAAAAAA=</HashCode>
       <FileName>Entities\Sales\Distributor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.HR.Department">
     <Position X="6.25" Y="11.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAIAAAAIsQAAACAAABIAAAgAAIAgAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAIAAAAIsQAAACAAABIAAAgAAIAAAAAA=</HashCode>
       <FileName>Entities\HR\Department.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CleanArchitecture.Core.Entities.HR.Employee">
     <Position X="6.25" Y="8" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AYAAAAAAAAAAgAAEAAAoAAAAEAAAAAAAAAAAAAgAAAA=</HashCode>
+      <HashCode>AYAAAAAAAAAAgAAEAAAoAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\HR\Employee.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -174,7 +174,7 @@
   <Class Name="CleanArchitecture.Core.Entities.Core.Country">
     <Position X="0.75" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAAAAAgAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Core\Country.cs</FileName>
     </TypeIdentifier>
   </Class>

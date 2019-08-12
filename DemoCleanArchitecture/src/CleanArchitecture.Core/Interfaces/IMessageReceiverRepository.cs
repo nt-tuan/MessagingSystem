@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using CleanArchitecture.Core.SharedKernel;
+using CleanArchitecture.Core.Entities.HR;
 
 namespace CleanArchitecture.Core.Interfaces
 {
@@ -15,7 +17,7 @@ namespace CleanArchitecture.Core.Interfaces
         /// Get collection of receiver category ["Customer","Employee",...]
         /// </summary>
         /// <returns></returns>
-        Task<ICollection<ReceiverCategory>> GetCategories();
+        Task<ICollection<ReceiverCategory>> GetCategories(DateTime? at);
         /// <summary>
         /// Get groups of receivers specified by pageCount: number records per page, page index, search string, group owner
         /// </summary>
@@ -24,13 +26,13 @@ namespace CleanArchitecture.Core.Interfaces
         /// <param name="search">search string</param>
         /// <param name="createby">group owner</param>
         /// <returns></returns>
-        Task<ICollection<MessageReceiverGroup>> GetGroups(int? pageCount = null, int? page = null, string search = null, int? createby = null);
+        Task<ICollection<MessageReceiverGroup>> GetGroups(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null, DateTime? at = null);
         /// <summary>
         /// Get a group specified by its unique id
         /// </summary>
         /// <param name="id">id of group</param>
         /// <returns></returns>
-        Task<MessageReceiverGroup> GetGroupById(int id, bool throwException = false);
+        Task<MessageReceiverGroup> GetGroupById(int id, DateTime? at);
         /// <summary>
         /// Add a group
         /// </summary>
@@ -38,7 +40,7 @@ namespace CleanArchitecture.Core.Interfaces
         /// <param name="receivers"></param>
         /// <param name="createdby"></param>
         /// <returns></returns>
-        Task<MessageReceiverGroup> AddGroup(string name, ICollection<int> receivers, int createdby);
+        Task<MessageReceiverGroup> AddGroup(MessageReceiverGroup group, AppUser actor, DateTime? at);
         /// <summary>
         /// Update  a group
         /// </summary>
@@ -46,13 +48,13 @@ namespace CleanArchitecture.Core.Interfaces
         /// <param name="name"></param>
         /// <param name="receivers"></param>
         /// <returns></returns>
-        Task<MessageReceiverGroup> UpdateGroup(int id, string name, ICollection<int> receivers);
+        Task<MessageReceiverGroup> UpdateGroup(MessageReceiverGroup group, AppUser actor, DateTime? at);
         /// <summary>
         /// Delete a group
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task DeleteGroup(int id);
+        Task DeleteGroup(int id, AppUser actor, DateTime? at);
         /// <summary>
         /// Get collection of receivers
         /// </summary>
@@ -62,30 +64,30 @@ namespace CleanArchitecture.Core.Interfaces
         /// <param name="groupid"></param>
         /// <param name="cateid"></param>
         /// <returns></returns>
-        Task<ICollection<MessageReceiver>> GetReceivers(int? pageCount = null, int? page = null, string search = null, int? groupid = null, int? cateid = null);
+        Task<ICollection<MessageReceiver>> GetReceivers(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null, DateTime? at = null);
         /// <summary>
         /// Get a receiver specified by id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<MessageReceiver> GetReceiverById(int id, bool throwException);
+        Task<MessageReceiver> GetReceiverById(int id, DateTime? at);
         /// <summary>
         /// Add a receiver who is a customer
         /// </summary>
         /// <param name="customerid"></param>
         /// <returns></returns>
-        Task<MessageReceiver> AddCustomerReceiver(int customerid, int? createdby);
+        Task<MessageReceiver> AddCustomerReceiver(Customer customer, AppUser actor, DateTime? at);
         /// <summary>
         /// Add a receiver who is an employee
         /// </summary>
         /// <param name="employeeid"></param>
         /// <returns></returns>
-        Task<MessageReceiver> AddEmployeeReceiver(int employeeid, int? createdby);
-        Task<MessageReceiver> AddReceiver(string fullname, string shortname, int category, int? createdby);
-        Task<MessageReceiver> UpdateReceiver(int id, MessageReceiver receiver, int? createdby);
-        Task DeleteReceiver(int id, int? createdby);
+        Task<MessageReceiver> AddEmployeeReceiver(Employee employee, AppUser actor, DateTime? at);
+        Task<MessageReceiver> AddReceiver(MessageReceiver receiver, AppUser actor, DateTime? at);
+        Task<MessageReceiver> UpdateReceiver(MessageReceiver receiver, AppUser actor, DateTime? at);
+        Task DeleteReceiver(int id, AppUser user, DateTime? at);
 
-        Task<ReceiverProvider> AddReceiverProvider(int receiverid, int providerid, string address, int? createdby);
+        Task<ReceiverProvider> AddReceiverProvider(ReceiverProvider provider, AppUser actor, DateTime? at);
         Task<MessageServiceProvider> GetProviderById(int id, bool throwException);
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Core.Entities.HR
 {
-    public class Department : BaseDetailEntity
+    public class Department : BaseDetailEntity<Department>
     {
         public string Code { get; set; }
 
@@ -24,7 +24,6 @@ namespace CleanArchitecture.Core.Entities.HR
         public virtual Department Parent { get; set; }
         public int? ManagerId { get; set; }
         public Employee Manager { get; set; }
-        public Department Origin { get; set; }
 
         public ICollection<Department> Children { get; set; }
 

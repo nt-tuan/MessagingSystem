@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Sales
 {
-    public class Distributor : BaseDetailEntity
+    public class Distributor : BaseDetailEntity<Distributor>
     {
         public string Code { get; set; }
         public string Name { get; set; }
@@ -14,7 +14,5 @@ namespace CleanArchitecture.Core.Entities.Sales
         public string Address { get; set; }
         public int CountryId { get; set; }
         public Country Country { get; set; }
-
-        public Distributor Origin { get; set; }
     }
 }

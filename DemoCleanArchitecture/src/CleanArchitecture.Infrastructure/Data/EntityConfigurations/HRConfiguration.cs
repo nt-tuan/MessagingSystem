@@ -12,8 +12,6 @@ namespace CleanArchitecture.Infrastructure.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
-            builder.HasIndex(u => new { u.OriginId });
-            builder.HasOne(u => u.Origin).WithMany().HasForeignKey(u => u.OriginId);
             builder.HasOne(u => u.Parent).WithMany(u => u.Children).HasForeignKey(u => u.ParentId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(u => u.Manager).WithMany().HasForeignKey(u => u.ManagerId);
             
@@ -21,8 +19,6 @@ namespace CleanArchitecture.Infrastructure.Data.EntityConfigurations
 
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
-            builder.HasIndex(u => u.OriginId);
-            builder.HasOne(u => u.Origin).WithMany().HasForeignKey(u => u.OriginId);
             builder.HasOne(u => u.Department).WithMany(u => u.Employees).HasForeignKey(u => u.DepartmentId);
         }
     }
