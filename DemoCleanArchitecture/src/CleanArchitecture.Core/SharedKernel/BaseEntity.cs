@@ -12,6 +12,11 @@ namespace CleanArchitecture.Core.SharedKernel
         public int Id { get; set; }
         public DateTime DateCreated { get; set; }
         public AppUser CreatedBy { get; set; }
+
+        public DateTime? DateRemoved { get; set; }
+        public AppUser RemovedBy { get; set; }
+        public string RemovedById { get; set; }
+        public string CreatedById { get; set; }
         public List<BaseDomainEvent> Events = new List<BaseDomainEvent>();
     }
 }

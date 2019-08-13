@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Core.Entities;
+using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.Entities.Core;
 using CleanArchitecture.Core.Entities.HR;
 using CleanArchitecture.Core.Entities.Sales;
@@ -12,21 +13,16 @@ namespace CleanArchitecture.Core.Interfaces
 {
     public interface ICoreRepository
     {
-
-        #region People
-        Task<Person> GetPersonById(int id, DateTime? at = null);
-        Task<Business> GetBusinessById(int id, DateTime? at = null);
-#endregion
         #region Employee
         Task<ICollection<Employee>> ListEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter);
         Task<Employee> GetEmployeeByCode(string code);
         Task<Employee> GetEmployeeById(int id);
         Task<int> GetEmployeeCount(dynamic filter = null);
         Task<Employee> AddEmployee(Employee employee);
-        Task UpdateEmployee(Employee updated);
-        Task DeleteEmployee(int id);
-        Task AddEmployeeAccount(int id, string username);
-        Task RevokeEmployeeAccount(int id);
+        Task UpdateEmployee(Employee updated, AppUser appUser);
+        Task DeleteEmployee(int id, AppUser appUser);
+        Task AddEmployeeAccount(int id, string username, AppUser appUser);
+        Task RevokeEmployeeAccount(int id, AppUser appUser);
         //End employee interface
         #endregion 
         #region Department
@@ -35,9 +31,9 @@ namespace CleanArchitecture.Core.Interfaces
         Task<Department> GetDepartmentById(int id);
         Task<Department> GetDepartmentTreeById(int id);
         Task<int> GetDepartmentCount(dynamic filter);
-        Task AddDepartment(Department department);
-        Task UpdateDepartment(Department department);
-        Task DeleteDepartment(int id);
+        Task AddDepartment(Department department, AppUser appUser);
+        Task UpdateDepartment(Department department, AppUser appUser);
+        Task DeleteDepartment(int id, AppUser appUser);
         #endregion
     }
 }

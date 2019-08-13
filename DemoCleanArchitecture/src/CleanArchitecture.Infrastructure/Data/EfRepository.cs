@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Core.Interfaces;
+﻿using CleanArchitecture.Core.Entities.Accounts;
+using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.SharedKernel;
 using CleanArchitecture.Infrastructure.Data.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,13 @@ namespace CleanArchitecture.Infrastructure.Data
         public EfRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        void ApplyMeta<T>(T entity, DateTime? at, AppUser user) where T:BaseDetailEntity<T>
+        {
+            entity.DateCreated = DateTime.Now;
+            entity.CreatedById = user.Id;
+            entity.DateEffective = at ?? DateTime.Now;
         }
 
         #region helps
@@ -147,8 +155,9 @@ namespace CleanArchitecture.Infrastructure.Data
             return list;
         }
         #endregion
-        public async Task<T> Add<T>(T entity) where T : BaseEntity
+        public async Task<T> Add<T>(T entity, AppUser user) where T : BaseEntity
         {
+            entity.CreatedById = user.Id;
             _dbContext.Set<T>().Add(entity);
             await _dbContext.SaveChangesAsync();
             return entity;
@@ -160,8 +169,9 @@ namespace CleanArchitecture.Infrastructure.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task Update<T>(T entity) where T : BaseEntity
+        public async Task Update<T>(T entity, AppUser appUser) where T : BaseEntity
         {
+            entity.CreatedById = appUser.Id;
             _dbContext.Entry(entity).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }
@@ -197,7 +207,7 @@ namespace CleanArchitecture.Infrastructure.Data
             return await query.CountAsync();
         }
 
-        public async Task<T> AddDetail<T>(T entity, DateTime? at) where T : BaseDetailEntity<T>
+        public async Task<T> AddDetail<T>(T entity, DateTime? at, AppUser user) where T : BaseDetailEntity<T>
         {
             entity.OriginId = null;
             entity.DateCreated = DateTime.Now;
@@ -207,59 +217,40 @@ namespace CleanArchitecture.Infrastructure.Data
             return entity;
         }
 
-        public async Task UpdateDetail<T>(T entity, DateTime? at) where T : BaseDetailEntity<T>
+        public async Task UpdateDetail<T>(T entity, DateTime? at, AppUser appUser) where T : BaseDetailEntity<T>
         {
             at = at ?? DateTime.Now;
             var current = await GetById<T>(entity.Id, at);
             entity.OriginId = current.OriginId ?? current.Id;
             current.DateEnd = DateTime.Now;
             current.DateReplaced = DateTime.Now;
-            entity.DateEffective = at ?? DateTime.Now;
-            entity.DateCreated = DateTime.Now;
+
+
+            ApplyMeta(entity, at, appUser);
+
             _dbContext.Set<T>().Update(current);
             _dbContext.Set<T>().Add(current);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task Delete<T>(int id) where T : BaseDetailEntity<T>
+        public async Task Delete<T>(T entity, AppUser user) where T : BaseEntity
         {
-            var current = await GetById<T>(id);
-            _dbContext.Set<T>().Remove(current);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteDetail<T>(T entity, DateTime? at = null) where T : BaseDetailEntity<T>
-        {
-            at = at ?? DateTime.Now;
-            var current = await GetById<T>(entity.Id, at);
-            current.DateEnd = at;
+            var current = await GetById<T>(entity.Id);
+            current.RemovedById = user.Id;
+            current.DateRemoved = DateTime.Now;
             _dbContext.Set<T>().Update(current);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<T> GetById<T>(IQueryable<T> query, int id) where T : BaseEntity
+        public async Task DeleteDetail<T>(T entity, DateTime? at = null, AppUser appUser = null) where T : BaseDetailEntity<T>
         {
-            var entity = await query.SingleOrDefaultAsync(u => u.Id == id);
-            return entity;
+            at = at ?? DateTime.Now;
+            var current = await GetById<T>(entity.Id, at);
+            current.DateEnd = at;
+            current.DateRemoved = DateTime.Now;
+            current.RemovedById = appUser.Id;
+            _dbContext.Set<T>().Update(current);
+            await _dbContext.SaveChangesAsync();
         }
-
-        public async Task<T> GetById<T>(IQueryable<T> query, int id, DateTime? at = null) where T : BaseDetailEntity
-        {
-            var q = ApplyDefaultWhere<T>(query.Where(u => u.Id == id || u.OriginId == id), at ?? DateTime.Now);
-            var entity = await q.SingleOrDefaultAsync();
-            return entity;
-        }
-
-        public Task<List<T>> List<T>(IQueryable<T> query, string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null) where T : BaseEntity
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<T>> List<T>(IQueryable query, string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null, DateTime? at = null) where T : BaseDetailEntity
-        {
-            throw new NotImplementedException();
-        }
-
-
     }
 }

@@ -10,6 +10,8 @@ using CleanArchitecture.Web.ApiModels;
 using CleanArchitecture.Web.ApiModels.HR;
 using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Entities.HR;
+using Microsoft.AspNetCore.Identity;
+using CleanArchitecture.Core.Entities.Accounts;
 
 namespace CleanArchitecture.Web.Api
 {
@@ -20,11 +22,21 @@ namespace CleanArchitecture.Web.Api
         AppDbContext _context;
         ICoreRepository _coreRep;
         IRepository _repos;
-        public HRController(AppDbContext context, ICoreRepository coreRep, IRepository repos)
+        SignInManager<AppUser> _signInManager;
+        UserManager<AppUser> _userManager;
+        public HRController(AppDbContext context, ICoreRepository coreRep, IRepository repos, SignInManager<AppUser> signinManager, UserManager<AppUser> userManager)
         {
             _context = context;
             _coreRep = coreRep;
             _repos = repos;
+            _signInManager = signinManager;
+            _userManager = userManager;
+            
+        }
+
+        async Task<AppUser> getCurrentUser()
+        {
+            return await _userManager.GetUserAsync(User);
         }
 
         #region EMPLOYEE
@@ -60,8 +72,9 @@ namespace CleanArchitecture.Web.Api
         [Route("emp/update/{id}")]
         public async Task<IActionResult> UpdateEmployee(EmployeeModel model)
         {
+            var appUser = await getCurrentUser();
             var entity = model.ToEmployee();
-            await _coreRep.UpdateEmployee(entity);
+            await _coreRep.UpdateEmployee(entity, appUser);
             return Ok(new ResponseModel(new
             {
                 result = true
@@ -74,7 +87,7 @@ namespace CleanArchitecture.Web.Api
         {
             foreach (var id in model.collection)
             {
-                await _coreRep.DeleteEmployee(id);
+                await _coreRep.DeleteEmployee(id, await getCurrentUser());
             }
             return Ok(new ResponseModel());
         }
@@ -126,7 +139,7 @@ namespace CleanArchitecture.Web.Api
                 ParentId = model.parentId,
                 ManagerId = model.managerId
             };
-            await _coreRep.UpdateDepartment(entity);
+            await _coreRep.UpdateDepartment(entity, await getCurrentUser());
             return Ok(new ResponseModel(new
             {
                 result = true
@@ -139,7 +152,7 @@ namespace CleanArchitecture.Web.Api
         {
             foreach (var id in model.collection)
             {
-                await _coreRep.DeleteDepartment(id);
+                await _coreRep.DeleteDepartment(id, await getCurrentUser());
             }
             return Ok(new ResponseModel());
         }

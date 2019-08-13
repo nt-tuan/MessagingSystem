@@ -30,6 +30,12 @@ namespace CleanArchitecture.Infrastructure.Data
             _res = res;
         }
 
+        public async Task<ReceiverCategory> AddCategory(ReceiverCategory cate, AppUser appUser)
+        {
+            var entity = await _res.AddDetail(cate, DateTime.Now, appUser);
+            return entity;
+        }
+
         public async Task<MessageReceiver> AddCustomerReceiver(Customer customer, AppUser actor, DateTime? at)
         {
             //Get customer
@@ -43,78 +49,111 @@ namespace CleanArchitecture.Infrastructure.Data
             receiver.FullName = qcus.Person.FullName;
             receiver.ShortName = qcus.Person.DisplayName;
             receiver.CustomerId = qcus.Id;
-            await _res.Add(receiver);
-            return receiver;
+            var entity = await _res.AddDetail(receiver, DateTime.Now, actor);
+            return entity;
         }
 
-        public Task<MessageReceiver> AddEmployeeReceiver(Employee employee, AppUser actor, DateTime? at)
+        public async Task<MessageReceiver> AddEmployeeReceiver(Employee employee, AppUser actor, DateTime? at)
         {
-            throw new NotImplementedException();
+            var emp = await _core.GetEmployeeById(employee.Id);
+            if (emp == null)
+            {
+                throw new EntityNotFound(typeof(Employee), employee.Id);
+            }
+            var receiver = new MessageReceiver();
+            receiver.FullName = emp.Person.FullName;
+            receiver.ShortName = emp.Person.DisplayName;
+            receiver.EmployeeId = emp.Id;
+            var entity = await _res.AddDetail(receiver, DateTime.Now, actor);
+            return entity;
         }
 
-        public Task<MessageReceiverGroup> AddGroup(MessageReceiverGroup group, AppUser actor, DateTime? at)
+        public async Task<MessageReceiverGroup> AddGroup(MessageReceiverGroup group, AppUser actor, DateTime? at)
         {
-            throw new NotImplementedException();
+            var entity = await _res.AddDetail(group, DateTime.Now, actor);
+            return entity;
         }
 
-        public Task<MessageReceiver> AddReceiver(MessageReceiver receiver, AppUser actor, DateTime? at)
+        public async Task<MessageReceiver> AddReceiver(MessageReceiver receiver, AppUser actor, DateTime? at)
         {
-            throw new NotImplementedException();
+            var entity = await _res.AddDetail(receiver, at, actor);
+            return entity;
         }
 
-        public Task<ReceiverProvider> AddReceiverProvider(ReceiverProvider provider, AppUser actor, DateTime? at)
+        public async Task<ReceiverProvider> AddReceiverProvider(ReceiverProvider provider, AppUser actor, DateTime? at)
         {
-            throw new NotImplementedException();
+            return await _res.AddDetail(provider, at, actor);
         }
 
-        public Task DeleteGroup(int id, AppUser actor, DateTime? at)
+        public async Task DeleteCategory(ReceiverCategory cate, AppUser appUser)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            await _res.DeleteDetail(cate, DateTime.Now, appUser);
         }
 
-        public Task DeleteReceiver(int id, AppUser user, DateTime? at)
+        public async Task DeleteGroup(int id, AppUser actor, DateTime? at)
         {
-            throw new NotImplementedException();
+            var group = await _res.GetById<MessageReceiverGroup>(id, DateTime.Now);
+            await _res.DeleteDetail(group, at, actor);
         }
 
-        public Task<ICollection<ReceiverCategory>> GetCategories(DateTime? at)
+        public async Task DeleteReceiver(int id, AppUser user, DateTime? at)
         {
-            throw new NotImplementedException();
+            var receiver = await _res.GetById<MessageReceiver>(id, at);
+            await _res.DeleteDetail(receiver);
         }
 
-        public Task<MessageReceiverGroup> GetGroupById(int id, DateTime? at)
+        public async Task<ICollection<ReceiverCategory>> GetCategories(DateTime? at)
         {
-            throw new NotImplementedException();
+            var list = await _res.List<ReceiverCategory>(at: at);
+            return list;
         }
 
-        public Task<ICollection<MessageReceiverGroup>> GetGroups(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null, DateTime? at = null)
+        public async Task<MessageReceiverGroup> GetGroupById(int id, DateTime? at)
         {
-            throw new NotImplementedException();
+            var group = await _res.GetById<MessageReceiverGroup>(id, at);
+            return group;
         }
 
-        public Task<MessageServiceProvider> GetProviderById(int id, bool throwException)
+        public async Task<ICollection<MessageReceiverGroup>> GetGroups(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null, DateTime? at = null)
         {
-            throw new NotImplementedException();
+            var groups = await _res.List<MessageReceiverGroup>(search, page, pageRows, orderby, orderdir, filter, at);
+            return groups;
         }
 
-        public Task<MessageReceiver> GetReceiverById(int id, DateTime? at)
+        public async Task<MessageServiceProvider> GetProviderById(int id, bool throwException)
         {
-            throw new NotImplementedException();
+            return await _res.GetById<MessageServiceProvider>(id, DateTime.Now);
         }
 
-        public Task<ICollection<MessageReceiver>> GetReceivers(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null, DateTime? at = null)
+        public async Task<List<MessageServiceProvider>> GetProviders(DateTime? at)
         {
-            throw new NotImplementedException();
+            return await _res.List<MessageServiceProvider>(at: at);
         }
 
-        public Task<MessageReceiverGroup> UpdateGroup(MessageReceiverGroup group, AppUser actor, DateTime? at)
+        public async Task<MessageReceiver> GetReceiverById(int id, DateTime? at)
         {
-            throw new NotImplementedException();
+            return await _res.GetById<MessageReceiver>(id, at);
         }
 
-        public Task<MessageReceiver> UpdateReceiver(MessageReceiver receiver, AppUser actor, DateTime? at)
+        public async Task<ICollection<MessageReceiver>> GetReceivers(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null, DateTime? at = null)
         {
-            throw new NotImplementedException();
+            return await _res.List<MessageReceiver>(search, page, pageRows, orderby, orderdir, filter, at);
+        }
+
+        public async Task UpdateCategory(ReceiverCategory cate, AppUser appUser)
+        {
+            await _res.UpdateDetail<ReceiverCategory>(cate, DateTime.Now, appUser);
+        }
+
+        public async Task UpdateGroup(MessageReceiverGroup group, AppUser actor, DateTime? at)
+        {
+            await _res.UpdateDetail(group, at, actor);
+        }
+
+        public async Task UpdateReceiver(MessageReceiver receiver, AppUser actor, DateTime? at)
+        {
+            await _res.UpdateDetail(receiver, at, actor);
         }
         /*
 //helps

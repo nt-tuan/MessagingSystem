@@ -32,9 +32,9 @@ namespace CleanArchitecture.Infrastructure.Data
             _db = db;
         }
 
-        public async Task AddDepartment(Department department)
+        public async Task AddDepartment(Department department, AppUser appUser)
         {
-            await _repos.AddDetail(department, DateTime.Now);
+            await _repos.AddDetail(department, DateTime.Now, appUser);
         }
 
         public async Task<Employee> AddEmployee(Employee employee)
@@ -50,17 +50,17 @@ namespace CleanArchitecture.Infrastructure.Data
             return employee;
         }
 
-        public async Task AddEmployeeAccount(int id, string username)
+        public async Task AddEmployeeAccount(int id, string username, AppUser appUser)
         {
             //var emp = await GetEmployee(id);
         }
 
-        public async Task DeleteDepartment(int id)
+        public async Task DeleteDepartment(int id, AppUser appUser)
         {
             var department = await GetDepartment(id);
             if(department != null)
             {
-                await _repos.DeleteDetail<Department>(department, DateTime.Now);
+                await _repos.DeleteDetail<Department>(department, DateTime.Now, appUser);
             }
         }
 
@@ -88,7 +88,7 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<Employee> GetEmployeeByCode(string code)
         {
-            var employee = await _repos.List<Employee>(filter : new {Code = code });
+            var employee = await _repos.List<Employee>(filter : new {Code = code }, at: DateTime.Now);
             return employee.Count > 0 ? employee[0] : null;
         }
 
@@ -111,28 +111,28 @@ namespace CleanArchitecture.Infrastructure.Data
             return list;
         }
 
-        public async Task DeleteEmployee(int id)
+        public async Task DeleteEmployee(int id, AppUser appUser)
         {
             var emp = await _repos.GetById<Employee>(id, DateTime.Now);
             if (emp != null)
-                await _repos.DeleteDetail<Employee>(emp);
+                await _repos.DeleteDetail(emp, DateTime.Now, appUser);
             else
                 throw new EntityNotFound(typeof(Employee), emp);
         }
 
-        public Task RevokeEmployeeAccount(int id)
+        public Task RevokeEmployeeAccount(int id, AppUser appUser)
         {
             throw new NotImplementedException();
         }
 
-        public async Task UpdateDepartment(Department department)
+        public async Task UpdateDepartment(Department department, AppUser appUser)
         {
-            await _repos.UpdateDetail(department);
+            await _repos.UpdateDetail(department, DateTime.Now, appUser);
         }
 
-        public async Task UpdateEmployee(Employee updated)
+        public async Task UpdateEmployee(Employee updated, AppUser appUser)
         {
-            await _repos.UpdateDetail(updated);
+            await _repos.UpdateDetail(updated, DateTime.Now, appUser);
         }
 
         public async Task<IDictionary<int,Department>> GetDepartmentsTree()
