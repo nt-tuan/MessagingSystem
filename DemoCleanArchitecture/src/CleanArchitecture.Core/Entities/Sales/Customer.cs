@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Sales
 {
-    public class Customer : BaseDetailEntity
+    public class Customer : BaseDetailEntity<Customer>
     {
         public Person Person { get; set; }
         public int? PersonId { get; set; }
@@ -19,7 +19,5 @@ namespace CleanArchitecture.Core.Entities.Sales
 
         public float? CoordinateX { get; set; }
         public float? CoordinateY { get; set; }
-
-        public Customer Origin { get; set; }
     }
 }

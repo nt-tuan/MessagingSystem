@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class ReceiverCategory : BaseDetailEntity
+    public class ReceiverCategory : BaseDetailEntity<ReceiverCategory>
     {
         public string Code { get; set; }
         public ICollection<MessageReceiver> MessageReceivers { get; set; }

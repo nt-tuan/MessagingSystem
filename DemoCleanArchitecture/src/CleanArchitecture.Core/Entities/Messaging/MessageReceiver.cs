@@ -8,7 +8,7 @@ using CleanArchitecture.Core.Entities.HR;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class MessageReceiver : BaseDetailEntity
+    public class MessageReceiver : BaseDetailEntity<MessageReceiver>
     {
         public ICollection<MessageReceiverGroupMessageReceiver> MessageReceiverGroupMessageReceivers { get; set; }
         public ICollection<ReceiverProvider> ReceiverProviders { get; set; }

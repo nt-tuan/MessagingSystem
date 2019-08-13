@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Core
 {
-    public class Business : BaseDetailEntity
+    public class Business : BaseDetailEntity<Business>
     {
         public string BusinessIdentityNumber { get; set; }
         public string FullName { get; set; }
@@ -18,7 +18,6 @@ namespace CleanArchitecture.Core.Entities.Core
         public string TaxNumber { get; set; }
         public int CountryId { get; set; }
         public Country Country { get; set; }
-
         public AppUser AppUser { get; set; }
     }
 }

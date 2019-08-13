@@ -14,15 +14,11 @@ namespace CleanArchitecture.Infrastructure.Data.EntityConfigurations
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
             builder.HasIndex(u => u.Code).IsUnique();
-            builder.HasIndex(u => u.OriginId);
-            builder.HasOne(u => u.Origin).WithMany().HasForeignKey(u => u.OriginId);
         }
 
         public void Configure(EntityTypeBuilder<Distributor> builder)
         {
             builder.HasIndex(u => u.Code).IsUnique();
-            builder.HasIndex(u => u.OriginId);
-            builder.HasOne(u => u.Origin).WithMany().HasForeignKey(u => u.OriginId);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace CleanArchitecture.Infrastructure.Data
             return await _dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<T> GetById<T>(int id, DateTime? at) where T : BaseDetailEntity
+        public async Task<T> GetById<T>(int id, DateTime? at) where T : BaseDetailEntity<T>
         {
             var query = ApplyDefaultWhere<T>(_dbContext.Set<T>().Where(u => u.Id == id || u.OriginId == id), at ?? DateTime.Now);
             var lst = await query.ToListAsync();
@@ -58,7 +58,7 @@ namespace CleanArchitecture.Infrastructure.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<T> GetById<T>(int id, DateTime at) where T : BaseDetailEntity
+        public async Task<T> GetById<T>(int id, DateTime at) where T : BaseDetailEntity<T>
         {
             var query = ApplyDefaultWhere<T>(_dbContext.Set<T>().Where(u => u.Id == id || u.OriginId == id), at);
             var entity = await query.SingleOrDefaultAsync();
@@ -72,7 +72,7 @@ namespace CleanArchitecture.Infrastructure.Data
             return await query.ToListAsync();
         }
 
-        public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter, DateTime? at) where T : BaseDetailEntity
+        public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter, DateTime? at) where T : BaseDetailEntity<T>
         {
             var query = _dbContext.Set<T>().AsQueryable<T>();
             query = ApplyFitlerToQuery<T>(filter, query);
@@ -133,7 +133,7 @@ namespace CleanArchitecture.Infrastructure.Data
             return rs;
         }
 
-        public IQueryable<T> ApplyDefaultWhere<T>(IQueryable<T> query, DateTime at) where T : BaseDetailEntity
+        public IQueryable<T> ApplyDefaultWhere<T>(IQueryable<T> query, DateTime at) where T : BaseDetailEntity<T>
         {
             var rs = query.Where(u => u.DateEffective <= at && (u.DateEnd == null || u.DateEnd > at));
             return rs;
@@ -147,14 +147,14 @@ namespace CleanArchitecture.Infrastructure.Data
             return count;
         }
 
-        public async Task<int> Count<T>(dynamic filter, DateTime? at) where T : BaseDetailEntity
+        public async Task<int> Count<T>(dynamic filter, DateTime? at) where T : BaseDetailEntity<T>
         {
             var query = ApplyDefaultWhere<T>(_dbContext.Set<T>().AsQueryable(), at ?? DateTime.Now);
             query = ApplyFitlerToQuery<T>(query, filter);
             return await query.CountAsync();
         }
 
-        public async Task<T> AddDetail<T>(T entity, DateTime? at) where T : BaseDetailEntity
+        public async Task<T> AddDetail<T>(T entity, DateTime? at) where T : BaseDetailEntity<T>
         {
             entity.OriginId = null;
             entity.DateCreated = DateTime.Now;
@@ -164,7 +164,7 @@ namespace CleanArchitecture.Infrastructure.Data
             return entity;
         }
 
-        public async Task UpdateDetail<T>(T entity, DateTime? at) where T : BaseDetailEntity
+        public async Task UpdateDetail<T>(T entity, DateTime? at) where T : BaseDetailEntity<T>
         {
             at = at ?? DateTime.Now;
             var current = await GetById<T>(entity.Id, at);
@@ -178,14 +178,14 @@ namespace CleanArchitecture.Infrastructure.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task Delete<T>(int id) where T : BaseDetailEntity
+        public async Task Delete<T>(int id) where T : BaseDetailEntity<T>
         {
             var current = await GetById<T>(id);
             _dbContext.Set<T>().Remove(current);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteDetail<T>(T entity, DateTime? at = null) where T : BaseDetailEntity
+        public async Task DeleteDetail<T>(T entity, DateTime? at = null) where T : BaseDetailEntity<T>
         {
             at = at ?? DateTime.Now;
             var current = await GetById<T>(entity.Id, at);

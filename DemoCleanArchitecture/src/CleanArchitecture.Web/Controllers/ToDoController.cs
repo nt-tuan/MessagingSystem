@@ -22,8 +22,8 @@ namespace CleanArchitecture.Web.Controllers
 
         public IActionResult Populate()
         {
-            int recordsAdded = DatabasePopulator.PopulateDatabase(_repository);
-            return Ok(recordsAdded);
+            //int recordsAdded = DatabasePopulator.PopulateDatabase(_repository);
+            return Ok();
         }
     }
 }

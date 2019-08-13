@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.HR
 {
-    public class Employee : BaseDetailEntity
+    public class Employee : BaseDetailEntity<Employee>
     {
         public Person Person { get; set; }
         public int PersonId { get; set; }
@@ -15,6 +15,5 @@ namespace CleanArchitecture.Core.Entities.HR
         public Department Department { get; set; }
         public int EmployeeTitleId { get; set; }
         public EmployeeTitle EmployeeTitle { get; set; }
-        public Employee Origin { get; set; }
     }
 }

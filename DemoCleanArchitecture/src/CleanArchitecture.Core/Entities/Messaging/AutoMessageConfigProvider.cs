@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class AutoMessageConfigProvider
+    public class AutoMessageConfigProvider: BaseDetailEntity<AutoMessageConfigProvider>
     {
         public int AutoMessageConfigId { get; set; }
         public AutoMessageConfig AutoMessageConfig { get; set; }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class ReceiverProvider
+    public class ReceiverProvider: BaseDetailEntity<ReceiverProvider>
     {
         public int MessageReceiverId { get; set; }
         public MessageReceiver MessageReceiver { get; set; }

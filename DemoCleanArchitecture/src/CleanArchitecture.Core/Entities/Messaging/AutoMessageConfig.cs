@@ -7,9 +7,14 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class AutoMessageConfig : BaseDetailEntity
+    public class AutoMessageConfig : BaseDetailEntity<AutoMessageConfig>
     {
-        public AutoMessageConfig Origin { get; set; }
+        public enum AutoMessageStatus { ACTIVE = 1, INACTIVE = 0, DELETED = -1 }
+        public int Status { get; set; }
+        public string Title { get; set; }
+        public string Period { get; set; }
+        public string Content { get; set; }
+
         public ICollection<AutoMessageConfigMessageReceiver> AutoMessageConfigMessageReceivers { get; set; }
         public ICollection<AutoMessageConfigMessageReceiverGroup> AutoMessageConfigMessageReceiverGroups { get; set; }
 

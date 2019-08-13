@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class MessageReceiverGroup : BaseDetailEntity
+    public class MessageReceiverGroup : BaseDetailEntity<MessageReceiverGroup>
     {
         public Boolean IsPrivate { get; set; }
         public string Name { get; set; }

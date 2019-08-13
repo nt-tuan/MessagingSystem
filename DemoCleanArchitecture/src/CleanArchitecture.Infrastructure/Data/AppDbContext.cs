@@ -29,7 +29,6 @@ namespace CleanArchitecture.Infrastructure.Data
 
         //Messaging Module
         public DbSet<AutoMessageConfig> AutoMessageConfigs { get; set; }
-        public DbSet<AutoMessageConfigDetail> AutoMessageConfigDetails { get; set; }
         public DbSet<AutoMessageConfigMessageReceiver> AutoMesasgeConfigMessageReceivers { get; set; }
         public DbSet<AutoMessageConfigMessageReceiverGroup> AutoMessageConfigMessageReceiverGroups { get; set; }
         public DbSet<AutoMessageConfigProvider> AutoMessageConfigProviders { get; set; }
@@ -81,29 +80,48 @@ namespace CleanArchitecture.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            //apply version control constraints
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<Person>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<Business>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<Employee>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<Department>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<Distributor>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<Customer>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<AutoMessageConfig>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<AutoMessageConfigMessageReceiver>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<AutoMessageConfigMessageReceiverGroup>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<AutoMessageConfigProvider>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<MessageReceiver>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<MessageReceiverGroup>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<MessageReceiverGroupMessageReceiver>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<MessageServiceProvider>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<ReceiverCategory>());
+            modelBuilder.ApplyConfiguration(new BaseDetailConfiguration<ReceiverProvider>());
+
+            //apply core module constraint
             var coreConf = new CoreConfiguration();
             modelBuilder.ApplyConfiguration<Person>(coreConf);
             modelBuilder.ApplyConfiguration<Business>(coreConf);
-
+            
             var hrConf = new HRConfiguration();
             modelBuilder.ApplyConfiguration<Employee>(hrConf);
             modelBuilder.ApplyConfiguration<Department>(hrConf);
-
+            
             var saleConf = new SaleConfiguration();
             modelBuilder.ApplyConfiguration<Distributor>(saleConf);
             modelBuilder.ApplyConfiguration<Customer>(saleConf);
-
+            
+            /*
             var messagingConf = new MessagingConfiguration();
             modelBuilder.ApplyConfiguration<AutoMessageConfig>(messagingConf);
-            modelBuilder.ApplyConfiguration<AutoMessageConfigDetail>(messagingConf);
             modelBuilder.ApplyConfiguration<AutoMessageConfigMessageReceiver>(messagingConf);
             modelBuilder.ApplyConfiguration<AutoMessageConfigMessageReceiverGroup>(messagingConf);
             modelBuilder.ApplyConfiguration<AutoMessageConfigProvider>(messagingConf);
 
             var receiverConf = new MessageReceiverConfiguration();
             modelBuilder.ApplyConfiguration<MessageReceiverGroupMessageReceiver>(receiverConf);
-            modelBuilder.ApplyConfiguration<ReceiverProvider>(receiverConf);
-
+             modelBuilder.ApplyConfiguration<ReceiverProvider>(receiverConf);
+             */
         }
     }
 }

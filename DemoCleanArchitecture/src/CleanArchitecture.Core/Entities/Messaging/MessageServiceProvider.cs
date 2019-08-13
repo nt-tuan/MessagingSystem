@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace CleanArchitecture.Core.Entities.Messaging
 {
-    public class MessageServiceProvider : BaseDetailEntity
+    public class MessageServiceProvider : BaseDetailEntity<MessageServiceProvider>
     {
         public string Name { get; set; }
 

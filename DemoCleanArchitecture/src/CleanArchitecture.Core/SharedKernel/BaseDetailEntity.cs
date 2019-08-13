@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.SharedKernel
 {
-    public class BaseDetailEntity : BaseEntity
+    public class BaseDetailEntity<T> : BaseEntity
     {
         public DateTime DateEffective { get; set; }
         public DateTime? DateEnd { get; set; }
@@ -12,6 +12,7 @@ namespace CleanArchitecture.Core.SharedKernel
         public string DiscriptionNote { get; set; }
         public int? OriginId { get; set; }
 
-        public ICollection<BaseDetailEntity> Changes { get; set; }
+        public T Origin { get; set; }
+        public ICollection<T> Versions { get; set; }
     }
 }
