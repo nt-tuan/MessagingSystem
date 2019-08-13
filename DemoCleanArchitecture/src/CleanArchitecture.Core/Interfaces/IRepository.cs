@@ -10,14 +10,12 @@ namespace CleanArchitecture.Core.Interfaces
     public interface IRepository
     {
         //Get by Id
-        #region GetById
         Task<T> GetById<T>(int id) where T : BaseEntity;
         Task<T> GetById<T>(IQueryable<T> query, int id) where T: BaseEntity;
         Task<T> GetById<T>(int id, DateTime? at = null) where T : BaseDetailEntity<T>;
         Task<T> GetById<T>(IQueryable<T> query, int id, DateTime? at) where T: BaseDetailEntity<T>;
         #endregion
         //List
-        #region List
         Task<List<T>> List<T>(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null) where T : BaseEntity;
         
         Task<List<T>> List<T>(string search, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null, DateTime? at = null) where T : BaseDetailEntity<T>;

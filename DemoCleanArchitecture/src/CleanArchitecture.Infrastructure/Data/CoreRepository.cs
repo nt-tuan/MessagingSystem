@@ -23,10 +23,12 @@ namespace CleanArchitecture.Infrastructure.Data
         const int ORDER_DESC = 1;
 
         readonly IRepository _repos;
+        readonly UserManager<AppUser> _userManager;
         readonly AppDbContext _db;
-        public CoreRepository(AppDbContext db, IRepository repos)
+        public CoreRepository(IRepository repos, UserManager<AppUser> userManager, AppDbContext db)
         {
             _repos = repos;
+            _userManager = userManager;
             _db = db;
         }
 
@@ -51,7 +53,6 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task AddEmployeeAccount(int id, string username)
         {
             //var emp = await GetEmployee(id);
-            
         }
 
         public async Task DeleteDepartment(int id)

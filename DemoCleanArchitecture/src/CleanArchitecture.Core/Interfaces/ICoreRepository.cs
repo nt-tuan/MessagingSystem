@@ -12,6 +12,11 @@ namespace CleanArchitecture.Core.Interfaces
 {
     public interface ICoreRepository
     {
+
+        #region People
+        Task<Person> GetPersonById(int id, DateTime? at = null);
+        Task<Business> GetBusinessById(int id, DateTime? at = null);
+#endregion
         #region Employee
         Task<ICollection<Employee>> ListEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter);
         Task<Employee> GetEmployeeByCode(string code);
