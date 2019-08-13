@@ -4,6 +4,7 @@ using CleanArchitecture.Core.Entities.Core;
 using CleanArchitecture.Core.Entities.HR;
 using CleanArchitecture.Core.Entities.Sales;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Infrastructure.Data.Exceptions;
 using CleanArchitecture.Infrastructure.Data.Exceptions.Messages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +23,11 @@ namespace CleanArchitecture.Infrastructure.Data
         const int ORDER_DESC = 1;
 
         readonly IRepository _repos;
-
-        public CoreRepository(IRepository repos)
+        readonly AppDbContext _db;
+        public CoreRepository(AppDbContext db, IRepository repos)
         {
             _repos = repos;
+            _db = db;
         }
 
         public async Task AddDepartment(Department department)
@@ -91,7 +93,8 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<Employee> GetEmployeeById(int id)
         {
-            return await _repos.GetById<Employee>(id);
+            var query = _db.Employees.Include(u => u.Person);
+            return await _repos.GetById<Employee>(query, id);
         }
 
         public async Task<int> GetEmployeeCount(dynamic filter)
@@ -102,15 +105,18 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task<ICollection<Employee>> ListEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter)
         {
             //throw new NotImplementedException();
-            var list = await _repos.List<Employee>(search, page, pageRows, orderby, orderdir, filter);
+            var query = _db.Employees.Include(u => u.Person);
+            var list = await _repos.List<Employee>(query, search, page, pageRows, orderby, orderdir, filter);
             return list;
         }
 
         public async Task DeleteEmployee(int id)
         {
             var emp = await _repos.GetById<Employee>(id, DateTime.Now);
-            if(emp != null)
+            if (emp != null)
                 await _repos.DeleteDetail<Employee>(emp);
+            else
+                throw new EntityNotFound(typeof(Employee), emp);
         }
 
         public Task RevokeEmployeeAccount(int id)
@@ -168,5 +174,4 @@ namespace CleanArchitecture.Infrastructure.Data
             return dept;
         }
     }
-
 }

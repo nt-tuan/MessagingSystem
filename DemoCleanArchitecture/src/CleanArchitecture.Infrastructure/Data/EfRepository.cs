@@ -18,77 +18,7 @@ namespace CleanArchitecture.Infrastructure.Data
             _dbContext = dbContext;
         }
 
-        public async Task<T> GetById<T>(int id) where T : BaseEntity
-        {
-            return await _dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
-        }
-
-        public async Task<T> GetById<T>(int id, DateTime? at) where T : BaseDetailEntity<T>
-        {
-            var query = ApplyDefaultWhere<T>(_dbContext.Set<T>(), at ?? DateTime.Now);
-            var lst = await query.ToListAsync();
-            if (lst == null || lst.Count == 0)
-                throw new EntityNotFound(typeof(T), id);
-            if (lst.Count > 1)
-                throw new EntityDuplicate(typeof(T), id);
-            return lst[0];
-        }
-
-        public async Task<List<T>> List<T>() where T : BaseEntity
-        {
-            return await _dbContext.Set<T>().ToListAsync();
-        }
-
-        public async Task<T> Add<T>(T entity) where T : BaseEntity
-        {
-            _dbContext.Set<T>().Add(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task Delete<T>(T entity) where T : BaseEntity
-        {
-            _dbContext.Set<T>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task Update<T>(T entity) where T : BaseEntity
-        {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<T> GetById<T>(int id, DateTime at) where T : BaseDetailEntity<T>
-        {
-            var query = ApplyDefaultWhere<T>(_dbContext.Set<T>().AsQueryable(), at);
-            var entity = await query.FirstOrDefaultAsync(u => u.Id == id || u.OriginId == id);
-            return entity;
-        }
-
-        public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter) where T : BaseEntity
-        {
-            var query = _dbContext.Set<T>().AsQueryable();
-
-            return await query.ToListAsync();
-        }
-
-        public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter, DateTime? at) where T : BaseDetailEntity<T>
-        {
-            var query = _dbContext.Set<T>().AsQueryable<T>();
-            query = ApplyFitlerToQuery<T>(filter, query);
-            query = ApplyDefaultWhere<T>(query, at ?? DateTime.Now);
-            if (page != null && pageRows != null)
-            {
-                if (orderdir == null || orderdir == 1)
-                    query = query.OrderBy(u => orderby);
-                else
-                    query = query.OrderByDescending(u => orderby);
-                query = query.Take(pageRows.Value).Skip(page.Value * (pageRows.Value - 1));
-            }
-            var list = await query.ToListAsync();
-            return list;
-        }
-
+        #region helps
         public IQueryable<T> ApplyFitlerToQuery<T>(dynamic filter, IQueryable<T> query)
         {
             var rs = query;
@@ -138,7 +68,106 @@ namespace CleanArchitecture.Infrastructure.Data
             var rs = query.Where(u => u.DateEffective <= at && (u.DateEnd == null || u.DateEnd > at));
             return rs;
         }
+        public IQueryable<T> ApplyDefaultWhere<T>(IQueryable<T> query, int id, DateTime at) where T : BaseDetailEntity<T>
+        {
+            var rs = query.Where(u => u.Id == id || u.OriginId == id).Where(u => u.DateEffective <= at && (u.DateEnd == null || u.DateEnd > at));
+            return rs;
+        }
+        #endregion
+        #region GET
+        public async Task<T> GetById<T>(int id) where T : BaseEntity
+        {
+            var query = _dbContext.Set<T>();
+            return await GetById(query, id);
+        }
 
+        public async Task<T> GetById<T>(IQueryable<T> query, int id) where T : BaseEntity
+        {
+            return await query.SingleOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<T> GetById<T>(int id, DateTime? at) where T : BaseDetailEntity<T>
+        {
+            var query = _dbContext.Set<T>();
+            return await GetById(query, id, at ?? DateTime.Now);
+        }
+
+        public async Task<T> GetById<T>(IQueryable<T> query, int id, DateTime? at) where T : BaseDetailEntity<T>
+        {
+            query = ApplyDefaultWhere(query, at ?? DateTime.Now);
+            return await query.SingleOrDefaultAsync(e => e.Id == id);
+        }
+        #endregion
+        #region LIST
+        public async Task<List<T>> List<T>() where T : BaseEntity
+        {
+            return await _dbContext.Set<T>().ToListAsync();
+        }
+
+        public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter) where T : BaseEntity
+        {
+            var query = _dbContext.Set<T>().AsQueryable();
+            return await List(query, search, page, pageRows, orderby, orderdir, filter);
+        }
+
+        public async Task<List<T>> List<T>(IQueryable<T> query, string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter) where T : BaseEntity
+        {
+            query = ApplyFitlerToQuery<T>(filter, query);
+            if (page != null && pageRows != null)
+            {
+                if (orderdir == null || orderdir == 1)
+                    query = query.OrderBy(u => orderby);
+                else
+                    query = query.OrderByDescending(u => orderby);
+                query = query.Take(pageRows.Value).Skip(page.Value * (pageRows.Value - 1));
+            }
+            var list = await query.ToListAsync();
+            return list;
+        }
+
+        public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter, DateTime? at) where T : BaseDetailEntity<T>
+        {
+            var query = _dbContext.Set<T>().AsQueryable<T>();
+            return await List(query, search, page, pageRows, orderby, orderdir, filter);
+        }
+
+        public async Task<List<T>> List<T>(IQueryable<T> query, string search, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null, DateTime? at = null) where T : BaseDetailEntity<T>
+        {
+            query = ApplyFitlerToQuery<T>(filter, query);
+            query = ApplyDefaultWhere<T>(query, at ?? DateTime.Now);
+            if (page != null && pageRows != null)
+            {
+                if (orderdir == null || orderdir == 1)
+                    query = query.OrderBy(u => orderby);
+                else
+                    query = query.OrderByDescending(u => orderby);
+                query = query.Take(pageRows.Value).Skip(page.Value * (pageRows.Value - 1));
+            }
+            var list = await query.ToListAsync();
+            return list;
+        }
+        #endregion
+        public async Task<T> Add<T>(T entity) where T : BaseEntity
+        {
+            _dbContext.Set<T>().Add(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task Delete<T>(T entity) where T : BaseEntity
+        {
+            _dbContext.Set<T>().Remove(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task Update<T>(T entity) where T : BaseEntity
+        {
+            _dbContext.Entry(entity).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+        }
+
+
+        #region Count
         public async Task<int> Count<T>(dynamic filter) where T : BaseEntity
         {
             var query = _dbContext.Set<T>().AsQueryable();
@@ -147,9 +176,23 @@ namespace CleanArchitecture.Infrastructure.Data
             return count;
         }
 
+        public async Task<int> Count<T>(IQueryable<T> query, dynamic filter) where T : BaseEntity
+        {
+            query = ApplyFitlerToQuery<T>(filter, query);
+            var count = await query.CountAsync();
+            return count;
+        }
+
         public async Task<int> Count<T>(dynamic filter, DateTime? at) where T : BaseDetailEntity<T>
         {
-            var query = ApplyDefaultWhere<T>(_dbContext.Set<T>().AsQueryable(), at ?? DateTime.Now);
+            var query = _dbContext.Set<T>().AsQueryable();
+            return await Count(query, filter, at);
+        }
+#endregion
+
+        public async Task<int> Count<T>(IQueryable<T> query, dynamic filter, DateTime? at = null) where T : BaseDetailEntity<T>
+        {
+            query = ApplyDefaultWhere<T>(_dbContext.Set<T>().AsQueryable(), at ?? DateTime.Now);
             query = ApplyFitlerToQuery<T>(query, filter);
             return await query.CountAsync();
         }
