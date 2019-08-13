@@ -11,5 +11,7 @@ namespace CleanArchitecture.Core.SharedKernel
         public DateTime? DateReplaced { get; set; }
         public string DiscriptionNote { get; set; }
         public int? OriginId { get; set; }
+
+        public ICollection<BaseDetailEntity> Changes { get; set; }
     }
 }

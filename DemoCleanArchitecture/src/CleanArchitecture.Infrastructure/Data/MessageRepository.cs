@@ -334,7 +334,8 @@ public async Task<ReceiverProvider> AddReceiverProvider(int receiverid, int prov
 
 public async Task<MessageServiceProvider> GetProviderById(int id, bool throwException = false)
 {
-   var pr = await _context.MessageServiceProviders.FirstOrDefaultAsync(u => u.Id == id && !u.Removed);
+   var pr = await _context.MessageServiceProviders.
+   Async(u => u.Id == id && !u.Removed);
    if(pr == null && throwException)
    {
        throw new EntityNotFound(typeof(MessageServiceProvider), id);

@@ -22,10 +22,13 @@ namespace CleanArchitecture.Infrastructure.Data
         const int ORDER_DESC = 1;
 
         readonly IRepository _repos;
-
-        public CoreRepository(IRepository repos)
+        readonly UserManager<AppUser> _userManager;
+        readonly AppDbContext _db;
+        public CoreRepository(IRepository repos, UserManager<AppUser> userManager, AppDbContext db)
         {
             _repos = repos;
+            _userManager = userManager;
+            _db = db;
         }
 
         public async Task AddDepartment(Department department)
@@ -49,7 +52,6 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task AddEmployeeAccount(int id, string username)
         {
             //var emp = await GetEmployee(id);
-            
         }
 
         public async Task DeleteDepartment(int id)
@@ -91,7 +93,8 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<Employee> GetEmployeeById(int id)
         {
-            return await _repos.GetById<Employee>(id);
+            var entity = await _repos.GetById<Employee>(id, DateTime.Now);
+            return entity;
         }
 
         public async Task<int> GetEmployeeCount(dynamic filter)
@@ -102,7 +105,7 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task<ICollection<Employee>> ListEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter)
         {
             //throw new NotImplementedException();
-            var list = await _repos.List<Employee>(search, page, pageRows, orderby, orderdir, filter);
+            var list = await _repos.List<Employee>(search, page, pageRows, orderby, orderdir, filter, DateTime.Now);
             return list;
         }
 
@@ -167,6 +170,15 @@ namespace CleanArchitecture.Infrastructure.Data
             }
             return dept;
         }
-    }
 
+        public async Task<Person> GetPersonById(int id, DateTime? at)
+        {
+            return await _repos.GetById<Person>(id, at??DateTime.Now);
+        }
+
+        public async Task<Business> GetBusinessById(int id, DateTime? at)
+        {
+            return await _repos.GetById<Business>(id, at??DateTime.Now);
+        }       
+    }
 }

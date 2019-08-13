@@ -1,6 +1,7 @@
 ﻿using CleanArchitecture.Core.SharedKernel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CleanArchitecture.Core.Interfaces
@@ -8,11 +9,18 @@ namespace CleanArchitecture.Core.Interfaces
     public interface IRepository
     {
         //Get by Id
+        //Task<T> GetById<T>(IQueryable<T> query, int id) where T : BaseEntity;
+        //Task<T> GetById<T>(IQueryable<T> query, int id, DateTime? at = null) where T: BaseDetailEntity;
         Task<T> GetById<T>(int id) where T : BaseEntity;
         Task<T> GetById<T>(int id, DateTime? at = null) where T : BaseDetailEntity;
         //List
+
+        //Task<List<T>> List<T>(IQueryable<T> query, string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null) where T : BaseEntity;
+
         Task<List<T>> List<T>(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null) where T : BaseEntity;
-        
+
+        //Task<List<T>> List<T>(IQueryable query, string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null, DateTime? at = null) where T : BaseDetailEntity;
+
         Task<List<T>> List<T>(string search, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = (int)BaseEntity.ListOrder.ASC, dynamic filter = null, DateTime? at = null) where T : BaseDetailEntity;
 
         //Count
