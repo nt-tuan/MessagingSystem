@@ -12,6 +12,8 @@ using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Entities.HR;
 using Microsoft.AspNetCore.Identity;
 using CleanArchitecture.Core.Entities.Accounts;
+using DmcSupport.DI;
+using NPOI.SS.UserModel;
 
 namespace CleanArchitecture.Web.Api
 {
@@ -100,7 +102,90 @@ namespace CleanArchitecture.Web.Api
             await _coreRep.AddEmployee(entity);
             return Ok(new ResponseModel(new { result = true }));
         }
-
+        [Route("ReviewEmployeesExcel")]
+        public async Task<IActionResult> ReadEmployeeExcel()
+        {
+            var file = Request.Form.Files[0];
+            var rs = new List<EmployeeErrorableModel>();
+            await FileHelper.scanExcel(file, 6, async (header, row) =>
+            {
+                var employee = new EmployeeErrorableModel();
+                try
+                {
+                    if (row == null) return;
+                    if (row.Cells.All(d => d.CellType == CellType.Blank)) return;
+                    if (row.GetCell(0).CellType == CellType.Blank)
+                    {
+                        employee.messages.Add(MessageModel.CreateError("Mã nhân viên không hợp lệ"));
+                    }
+                    var code = row.GetCell(0).StringCellValue;
+                    var empCount = await _coreRep.GetEmployeeCount(new { Code = code });
+                    if (empCount > 0)
+                    {
+                        employee.messages.Add(MessageModel.CreateWarning("Mã nhân viên đã có sẵn."));
+                    }
+                    employee.code = code;
+                    var cell1 = row.GetCell(1);
+                    if (cell1 != null && cell1.CellType != CellType.Blank)
+                        employee.firstname = row.GetCell(1).StringCellValue;
+                    var cell2 = row.GetCell(2);
+                    if (cell2 != null && cell2.CellType != CellType.Blank)
+                        employee.lastname = cell2.StringCellValue;
+                    var cell3 = row.GetCell(3);
+                    if (cell3 != null && cell3.CellType != CellType.Blank)
+                        employee.email = cell3.StringCellValue;
+                    try
+                    {
+                        employee.birthday = row.GetCell(4).DateCellValue;
+                    }
+                    catch (Exception e)
+                    {
+                        employee.messages.Add(MessageModel.CreateError(e.Message));
+                    }
+                    try
+                    {
+                        if (row.GetCell(5).CellType != CellType.Blank)
+                        {
+                            var departmentcode = row.GetCell(5).StringCellValue;
+                            var dept = await _coreRep.GetDepartments(filter: new { Code = departmentcode });
+                            if (dept.Count > 0)
+                            {
+                                employee.deptid = dept.First().Id;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        employee.deptid = null;
+                    }
+                }
+                catch (Exception e)
+                {
+                    employee.messages.Add(MessageModel.CreateError(e.Message));
+                }
+                rs.Add(employee);
+            });
+            return Ok(new ResponseModel(rs));
+        }
+        [Route("UpdateEmployeesExcel")]
+        public async Task<IActionResult> UploadEmployeeExcel(ICollection<EmployeeModel> employees)
+        {
+            var entities = employees.Select(u => u.ToEmployee());
+            var rs = new List<EmployeeErrorableModel>();
+            foreach (var item in entities)
+            {
+                try
+                {
+                    await _coreRep.UpdateOrAddEmployee(item, await getCurrentUser());
+                }
+                catch (Exception e)
+                {
+                    var irs = new EmployeeErrorableModel(item);
+                    irs.messages.Add(MessageModel.CreateError(e.Message));
+                }
+            }
+            return Ok(new ResponseModel(rs));
+        }
         #endregion
 
         #region DEPARTMENT
@@ -172,6 +257,12 @@ namespace CleanArchitecture.Web.Api
                 text = u.FullName,
                 value = u.Id
             })));
+        }
+
+        [Route("ReviewDepartmentExcel")]
+        public async Task<IActionResult> ReviewDepartmentExcel()
+        {
+            return Ok();
         }
         #endregion
 
