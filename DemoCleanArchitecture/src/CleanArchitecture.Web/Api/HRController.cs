@@ -32,8 +32,7 @@ namespace CleanArchitecture.Web.Api
             _coreRep = coreRep;
             _repos = repos;
             _signInManager = signinManager;
-            _userManager = userManager;
-            
+            _userManager = userManager;  
         }
 
         async Task<AppUser> getCurrentUser()
@@ -99,9 +98,10 @@ namespace CleanArchitecture.Web.Api
         public async Task<IActionResult> AddEmployee(EmployeeModel model)
         {
             var entity = model.ToEmployee();
-            await _coreRep.AddEmployee(entity);
+            await _coreRep.AddEmployee(entity, await getCurrentUser());
             return Ok(new ResponseModel(new { result = true }));
         }
+
         [Route("ReviewEmployeesExcel")]
         public async Task<IActionResult> ReadEmployeeExcel()
         {
@@ -110,53 +110,16 @@ namespace CleanArchitecture.Web.Api
             await FileHelper.scanExcel(file, 6, async (header, row) =>
             {
                 var employee = new EmployeeErrorableModel();
-                try
-                {
-                    if (row == null) return;
-                    if (row.Cells.All(d => d.CellType == CellType.Blank)) return;
-                    if (row.GetCell(0).CellType == CellType.Blank)
+                try { 
+                    for(var i=0; i < header.Cells.Count; i++)
                     {
-                        employee.messages.Add(MessageModel.CreateError("Mã nhân viên không hợp lệ"));
-                    }
-                    var code = row.GetCell(0).StringCellValue;
-                    var empCount = await _coreRep.GetEmployeeCount(new { Code = code });
-                    if (empCount > 0)
-                    {
-                        employee.messages.Add(MessageModel.CreateWarning("Mã nhân viên đã có sẵn."));
-                    }
-                    employee.code = code;
-                    var cell1 = row.GetCell(1);
-                    if (cell1 != null && cell1.CellType != CellType.Blank)
-                        employee.firstname = row.GetCell(1).StringCellValue;
-                    var cell2 = row.GetCell(2);
-                    if (cell2 != null && cell2.CellType != CellType.Blank)
-                        employee.lastname = cell2.StringCellValue;
-                    var cell3 = row.GetCell(3);
-                    if (cell3 != null && cell3.CellType != CellType.Blank)
-                        employee.email = cell3.StringCellValue;
-                    try
-                    {
-                        employee.birthday = row.GetCell(4).DateCellValue;
-                    }
-                    catch (Exception e)
-                    {
-                        employee.messages.Add(MessageModel.CreateError(e.Message));
-                    }
-                    try
-                    {
-                        if (row.GetCell(5).CellType != CellType.Blank)
-                        {
-                            var departmentcode = row.GetCell(5).StringCellValue;
-                            var dept = await _coreRep.GetDepartments(filter: new { Code = departmentcode });
-                            if (dept.Count > 0)
+                        await employee.UpdateEmployeeFromCell(header.Cells[i].StringCellValue, row.Cells[i], 
+                            async (p) =>
                             {
-                                employee.deptid = dept.First().Id;
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        employee.deptid = null;
+                                return await _coreRep.ListEmployees(filter: p);
+                            }, async (p) => {
+                                return await _coreRep.GetDepartments(filter: p);
+                            });
                     }
                 }
                 catch (Exception e)
@@ -166,7 +129,8 @@ namespace CleanArchitecture.Web.Api
                 rs.Add(employee);
             });
             return Ok(new ResponseModel(rs));
-        }
+        }        
+
         [Route("UpdateEmployeesExcel")]
         public async Task<IActionResult> UploadEmployeeExcel(ICollection<EmployeeModel> employees)
         {
@@ -176,7 +140,7 @@ namespace CleanArchitecture.Web.Api
             {
                 try
                 {
-                    await _coreRep.UpdateOrAddEmployee(item, await getCurrentUser());
+                    await _coreRep.UpdateOrAddEmployeeByCode(item, await getCurrentUser());
                 }
                 catch (Exception e)
                 {
@@ -259,12 +223,61 @@ namespace CleanArchitecture.Web.Api
             })));
         }
 
+        [HttpPost]
         [Route("ReviewDepartmentExcel")]
         public async Task<IActionResult> ReviewDepartmentExcel()
         {
-            return Ok();
+            var file = Request.Form.Files[0];
+            var rs = new List<DepartmentErrorableModel>();
+            await FileHelper.scanExcel(file, 6, async (header, row) =>
+            {
+                var dept = new DepartmentErrorableModel();
+                try
+                {
+                    for (var i = 0; i < header.Cells.Count; i++)
+                    {
+                        if (row.Cells.Count > i)
+                        {
+                            await dept.UpdateDepartmentFromCell(header.Cells[i].StringCellValue, row.Cells[i],
+                                 async (p) =>
+                                 {
+                                     return await _coreRep.GetDepartments(filter: p);
+                                 });
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    dept.messages.Add(MessageModel.CreateError(e.Message, e.Source));
+                }
+                rs.Add(dept);
+            });
+            return Ok(new ResponseModel(rs));
+        }
+
+        [HttpPost]
+        [Route("ImportDepartments")]
+        public async Task<IActionResult> UploadDepartmentExcel(ICollection<DepartmentModel> depts)
+        {
+            var entities = depts.Select(u => u.ToEntity());
+            var rs = new List<DepartmentErrorableModel>();
+            foreach (var item in entities)
+            {
+                try
+                {
+                    await _coreRep.UpdateOrAddDepartmentByCode(item, await getCurrentUser());
+                    var irs = new DepartmentErrorableModel(item);
+                    rs.Add(irs);
+                }
+                catch (Exception e)
+                {
+                    var irs = new DepartmentErrorableModel(item);
+                    irs.messages.Add(MessageModel.CreateError(e.Message));
+                    rs.Add(irs);
+                }
+            }
+            return Ok(new ResponseModel(rs));
         }
         #endregion
-
     }
 }

@@ -12,33 +12,37 @@ namespace CleanArchitecture.Web.ApiModels
         public static readonly string SUCCESS_TYPE = "success";
         public string Type { get; set; }
         public string Content { get; set; }
+        public string Key { get; set; }
 
-        public static MessageModel CreateError(string message)
+        public static MessageModel CreateError(string message, string key = "")
         {
             var instance = new MessageModel
             {
                 Type = ERROR_TYPE,
-                Content = message
+                Content = message,
+                Key = key
             };
             return instance;
         }
 
-        public static MessageModel CreateWarning(string message)
+        public static MessageModel CreateWarning(string message, string key = "")
         {
             var instance = new MessageModel
             {
                 Type = WARNING_TYPE,
-                Content = message
+                Content = message,
+                Key = key
             };
             return instance;
         }
 
-        public static MessageModel CreateSuccess(string message)
+        public static MessageModel CreateSuccess(string message, string key = "")
         {
             var instance = new MessageModel
             {
                 Type = SUCCESS_TYPE,
-                Content = message
+                Content = message,
+                Key = key
             };
             return instance;
         }

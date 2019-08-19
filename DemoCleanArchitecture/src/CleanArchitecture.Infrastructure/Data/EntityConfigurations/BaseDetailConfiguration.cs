@@ -14,6 +14,8 @@ namespace CleanArchitecture.Infrastructure.Data.EntityConfigurations
             builder.HasIndex(u => u.DateEffective);
             builder.HasIndex(u => u.DateEnd);
             builder.HasOne(u => u.Origin).WithMany(u => u.Versions).HasForeignKey(u => u.OriginId);
+            builder.HasOne(u => u.CreatedBy).WithMany().HasForeignKey(u => u.CreatedById);
+            builder.HasOne(u => u.RemovedBy).WithMany().HasForeignKey(u => u.RemovedById);
         }
     }
 }

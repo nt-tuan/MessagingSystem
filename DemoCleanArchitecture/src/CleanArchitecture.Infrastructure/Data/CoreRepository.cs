@@ -37,7 +37,7 @@ namespace CleanArchitecture.Infrastructure.Data
             await _repos.AddDetail(department, DateTime.Now, appUser);
         }
 
-        public async Task<Employee> AddEmployee(Employee employee)
+        public async Task<Employee> AddEmployee(Employee employee, AppUser appUser)
         {
             var time = DateTime.Now;
             var person = await _repos.GetById<Person>(employee.PersonId, time);
@@ -46,6 +46,7 @@ namespace CleanArchitecture.Infrastructure.Data
                 person = await _repos.AddDetail(employee.Person, time);
             }
             employee.PersonId = person.Id;
+            employee.CreatedById = appUser.Id;
             await _repos.AddDetail(employee);
             return employee;
         }
@@ -76,13 +77,9 @@ namespace CleanArchitecture.Infrastructure.Data
             return count;
         }
 
-        public async Task<ICollection<Department>> GetDepartments(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter)
+        public async Task<ICollection<Department>> GetDepartments(string search = null, int? page = 0, int? pageRows = 30, string orderby = "ASC", int? orderdir = 0, dynamic filter = null)
         {
             var list = await _repos.List<Department>(search, page, pageRows, orderby, orderdir, filter, DateTime.Now);
-            foreach(var item in list)
-            {
-                
-            }
             return list;
         }
 
@@ -138,7 +135,7 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task<IDictionary<int,Department>> GetDepartmentsTree()
         {
             var dict = new Dictionary<int, Department>();
-            var list = await _repos.List<Department>();
+            var list = await _repos.List<Department>(at: DateTime.Now);
             foreach (var item in list)
             {
                 dict.Add(item.Id, item);
@@ -173,6 +170,34 @@ namespace CleanArchitecture.Infrastructure.Data
                 }
             }
             return dept;
+        }
+
+        public async Task UpdateOrAddEmployeeByCode(Employee employee, AppUser appUser)
+        {
+            var empCount = await GetEmployeeByCode(employee.Code);
+            if (empCount == null)
+            {
+                await AddEmployee(employee, appUser);
+            }
+            else
+            {
+                employee.Id = empCount.Id;
+                await UpdateEmployee(employee, appUser);
+            }
+        }
+
+        public async Task UpdateOrAddDepartmentByCode(Department department, AppUser appUser)
+        {
+            var deptCount = await GetDepartments(filter : new { Code = department.Code });
+            if(deptCount.Count > 0)
+            {
+                department.Id = deptCount.First().Id;
+                await UpdateDepartment(department, appUser);
+            }
+            else
+            {
+                await AddDepartment(department, appUser);
+            }
         }
     }
 }

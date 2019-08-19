@@ -35,5 +35,17 @@ namespace CleanArchitecture.Web.ApiModels.HR
             if (entity.Parent != null)
                 parentName = entity.Parent.FullName;
         }
+
+        public Department ToEntity()
+        {
+            var entity = new Department
+            {
+                Code = code,
+                FullName = name,
+                ShortName = shortname,
+                ParentId = parentId
+            };
+            return entity;
+        }
     }
 }

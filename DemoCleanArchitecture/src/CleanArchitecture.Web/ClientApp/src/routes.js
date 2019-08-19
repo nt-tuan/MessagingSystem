@@ -46,7 +46,7 @@ const DepartmentUpdate = React.lazy(() => import('./views/Departments/Department
 const DepartmentsList = React.lazy(() => import('./views/Departments/Departments'));
 const AccountDetails = React.lazy(() => import('./views/Accounts/Components/Details'));
 const AddAccount = React.lazy(() => import('./views/Accounts/Components/Add'))
-const TestingCom = React.lazy(() => import('./views/Accounts/Accounts'))
+const TestingCom = React.lazy(() => import('./views/Departments/Components/Import'))
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config

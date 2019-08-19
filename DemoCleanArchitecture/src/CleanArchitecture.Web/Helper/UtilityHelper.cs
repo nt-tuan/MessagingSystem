@@ -1,4 +1,4 @@
-﻿using DmcSupport.Data;
+﻿using CleanArchitecture.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +16,6 @@ namespace Helper
 {
     public class UtilityHelper
     {
-        public static List<Category> Categories { get; set; }
         public static string DateFormat = "dd/MM/yyyy";
         public static string LongDateFormat = "dd/MM/yyyy hh:mm:ss";
 
@@ -92,82 +91,9 @@ namespace Helper
             }
             throw new ArgumentException("The image did not pass the validation");
         }
-        public static async Task init(ApplicationDbContext context)
+        public static async Task init(AppDbContext context)
         {
-            Categories = await context.Categories.Include(u => u.Pages).Where(u => u.Level == 0).ToListAsync();
-            foreach(var item in Categories)
-            {
-                await LoadCategory(item, context);
-            }
-        }
 
-        static async Task LoadCategory(Category cate, ApplicationDbContext context)
-        {
-            cate.Categories = new List<Category>();
-            cate.Categories = await context.Categories.Include(u => u.Pages).Where(u => u.ParentId == cate.Id).ToListAsync();
-            foreach(var item in cate.Categories)
-            {
-                await LoadCategory(item, context);
-            }
-        }
-        public static async Task<List<Category>> GetCategories(ApplicationDbContext context)
-        {
-            if(Categories == null)
-            {
-                await init(context);
-            }
-            return Categories;
-        }
-
-        public static async Task<List<Category>> GetCategoriesExcept(ApplicationDbContext context, Category except)
-        {
-            var cates = await GetCategories(context);
-            var list = new List<Category>();
-            for(var i=0; i<cates.Count; i++)
-            {
-                getCategoryListsExcept(context, list, cates[i], except);
-            }
-            return list;
-        }
-
-        static void getCategoryListsExcept(ApplicationDbContext context, List<Category> categories, Category category, Category except)
-        {
-            if(category.Id == except.Id)
-            {
-                return;
-            }
-            categories.Add(category);
-            if (category.Categories == null)
-                return;
-            var sub = category.Categories.ToList();
-            for(var i=0; i<sub.Count; i++)
-            {
-                getCategoryListsExcept(context, categories, sub[i], except);
-            }
-        }
-
-        public static async Task<Category> GetCategory(ApplicationDbContext context, int id)
-        {
-            var cates = await GetCategories(context);
-            return GetCategory(context, cates, id);
-        }
-
-        public static Category GetCategory(ApplicationDbContext context,List<Category> cates , int id)
-        {
-            if (cates == null)
-                return null;
-            for (var i = 0; i < cates.Count; i++)
-            {
-                if (cates[i].Id == id)
-                    return cates[i];
-            }
-            for (var i = 0; i < cates.Count; i++)
-            {
-                var r = GetCategory(context, cates[i].Categories.ToList(), id);
-                if (r != null)
-                    return r;
-            }
-            return null;
         }
     }
 }

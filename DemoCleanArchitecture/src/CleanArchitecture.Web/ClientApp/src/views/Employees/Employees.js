@@ -31,8 +31,6 @@ class EmployeesView extends Component {
     this.handleEmployeeDeleteOpen = this.handleEmployeeDeleteOpen.bind(this);
   }
 
-
-
   handleSelectionChange(rows) {
     this.selectedRows = rows;
     if (rows.length > 0)

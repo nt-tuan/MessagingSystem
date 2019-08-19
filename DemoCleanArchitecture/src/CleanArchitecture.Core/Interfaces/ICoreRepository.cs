@@ -14,13 +14,13 @@ namespace CleanArchitecture.Core.Interfaces
     public interface ICoreRepository
     {
         #region Employee
-        Task<ICollection<Employee>> ListEmployees(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter);
+        Task<ICollection<Employee>> ListEmployees(string search = "", int? page = 0, int? pageRows = 30, string orderby = "ASC", int? orderdir = 0, dynamic filter = null);
         Task<Employee> GetEmployeeByCode(string code);
         Task<Employee> GetEmployeeById(int id);
         Task<int> GetEmployeeCount(dynamic filter = null);
-        Task<Employee> AddEmployee(Employee employee);
+        Task<Employee> AddEmployee(Employee employee, AppUser appUser);
         Task UpdateEmployee(Employee updated, AppUser appUser);
-        Task UpdateOrAddEmployee(Employee employee, AppUser appUser);
+        Task UpdateOrAddEmployeeByCode(Employee employee, AppUser appUser);
         Task DeleteEmployee(int id, AppUser appUser);
         Task AddEmployeeAccount(int id, string username, AppUser appUser);
         Task RevokeEmployeeAccount(int id, AppUser appUser);
@@ -34,6 +34,7 @@ namespace CleanArchitecture.Core.Interfaces
         Task<int> GetDepartmentCount(dynamic filter);
         Task AddDepartment(Department department, AppUser appUser);
         Task UpdateDepartment(Department department, AppUser appUser);
+        Task UpdateOrAddDepartmentByCode(Department department, AppUser appUser);
         Task DeleteDepartment(int id, AppUser appUser);
         #endregion
     }
