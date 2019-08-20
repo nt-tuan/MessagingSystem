@@ -73,17 +73,23 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<int> GetDepartmentCount(dynamic filter)
         {
-            var count = await _repos.Count<Department>(filter);
+            var count = await _repos.Count<Department>(filter:filter, time:DateTime.Now);
             return count;
         }
 
         public async Task<ICollection<Department>> GetDepartments(string search = null, int? page = 0, int? pageRows = 30, string orderby = "ASC", int? orderdir = 0, dynamic filter = null)
         {
-            var list = await _repos.List<Department>(search, page, pageRows, orderby, orderdir, filter, DateTime.Now);
+            var list = await _repos.List<Department>(_db.Departments.Include(u => u.Parent),search, page, pageRows, orderby, orderdir, filter, DateTime.Now);
             return list;
         }
 
-        public async Task<Employee> GetEmployeeByCode(string code)
+        public async Task<ICollection<Department>> GetDepartments(IQueryable<Department> query, string search = null, int? page = 0, int? pageRows = 30, string orderby = "ASC", int? orderdir = 0, dynamic filter = null)
+        {
+            var list = await _repos.List<Department>(query, search, page, pageRows, orderby, orderdir, filter, DateTime.Now);
+            return list;
+        }
+
+            public async Task<Employee> GetEmployeeByCode(string code)
         {
             var employee = await _repos.List<Employee>(filter : new {Code = code }, at: DateTime.Now);
             return employee.Count > 0 ? employee[0] : null;
@@ -181,6 +187,7 @@ namespace CleanArchitecture.Infrastructure.Data
             }
             else
             {
+                employee.OriginId = empCount.OriginId;
                 employee.Id = empCount.Id;
                 await UpdateEmployee(employee, appUser);
             }
@@ -188,10 +195,12 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task UpdateOrAddDepartmentByCode(Department department, AppUser appUser)
         {
-            var deptCount = await GetDepartments(filter : new { Code = department.Code });
+            var query = _db.Departments.AsNoTracking().Where(u => u.Code == department.Code);
+            var deptCount = await GetDepartments(query: query);
             if(deptCount.Count > 0)
             {
                 department.Id = deptCount.First().Id;
+                department.OriginId = deptCount.First().OriginId;
                 await UpdateDepartment(department, appUser);
             }
             else

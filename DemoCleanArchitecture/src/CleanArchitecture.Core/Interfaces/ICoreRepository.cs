@@ -6,6 +6,7 @@ using CleanArchitecture.Core.Entities.Sales;
 using CleanArchitecture.Core.SharedKernel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace CleanArchitecture.Core.Interfaces
         #endregion 
         #region Department
         Task<ICollection<Department>> GetDepartments(string search= null, int? page = 0, int? pageRows = 30, string orderby = "ASC", int? orderdir = 0, dynamic filter = null);
+        Task<ICollection<Department>> GetDepartments(IQueryable<Department> query, string search = null, int? page = 0, int? pageRows = 30, string orderby = "ASC", int? orderdir = 0, dynamic filter = null);
         Task<IDictionary<int,Department>> GetDepartmentsTree();
         Task<Department> GetDepartmentById(int id);
         Task<Department> GetDepartmentTreeById(int id);

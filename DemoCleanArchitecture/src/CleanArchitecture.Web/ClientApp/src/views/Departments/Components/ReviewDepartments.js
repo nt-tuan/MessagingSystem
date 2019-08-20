@@ -26,8 +26,8 @@ export default class ReviewDepartment extends Component {
           { title: 'Tên bộ phận/ phòng ban', field: 'name' },
           {
             'title': 'Trực thuộc', render: rowData => {
-              if (rowData.parentId) {
-                return rowData.parentId;
+              if (rowData.parentCode) {
+                return <strong>{rowData.parentName}({rowData.parentCode})</strong>;
               }
               return null;
             }

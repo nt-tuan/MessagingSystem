@@ -48,12 +48,27 @@ export default class DepartmentImport extends Component {
   }
 
   onSubmitImport(event) {
+    let data = [];
+    this.state.reviewImportData.forEach((value, index) => {
+      let item = {
+        code: value.code,
+        id: value.id,
+        managerId: value.managerId,
+        parentId: value.parentId,
+        name: value.name,
+        shortname: value.name
+      };
+      data.push(item);
+    });
     fetch(`/api/hr/ImportDepartments`, {
       method: 'POST',
-      body: this.state.reviewImportData
+      body: JSON.stringify({ depts: data }),
+      headers: {
+        'Content-Type':'application/json'
+      }
     }).then(res => {
       if (res.ok) {
-        return res.result;
+        return res.text();
       }
       throw new Error(res.statusText);
     }).then(res => {

@@ -21,7 +21,7 @@ namespace CleanArchitecture.Web.ApiModels.HR
 
         }
 
-        public async Task UpdateDepartmentFromCell(string header, ICell cell, Func<dynamic, Task<ICollection<Department>>> getDept)
+        public async Task UpdateDepartmentFromCell(string header, ICell cell, Func<string, Task<ICollection<Department>>> getDept)
         {
             if (cell == null || cell.CellType == CellType.Blank)
             {
@@ -30,7 +30,7 @@ namespace CleanArchitecture.Web.ApiModels.HR
 
             if (header == "code")
             {
-                var curDept = await getDept(new { Code =  cell.StringCellValue});
+                var curDept = await getDept(cell.StringCellValue);
                 if(curDept != null)
                 {
                     messages.Add(MessageModel.CreateWarning("DEPARTMENT_CODE_EXISTED", header));
@@ -44,10 +44,10 @@ namespace CleanArchitecture.Web.ApiModels.HR
                 var parentValue = cell.StringCellValue;
                 if (String.IsNullOrEmpty(parentValue))
                     return;
-                var curParent = await getDept(new { Code = parentValue });
+                var curParent = await getDept(parentValue);
                 if(curParent.Count > 0)
                 {
-                    parentId = curParent.First().Id;
+                    SetParent(curParent.First());
                 }
                 else
                 {

@@ -165,7 +165,7 @@ namespace CleanArchitecture.Web.Api
         [Route("depts")]
         public async Task<IActionResult> GetDepartments(TableParameter param)
         {
-            var depts = await _coreRep.GetDepartments(param.search, param.pageSize, param.page, param.orderBy, param.orderDirection, param.filter);
+            var depts = await _coreRep.GetDepartments(param.search, param.page, param.pageSize, param.orderBy, param.orderDirection, param.filter);
 
             var count = await _coreRep.GetDepartmentCount(param.filter);
             return Ok(new ResponseModel(new
@@ -241,7 +241,7 @@ namespace CleanArchitecture.Web.Api
                             await dept.UpdateDepartmentFromCell(header.Cells[i].StringCellValue, row.Cells[i],
                                  async (p) =>
                                  {
-                                     return await _coreRep.GetDepartments(filter: p);
+                                     return await _coreRep.GetDepartments(query: _context.Departments.Where(u => u.Code == p));
                                  });
                         }
                     }
@@ -257,8 +257,9 @@ namespace CleanArchitecture.Web.Api
 
         [HttpPost]
         [Route("ImportDepartments")]
-        public async Task<IActionResult> UploadDepartmentExcel(ICollection<DepartmentModel> depts)
+        public async Task<IActionResult> UploadDepartmentExcel(DepartmentCollectionModel model)
         {
+            var depts = model.depts;
             var entities = depts.Select(u => u.ToEntity());
             var rs = new List<DepartmentErrorableModel>();
             foreach (var item in entities)
@@ -266,13 +267,15 @@ namespace CleanArchitecture.Web.Api
                 try
                 {
                     await _coreRep.UpdateOrAddDepartmentByCode(item, await getCurrentUser());
+                    if(item.ParentId != null)
+                        item.Parent = await _coreRep.GetDepartmentById(item.ParentId??0);
                     var irs = new DepartmentErrorableModel(item);
                     rs.Add(irs);
                 }
                 catch (Exception e)
                 {
                     var irs = new DepartmentErrorableModel(item);
-                    irs.messages.Add(MessageModel.CreateError(e.Message));
+                    irs.messages.Add(MessageModel.CreateError(e.Message + " ------" + e.StackTrace));
                     rs.Add(irs);
                 }
             }

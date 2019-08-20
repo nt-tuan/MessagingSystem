@@ -10,6 +10,8 @@ using CleanArchitecture.Core.Entities.Accounts;
 using CleanArchitecture.Core.Entities.Sales;
 using CleanArchitecture.Infrastructure.Data.EntityConfigurations;
 using CleanArchitecture.Core.Entities.Core;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace CleanArchitecture.Infrastructure.Data
 {
@@ -54,6 +56,27 @@ namespace CleanArchitecture.Infrastructure.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<EmployeeTitle> EmployeeTitles { get; set; }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken token = default)
+        {
+            var result = await base.SaveChangesAsync(token);
+            var entitiesWithEvents = ChangeTracker.Entries<BaseEntity>()
+                .Select(e => e.Entity)
+                .Where(e => e.Events.Any())
+                .ToArray();
+
+            foreach (var entity in entitiesWithEvents)
+            {
+                var events = entity.Events.ToArray();
+                entity.Events.Clear();
+                foreach (var domainEvent in events)
+                {
+                    _dispatcher.Dispatch(domainEvent);
+                }
+            }
+            DetachAllEntities();
+            return result;
+        }
         public override int SaveChanges()
         {
             int result = base.SaveChanges();
@@ -74,8 +97,18 @@ namespace CleanArchitecture.Infrastructure.Data
                 }
             }
 
+            DetachAllEntities();
             return result;
         }
+
+        public void DetachAllEntities()
+        {
+            var changedEntriesCopy = this.ChangeTracker.Entries()
+    .ToList();
+            foreach (var entry in changedEntriesCopy)
+                entry.State = EntityState.Detached;
+        }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -102,15 +135,15 @@ namespace CleanArchitecture.Infrastructure.Data
             var coreConf = new CoreConfiguration();
             modelBuilder.ApplyConfiguration<Person>(coreConf);
             modelBuilder.ApplyConfiguration<Business>(coreConf);
-            
+
             var hrConf = new HRConfiguration();
             modelBuilder.ApplyConfiguration<Employee>(hrConf);
             modelBuilder.ApplyConfiguration<Department>(hrConf);
-            
+
             var saleConf = new SaleConfiguration();
             modelBuilder.ApplyConfiguration<Distributor>(saleConf);
             modelBuilder.ApplyConfiguration<Customer>(saleConf);
-            
+
             /*
             var messagingConf = new MessagingConfiguration();
             modelBuilder.ApplyConfiguration<AutoMessageConfig>(messagingConf);

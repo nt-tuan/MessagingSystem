@@ -22,7 +22,10 @@ namespace CleanArchitecture.Infrastructure.Data
         void ApplyMeta<T>(T entity, DateTime? at, AppUser user) where T:BaseDetailEntity<T>
         {
             entity.DateCreated = DateTime.Now;
-            entity.CreatedById = user.Id;
+            if (user == null)
+                entity.CreatedById = null;
+            else
+                entity.CreatedById = user.Id;
             entity.DateEffective = at ?? DateTime.Now;
         }
 
@@ -81,6 +84,18 @@ namespace CleanArchitecture.Infrastructure.Data
             var rs = query.Where(u => u.Id == id || u.OriginId == id).Where(u => u.DateEffective <= at && (u.DateEnd == null || u.DateEnd > at));
             return rs;
         }
+        public IQueryable<T> ApplyDefaultPaging<T>(IQueryable<T> query, int? page, int? pageRows, string orderby, int? orderdir)
+        {
+            if (page != null && pageRows != null)
+            {
+                if (orderdir == null || orderdir == 1)
+                    query = query.OrderBy(u => orderby);
+                else
+                    query = query.OrderByDescending(u => orderby);
+                query = query.Take(pageRows.Value).Skip(page.Value * (pageRows.Value));
+            }
+            return query;
+        }
         #endregion
         #region GET
         public async Task<T> GetById<T>(int id) where T : BaseEntity
@@ -91,7 +106,9 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<T> GetById<T>(IQueryable<T> query, int id) where T : BaseEntity
         {
-            return await query.SingleOrDefaultAsync(u => u.Id == id);
+            var entity = await query.AsNoTracking().SingleOrDefaultAsync(u => u.Id == id);
+            _dbContext.DetachAllEntities();
+            return entity;
         }
 
         public async Task<T> GetById<T>(int id, DateTime? at) where T : BaseDetailEntity<T>
@@ -103,13 +120,17 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task<T> GetById<T>(IQueryable<T> query, int id, DateTime? at) where T : BaseDetailEntity<T>
         {
             query = ApplyDefaultWhere(query, at ?? DateTime.Now);
-            return await query.SingleOrDefaultAsync(e => e.Id == id);
+            var entity = await query.AsNoTracking().SingleOrDefaultAsync(e => e.Id == id || e.OriginId == id);
+            _dbContext.DetachAllEntities();
+            return entity;
         }
         #endregion
         #region LIST
         public async Task<List<T>> List<T>() where T : BaseEntity
         {
-            return await _dbContext.Set<T>().ToListAsync();
+            var list = await _dbContext.Set<T>().AsNoTracking().ToListAsync();
+            _dbContext.DetachAllEntities();
+            return list;
         }
 
         public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter) where T : BaseEntity
@@ -120,38 +141,29 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<List<T>> List<T>(IQueryable<T> query, string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter) where T : BaseEntity
         {
+            query = query.AsNoTracking();
             query = ApplyFitlerToQuery<T>(filter, query);
-            if (page != null && pageRows != null)
-            {
-                if (orderdir == null || orderdir == 1)
-                    query = query.OrderBy(u => orderby);
-                else
-                    query = query.OrderByDescending(u => orderby);
-                query = query.Take(pageRows.Value).Skip(page.Value * (pageRows.Value - 1));
-            }
+            query = ApplyDefaultPaging<T>(query, page, pageRows, orderby, orderdir);
+
             var list = await query.ToListAsync();
+            _dbContext.DetachAllEntities();
             return list;
         }
 
         public async Task<List<T>> List<T>(string search, int? page, int? pageRows, string orderby, int? orderdir, dynamic filter, DateTime? at) where T : BaseDetailEntity<T>
         {
             var query = _dbContext.Set<T>().AsQueryable<T>();
-            return await List(query, search, page, pageRows, orderby, orderdir, filter);
+            return await List(query, search, page, pageRows, orderby, orderdir, filter, at);
         }
 
         public async Task<List<T>> List<T>(IQueryable<T> query, string search, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null, DateTime? at = null) where T : BaseDetailEntity<T>
         {
+            query = query.AsNoTracking();
             query = ApplyFitlerToQuery<T>(filter, query);
             query = ApplyDefaultWhere<T>(query, at ?? DateTime.Now);
-            if (page != null && pageRows != null)
-            {
-                if (orderdir == null || orderdir == 1)
-                    query = query.OrderBy(u => orderby);
-                else
-                    query = query.OrderByDescending(u => orderby);
-                query = query.Take(pageRows.Value).Skip(page.Value * (pageRows.Value - 1));
-            }
+            query = ApplyDefaultPaging<T>(query, page, pageRows, orderby, orderdir);
             var list = await query.ToListAsync();
+            _dbContext.DetachAllEntities();
             return list;
         }
         #endregion
@@ -172,7 +184,7 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task Update<T>(T entity, AppUser appUser) where T : BaseEntity
         {
             entity.CreatedById = appUser.Id;
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            _dbContext.Update(entity);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -181,13 +193,13 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task<int> Count<T>(dynamic filter) where T : BaseEntity
         {
             var query = _dbContext.Set<T>().AsQueryable();
-            query = ApplyFitlerToQuery<T>(filter, query);
-            var count = await query.CountAsync();
+            var count = await Count(query, filter);
             return count;
         }
 
         public async Task<int> Count<T>(IQueryable<T> query, dynamic filter) where T : BaseEntity
         {
+            query = query.AsNoTracking();
             query = ApplyFitlerToQuery<T>(filter, query);
             var count = await query.CountAsync();
             return count;
@@ -198,14 +210,16 @@ namespace CleanArchitecture.Infrastructure.Data
             var query = _dbContext.Set<T>().AsQueryable();
             return await Count(query, filter, at);
         }
-#endregion
+
 
         public async Task<int> Count<T>(IQueryable<T> query, dynamic filter, DateTime? at = null) where T : BaseDetailEntity<T>
         {
-            query = ApplyDefaultWhere<T>(_dbContext.Set<T>().AsQueryable(), at ?? DateTime.Now);
-            query = ApplyFitlerToQuery<T>(query, filter);
+            query = query.AsNoTracking();
+            query = ApplyDefaultWhere<T>(query, at ?? DateTime.Now);
+            query = ApplyFitlerToQuery<T>(filter, query);
             return await query.CountAsync();
         }
+        #endregion
 
         public async Task<T> AddDetail<T>(T entity, DateTime? at, AppUser user) where T : BaseDetailEntity<T>
         {
@@ -220,16 +234,14 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task UpdateDetail<T>(T entity, DateTime? at, AppUser appUser) where T : BaseDetailEntity<T>
         {
             at = at ?? DateTime.Now;
-            var current = await GetById<T>(entity.Id, at);
+            var current = await GetById<T>(entity.OriginId??entity.Id, at);
             entity.OriginId = current.OriginId ?? current.Id;
+            entity.Id = 0;
             current.DateEnd = DateTime.Now;
             current.DateReplaced = DateTime.Now;
-
-
             ApplyMeta(entity, at, appUser);
-
             _dbContext.Set<T>().Update(current);
-            _dbContext.Set<T>().Add(current);
+            _dbContext.Set<T>().Add(entity);
             await _dbContext.SaveChangesAsync();
         }
 
