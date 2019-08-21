@@ -157,7 +157,8 @@ class Departments extends Component {
           <Button onClick={this.handleAddOpen} color="green">New</Button>
           <Button onClick={this.handleDetailsOpen} primary>Details</Button>
           <Button onClick={this.handleUpdateOpen} primary>Edit</Button>
-          <Button primary>Export All</Button>
+          <Button primary><Link path="/hr/departments">Export All</Link></Button>
+          <Button primary>Import</Button>
           <Button onClick={this.handleDeleteOpen} color="red">Delete</Button>
         </ButtonGroup>
         <DepartmentList tableRef={this.tableRef} options={{

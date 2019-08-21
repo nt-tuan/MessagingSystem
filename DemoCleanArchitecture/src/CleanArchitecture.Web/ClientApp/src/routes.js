@@ -40,13 +40,15 @@ const User = React.lazy(() => import('./views/Users/User'));
 const Customers = React.lazy(() => import('./views/Base/Customers'));
 
 const Employees = React.lazy(() => import('./views/Employees/Employees'));
+const EmployeeImport = React.lazy(() => import('./views/Employees/Components/Import.js'));
 
 const DepartmentDetail = React.lazy(() => import('./views/Departments/DepartmentDetailsView'));
 const DepartmentUpdate = React.lazy(() => import('./views/Departments/DepartmentUpdateView'));
 const DepartmentsList = React.lazy(() => import('./views/Departments/Departments'));
+const DepartmentImport = React.lazy(() => import('./views/Departments/Components/Import'));
 const AccountDetails = React.lazy(() => import('./views/Accounts/Components/Details'));
-const AddAccount = React.lazy(() => import('./views/Accounts/Components/Add'))
-const TestingCom = React.lazy(() => import('./views/Departments/Components/Import'))
+const AddAccount = React.lazy(() => import('./views/Accounts/Components/Add'));
+const TestingCom = React.lazy(() => import('./views/Departments/Components/Import'));
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -96,12 +98,17 @@ const routes = [
   { path: '/users', exact: true, name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/hr/employees', exact: true, name: 'Employees List', component: Employees },
+  {
+    path: '/hr/employees/import', exact: true, name: 'Import Employee', component: EmployeeImport
+  },
   { path: '/hr/departments', exact: true, name: "Department list", component: DepartmentsList },
   {
     path: '/hr/departments/:id', exact: true, name: "Department detail", component: DepartmentDetail
   },
   {
     path: '/hr/departments/update/:id', exact: true, name: "Department update", component: DepartmentUpdate
+  }, {
+    path: '/hr/departments/import', exact:true, name: 'Department import', component: DepartmentImport
   },
   {
     path: '/accounts/details/:id', exact: true, name: "Account info", component: AccountDetails

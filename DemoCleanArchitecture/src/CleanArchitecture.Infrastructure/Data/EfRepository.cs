@@ -188,7 +188,6 @@ namespace CleanArchitecture.Infrastructure.Data
             await _dbContext.SaveChangesAsync();
         }
 
-
         #region Count
         public async Task<int> Count<T>(dynamic filter) where T : BaseEntity
         {
@@ -220,7 +219,6 @@ namespace CleanArchitecture.Infrastructure.Data
             return await query.CountAsync();
         }
         #endregion
-
         public async Task<T> AddDetail<T>(T entity, DateTime? at, AppUser user) where T : BaseDetailEntity<T>
         {
             entity.OriginId = null;

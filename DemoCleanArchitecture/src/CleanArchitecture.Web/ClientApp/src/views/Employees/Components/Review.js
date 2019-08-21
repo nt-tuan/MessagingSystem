@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MaterialTable from 'material-table';
 import { Message } from 'semantic-ui-react';
 
-export default class ReviewDepartment extends Component {
+export default class ReviewEmployee extends Component {
   constructor(props) {
     super(props);
     this.state = {

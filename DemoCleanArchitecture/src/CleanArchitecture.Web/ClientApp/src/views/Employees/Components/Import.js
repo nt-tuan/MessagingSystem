@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { Form, Label, Button, Message } from 'semantic-ui-react';
 import MaterialTable from 'material-table';
-import ReviewDepartment from './Review';
+import ReviewEmployee from './Review';
 import MyModal from '../../Modals/MyModal';
 
-export default class DepartmentImport extends Component {
+export default class EmployeeImport extends Component {
   constructor(props) {
     super(props);
     this.state = {
       step: 0,
-      selectedFile : null,
-      reviewImportData : [],
-      resultImportData : [],
-      modalMessage : null
+      selectedFile: null,
+      reviewImportData: [],
+      resultImportData: [],
+      modalMessage: null
     };
     this.onFileChange = this.onFileChange.bind(this);
     this.onSubmitReview = this.onSubmitReview.bind(this);
@@ -28,7 +28,7 @@ export default class DepartmentImport extends Component {
     this.setState({ loading: true });
     const data = new FormData();
     data.append('file', this.state.selectedFile);
-    fetch(`/api/hr/ReviewDepartmentExcel`, {
+    fetch(`/api/hr/ReviewEmployeeExcel`, {
       method: 'POST',
       body: data
     }).then(res => {
@@ -60,11 +60,11 @@ export default class DepartmentImport extends Component {
       };
       data.push(item);
     });
-    fetch(`/api/hr/ImportDepartments`, {
+    fetch(`/api/hr/ImportEmployees`, {
       method: 'POST',
-      body: JSON.stringify({ depts: data }),
+      body: JSON.stringify({ employees: data }),
       headers: {
-        'Content-Type':'application/json'
+        'Content-Type': 'application/json'
       }
     }).then(res => {
       if (res.ok) {
@@ -78,16 +78,16 @@ export default class DepartmentImport extends Component {
         resultImportData: json.result
       });
     }).catch(error => {
-      this.setState({ modalMessage: error.Message});
+      this.setState({ modalMessage: error.Message });
     });
   }
 
   onBackToSelectFile(event) {
     this.setState({
       step: 0,
-      reviewImportData : [],
-      resultImportData : [],
-      modalMessage : null
+      reviewImportData: [],
+      resultImportData: [],
+      modalMessage: null
     });
   }
 
@@ -99,13 +99,12 @@ export default class DepartmentImport extends Component {
           <Label>IMPORT_FILE</Label>
           <Form.Input type="file" name="file" onChange={this.onFileChange} />
         </Form.Field>
-<hr />
+        <hr />
         <Button onClick={this.onSubmitReview}>REVIEW</Button>
-
       </div>;
     } else if (this.state.step == 1) {
       body = <div>
-        <ReviewDepartment data={this.state.reviewImportData} />
+        <ReviewEmployee data={this.state.reviewImportData} />
         <hr />
         <Button onClick={this.onBackToSelectFile}>BACK</Button>
         <Button color="green" onClick={this.onSubmitImport}>IMPORT</Button>
@@ -122,9 +121,8 @@ export default class DepartmentImport extends Component {
       </div>
     }
     return <div>
-      <MyModal open={this.state.modalMessage!=null} component={this.state.modalMessage} onClose={() => this.setState({ modalMessage: null })} headers="ERROR" />
+      <MyModal open={this.state.modalMessage != null} component={this.state.modalMessage} onClose={() => this.setState({ modalMessage: null })} headers="ERROR" />
       {body}
-      </div>
-
+    </div>
   }
 }

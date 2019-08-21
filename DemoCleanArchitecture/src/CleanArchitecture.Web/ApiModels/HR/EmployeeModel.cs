@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Core.Entities.HR;
+﻿using CleanArchitecture.Core.Entities.Core;
+using CleanArchitecture.Core.Entities.HR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Web.ApiModels.HR
 {
-    public class EmployeeModel
+    public class EmployeeModel : BaseModel<Employee>
     {
-        public int id { get; set; }
         public string code { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
@@ -24,9 +24,8 @@ namespace CleanArchitecture.Web.ApiModels.HR
 
         }
 
-        public EmployeeModel(Employee entity)
+        public EmployeeModel(Employee entity) : base(entity)
         {
-            id = entity.Id;
             code = entity.Code;
             firstname = entity.Person.FirstName;
             lastname = entity.Person.LastName;
@@ -43,7 +42,7 @@ namespace CleanArchitecture.Web.ApiModels.HR
                 Id = id,
                 DepartmentId = deptid,
             };
-            entity.Person = new Core.Entities.Core.Person
+            entity.Person = new Person
             {
                 FirstName = firstname,
                 LastName = lastname,
