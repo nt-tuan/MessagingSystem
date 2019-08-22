@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import MyModal from '../../Modals/MyModal';
 import DepartmentDetails from '../../Departments/Components/Details';
+import { HRApiService } from '../../../_services/hr';
 
 class EmployeeDetails extends Component {
   constructor(props) {
@@ -25,35 +26,25 @@ class EmployeeDetails extends Component {
     this.setState({
       isLoaded: false
     });
-    fetch(`/api/hr/emp/${this.props.id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-      }
-    }).then(res => {
-      if (res.ok)
-        return res.text();
-      throw new Error(res.statusText);
-    })
-      .then(result => {
-        let jresult = JSON.parse(result);
-        if (jresult.result == null) {
+    HRApiService.employeeDetail(this.props.id,
+      json => {
+        if (json.result == null) {
           this.setState({
             isLoaded: true,
-            error: jresult.message ? jresult.message : "NOT_FOUND"
+            error: json.message ? json.message : "NOT_FOUND"
           });
         } else {
           this.setState({
             isLoaded: true,
-            emp: jresult.result
+            emp: json.result
           });
           this.props.onSuccess && this.props.onSuccess();
         }
-      }).catch(error => {
-        console.log(error);
+      },
+      err => {
         this.setState({
           isLoaded: true,
-          error: error
+          error: err
         });
       });
   }
@@ -69,24 +60,26 @@ class EmployeeDetails extends Component {
       return (
         <div>Loading...</div>
       );
-    } else {
+    } else if (this.state.emp) {
       return (
         <div>
           <h6>Mã nhân viên</h6>
           <h4><strong>{this.state.emp.code}</strong></h4>
           <h6>Tên nhân viên</h6>
-          <h4><strong>{`${this.state.emp.firstname} ${this.state.emp.lastname}`}</strong></h4>
-          <h6>Thuộc bộ phận/phòng ban</h6>
-          <h4>
-            <MyModal label={this.state.emp.deptname} component={<DepartmentDetails id={this.state.emp.deptid} />} />
-          </h4>
-          {this.state.emp.email && <div>
+          <h4><strong>{this.state.emp.person.fullname}</strong></h4>
+          {this.state.emp.dept && <div><h6>Thuộc bộ phận/phòng ban</h6>
+            <h4>
+              <MyModal label={this.state.emp.dept.name} component={<DepartmentDetails id={this.state.emp.dept.id} />} />
+            </h4></div>}
+          {this.state.emp.person.email && <div>
             <h6>Email</h6>
-            <h4>{this.state.emp.email}</h4></div>}
+            <h4><strong>{this.state.emp.person.email}</strong></h4></div>}
           <h6>Ngày sinh</h6>
-          <h4>{this.state.emp.birthday}</h4>
+          <h4><strong>{this.state.emp.person.birthday}</strong></h4>
         </div>
       );
+    } else {
+      return <div>{JSON.stringify(this.state)}</div>
     }
   }
 }

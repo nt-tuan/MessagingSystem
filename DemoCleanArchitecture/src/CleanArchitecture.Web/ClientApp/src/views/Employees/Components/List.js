@@ -3,28 +3,20 @@ import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom'
 import MyModal from '../../Modals/MyModal';
 import EmployeeDetails from './Details';
+import { HRApiService } from '../../../_services/hr';
 class EmployeeList extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
+    const columnDef = HRApiService.employeeColumns();
+    columnDef.pop();
     return (
       <MaterialTable
         title="Danh sách nhân viên"
         tableRef={this.props.tableRef}
-        columns={[
-          { title: 'Mã', field: 'code' },
-          { title: 'Họ', field: 'firstname' },
-          { title: 'Tên', field: 'lastname' },
-          { title: 'Email', field: 'email' },
-          { title: 'Ngày sinh', field: 'birthday' },
-          {
-            title: 'Bộ phận', render: rowData => {
-              return <MyModal label={rowData.deptname} header={"EMPLOYEE_DETAILS"} component={<EmployeeDetails id = { rowData.deptid } />} />
-            }
-          }
-        ]}
+        columns={columnDef}
         data={query => new Promise((resolve, reject) => {
           let postdata = {
             pageSize: query.pageSize,
@@ -34,28 +26,16 @@ class EmployeeList extends Component {
             orderDirection: query.orderDirection === "asc" ? 0 : 1,
             filter: this.props.filter
           };
-          fetch(`/api/hr/emp`, {
-            method: 'POST',
-            body: JSON.stringify(postdata),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          })
-            .then(response => {
-              if (response.ok)
-                return response.json();
-              throw new Error(response.statusText);
-            })
-            .then(res => {
-              console.log(res);
+          HRApiService.employeeList(postdata,
+            result => {
               resolve({
-                data: res.result.emps,
+                data: result.result.emps,
                 page: postdata.page,
-                totalCount: res.result.total
+                totalCount: result.result.total
               });
-            })
-            .catch(error => {
-
+            },
+            error => {
+              alert(error);
             });
         })}
         options={this.props.options}

@@ -19,18 +19,19 @@ namespace CleanArchitecture.Web.ApiModels.HR
         }
         public ICollection<MessageModel> messages { get; set; } = new List<MessageModel>();
 
-        public async Task UpdateEmployeeFromCell(string header, ICell cell, Func<dynamic,Task<Employee>> getEmp, Func<dynamic, Task<Department>> getDept)
+        public async Task UpdateEmployeeFromCell(string header, ICell cell, Func<dynamic,Task<List<Employee>>> getEmp, Func<dynamic, Task<List<Department>>> getDept)
         {
             if(cell == null && cell.CellType == CellType.Blank)
             {
                 return;
             }
 
+            header = header.ToLower();
             if (header == "code")
             {
                 var code = cell.StringCellValue;
                 var emp = await getEmp(new { Code = code });
-                if (emp != null)
+                if (emp.Count > 0)
                 {
                     messages.Add(MessageModel.CreateWarning("EMPLOYEE_CODE_EXISTED", header));
                 }
@@ -38,25 +39,30 @@ namespace CleanArchitecture.Web.ApiModels.HR
             }
             else if (header == "firstname")
             {
-                firstname = cell.StringCellValue;
+                person.firstname = cell.StringCellValue;
             }
             else if (header == "lastname")
             {
-                lastname = cell.StringCellValue;
+                person.lastname = cell.StringCellValue;
             }
             else if (header == "email")
             {
-                email = cell.StringCellValue;
+                person.email = cell.StringCellValue;
             }
             else if (header == "birthday")
             {
-                birthday = cell.DateCellValue;
-            }else if(header == "department")
+                person.birthday = cell.DateCellValue;
+            }
+            else if (header == "id-number"){
+                person.identityNumber = cell.StringCellValue;
+            }
+            else if(header == "department")
             {
                 var dept = await getDept(new { Code = cell.StringCellValue });
-                if (dept != null)
+                if (dept.Count > 0)
                 {
-                    deptid = dept.Id;
+                    var curDept = dept.First();
+                    this.dept = new DepartmentModel(curDept);
                 }
                 else
                     messages.Add(MessageModel.CreateError("INVALID DEPARMENT", header));

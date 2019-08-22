@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 
 import { Form, Message, Button, Label } from 'semantic-ui-react';
-import {default as DeparmentSelection} from '../../Departments/Components/Selection';
+import { default as DeparmentSelection } from '../../Departments/Components/Selection';
+import { HRApiService } from '../../../_services/hr';
 class EmployeeUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {
       formData: {
         code: "",
-        firstname: "",
-        lastname: "",
+        person: {
+          firstname: "",
+          lastname: "",
+          displayname: "",
+          birthday: "",
+          identityNumber: ""
+        },
         deptid: ""
       },
       validated: false,
@@ -25,36 +31,24 @@ class EmployeeUpdate extends Component {
     this.setState({
       isLoaded: false
     });
-    fetch(`/api/hr/emp/${this.props.id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-      }
-    }).then(res => {
-      if (res.ok)
-        return res.text();
-      throw new Error(res.statusText);
-    })
-      .then(result => {
-        let jresult = JSON.parse(result);
-        if (jresult.result == null) {
-          this.setState({
-            isLoaded: true,
-            error: jresult.message ? jresult.message : "NOT_FOUND"
-          });
-        } else {
-          this.setState({
-            isLoaded: true,
-            formData: jresult.result
-          });
-        }
-      }).catch(error => {
-        console.log(error);
+    HRApiService.employeeDetail(this.props.id, jresult => {
+      if (jresult.result == null) {
         this.setState({
           isLoaded: true,
-          error: error
+          error: jresult.message ? jresult.message : "NOT_FOUND"
         });
+      } else {
+        this.setState({
+          isLoaded: true,
+          formData: jresult.result
+        });
+      }
+    }, error => {
+      this.setState({
+        isLoaded: true,
+        error
       });
+    });
   }
 
   handleChange = (e, { name, value }) => {
@@ -62,35 +56,33 @@ class EmployeeUpdate extends Component {
     console.log(`${name}: ${value}`);
 
     /*let name = e.target.name;*/
-
-    this.setState({
-      formData: { ...this.state.formData, [name]: value }
-    });
+    var nameParts = name.split('.');
+    if (nameParts[0] == 'person' && nameParts.length > 1) {
+      this.setState({
+        formData: {
+          ...this.state.formData, person: {
+            ...this.state.formData.person,
+            [nameParts[1]]: value
+          }
+        }
+      });
+    } else {
+      this.setState({
+        formData: { ...this.state.formData, [name]: value }
+      });
+    }
   }
 
   onSubmit(event) {
     event.preventDefault();
     console.log(this.state.formData);
-    const { code, firstname, lastname, deptid } = this.state.formData;
-    fetch(`/api/hr/emp/update/${this.props.id}`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.state.formData)
-    }).then(res => {
-      if (res.ok)
-        return res.text();
-      throw new Error(res.statusText);
-    })
-      .then(res => {
-        let json = JSON.parse(res);
+    HRApiService.employeeUpdate(this.props.id, JSON.stringify(this.state.formData),
+      json => {
         if (json && json.result && this.props.onSuccess) {
           this.props.onSuccess(this.state.formData);
         };
-      })
-      .catch(error => {
+      },
+      error => {
         this.setState({
           validationMessage: { ...this.state.validationMessage, error: error.message }
         });
@@ -115,17 +107,32 @@ class EmployeeUpdate extends Component {
           <Label>CODE</Label>
           <Form.Input value={this.state.formData.code} name="code" onChange={this.handleChange} id="input-code" error={this.state.validationMessage.code != null} />
         </Form.Field>
+        <Form.Field>
+          <Label>IDENTITYNUMBER</Label>
+          <Form.Input value={this.state.formData.person.identityNumber} onChange={this.handleChange} id="input-identityNumber" name="person.identityNumber" error={this.state.validationMessage.identityNumber != null} />
+        </Form.Field>
         <Form.Group widths="equal">
           <Form.Field>
             <Label>FIRSTNAME</Label>
-            <Form.Input value={this.state.formData.firstname} onChange={this.handleChange} id="input-firstname" name="firstname" error={this.state.validationMessage.firstname != null} />
+            <Form.Input value={this.state.formData.person.firstname} onChange={this.handleChange} id="input-firstname" name="person.firstname" error={this.state.validationMessage.firstname != null} />
           </Form.Field>
           <Form.Field>
             <Label>LASTNAME</Label>
-            <Form.Input value={this.state.formData.lastname} onChange={this.handleChange} id="input-lastname" name="lastname" error={this.state.validationMessage.lastname != null} />
+            <Form.Input value={this.state.formData.person.lastname} onChange={this.handleChange} id="input-lastname" name="person.lastname" error={this.state.validationMessage.lastname != null} />
           </Form.Field>
         </Form.Group>
-
+        <Form.Field>
+          <Label>DISPLAYNAME</Label>
+          <Form.Input value={this.state.formData.person.displayname} onChange={this.handleChange} id="input-displayname" name="person.displayname" error={this.state.validationMessage.displayname != null} />
+        </Form.Field>
+        <Form.Field>
+          <Label>EMAIL</Label>
+          <Form.Input value={this.state.formData.person.email} onChange={this.handleChange} id="input-email" name="person.email" error={this.state.validationMessage.email != null} />
+        </Form.Field>
+        <Form.Field>
+          <Label>BIRTHDAY</Label>
+          <Form.Input value={this.state.formData.person.birthday} onChange={this.handleChange} id="input-birthday" name="person.birthday" error={this.state.validationMessage.birthday != null} />
+        </Form.Field>
         <Form.Group widths="equal">
           <DeparmentSelection name="deptid" value={this.state.formData.deptid} onChange={this.handleChange} />
         </Form.Group>

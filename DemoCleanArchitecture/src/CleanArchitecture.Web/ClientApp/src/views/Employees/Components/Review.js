@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
 import { Message } from 'semantic-ui-react';
+import Moment from 'react-moment';
 
 export default class ReviewEmployee extends Component {
   constructor(props) {
@@ -22,20 +23,42 @@ export default class ReviewEmployee extends Component {
         title="Danh sách nhân viên"
         tableRef={this.props.tableRef}
         columns={[
-          { title: 'Mã', field: 'code' },
-          { title: 'Tên bộ phận/ phòng ban', field: 'name' },
+          {
+            title: 'Mã',
+            field: 'code'
+          },
+          {
+            title: 'Họ',
+            render: rowData => rowData.person?rowData.person.firstname:null
+          },
+          {
+            title: 'Tên',
+            render: rowData => rowData.person?rowData.person.lastname:null
+          },
+          {
+            title: 'Tên nhân viên',
+            render: rowData => rowData.person ? rowData.person.fullname:null
+          },
+          {
+            title: 'Tên thường gọi',
+            render: rowData => rowData.person ? rowData.person.displayname:null
+          },
           {
             'title': 'Trực thuộc', render: rowData => {
-              if (rowData.parentCode) {
-                return <strong>{rowData.parentName}({rowData.parentCode})</strong>;
+              if (rowData.dept) {
+                return <strong>{rowData.dept.name}({rowData.dept.code})</strong>;
               }
               return null;
             }
+          }, {
+            title: 'Ngày sinh', render: rowData => {
+              if (rowData.person && rowData.person.birthday) {
+                return <Moment date={rowData.person.birthday} format="DD/MM/YYYY" />
+              }
+            }
           },
           {
-            title: 'Quản lí', render: rowData => {
-              return rowData.managerId;
-            }
+            title: 'Email', render: rowData => rowData.person ? rowData.person.email:null
           },
           {
             title: "Lỗi", render: rowData => {
@@ -65,6 +88,6 @@ export default class ReviewEmployee extends Component {
         <Message.Item>Có {this.state.data.filter(item => item.messages.length > 0 && item.messages.filter(u => u.type == "danger").length).length} lỗi</Message.Item>
         <Message.Item>Có {this.state.data.filter(item => item.messages.length > 0 && item.messages.filter(u => u.type == "warning").length).length} cảnh báo</Message.Item>
       </Message>
-      </div>
+    </div>
   }
 }

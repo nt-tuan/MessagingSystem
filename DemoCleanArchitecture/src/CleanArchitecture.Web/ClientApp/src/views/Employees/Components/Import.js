@@ -53,10 +53,8 @@ export default class EmployeeImport extends Component {
       let item = {
         code: value.code,
         id: value.id,
-        managerId: value.managerId,
-        parentId: value.parentId,
-        name: value.name,
-        shortname: value.name
+        dept: value.dept,
+        person: value.person
       };
       data.push(item);
     });

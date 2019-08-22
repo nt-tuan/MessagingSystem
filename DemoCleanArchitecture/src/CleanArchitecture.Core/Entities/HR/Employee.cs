@@ -13,7 +13,7 @@ namespace CleanArchitecture.Core.Entities.HR
         public string Code { get; set; }
         public int? DepartmentId { get; set; }
         public Department Department { get; set; }
-        public int EmployeeTitleId { get; set; }
+        public int? EmployeeTitleId { get; set; }
         public EmployeeTitle EmployeeTitle { get; set; }
     }
 }

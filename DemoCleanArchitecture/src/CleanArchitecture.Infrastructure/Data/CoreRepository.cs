@@ -40,14 +40,31 @@ namespace CleanArchitecture.Infrastructure.Data
         public async Task<Employee> AddEmployee(Employee employee, AppUser appUser)
         {
             var time = DateTime.Now;
-            var person = await _repos.GetById<Person>(employee.PersonId, time);
+            Person person = null;
+            if(employee.Person !=null && !string.IsNullOrEmpty(employee.Person.IdentityNumber))
+            {
+                person = (await _repos.List<Person>(filter: new { employee.Person.IdentityNumber }, at: time)).FirstOrDefault();
+                if (person != null)
+                {
+                    employee.Person.OriginId = person.OriginId ?? person.Id;
+                    await _repos.UpdateDetail(employee.Person);
+                }
+            }
+            else
+            {
+                person = await _repos.GetById<Person>(employee.PersonId, time);
+            }
+            
             if(person == null)
             {
-                person = await _repos.AddDetail(employee.Person, time);
+                person = await _repos.AddDetail(employee.Person, time, appUser);
             }
-            employee.PersonId = person.Id;
-            employee.CreatedById = appUser.Id;
-            await _repos.AddDetail(employee);
+
+            employee.PersonId = person.OriginId??person.Id;
+            employee.Person = null;
+            employee.CreatedById = appUser==null?null:appUser.Id;
+            await _repos.AddDetail(employee, time, appUser);
+            employee.Person = person;
             return employee;
         }
 
@@ -92,12 +109,12 @@ namespace CleanArchitecture.Infrastructure.Data
             public async Task<Employee> GetEmployeeByCode(string code)
         {
             var employee = await _repos.List<Employee>(filter : new {Code = code }, at: DateTime.Now);
-            return employee.Count > 0 ? employee[0] : null;
+            return employee.Count > 0 ? employee.First() : null;
         }
 
         public async Task<Employee> GetEmployeeById(int id)
         {
-            var query = _db.Employees.Include(u => u.Person);
+            var query = _db.Employees.Include(u => u.Person).Include(u => u.Department);
             return await _repos.GetById<Employee>(query, id);
         }
 
@@ -135,7 +152,11 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task UpdateEmployee(Employee updated, AppUser appUser)
         {
+            await _repos.UpdateDetail(updated.Person, DateTime.Now, appUser);
+            var temp = updated.Person;
+            updated.Person = null;
             await _repos.UpdateDetail(updated, DateTime.Now, appUser);
+            updated.Person = temp;
         }
 
         public async Task<IDictionary<int,Department>> GetDepartmentsTree()
@@ -180,15 +201,20 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task UpdateOrAddEmployeeByCode(Employee employee, AppUser appUser)
         {
-            var empCount = await GetEmployeeByCode(employee.Code);
-            if (empCount == null)
+            var currentEmp = (await _repos.List(query: _db.Employees.Where(u => u.Code == employee.Code).Include(u => u.Person))).FirstOrDefault();
+            if (currentEmp == null)
             {
                 await AddEmployee(employee, appUser);
             }
             else
             {
-                employee.OriginId = empCount.OriginId;
-                employee.Id = empCount.Id;
+                employee.OriginId = currentEmp.OriginId;
+                employee.Id = currentEmp.Id;
+
+                employee.PersonId = currentEmp.PersonId;
+                employee.Person.Id = currentEmp.Person.Id;
+                employee.Person.OriginId = currentEmp.Person.OriginId;
+                employee.Id = currentEmp.Id;
                 await UpdateEmployee(employee, appUser);
             }
         }
