@@ -112,7 +112,7 @@ export default class EmployeeImport extends Component {
       </div>
     } else if (this.state.step == 2) {
       body = <div>
-        <ReviewDepartment data={this.state.resultImportData} />
+        <ReviewEmployee data={this.state.resultImportData} />
         <hr />
         <Button onClick={this.onBackToSelectFile}>
           DONE
@@ -121,7 +121,7 @@ export default class EmployeeImport extends Component {
       </div>
     }
     return <div>
-      <MyModal open={this.state.modalMessage != null} component={this.state.modalMessage} onClose={() => this.setState({ modalMessage: null })} headers="ERROR" />
+      <MyModal open={this.state.modalMessage != null && this.state.modalMessage != undefined} component={this.state.modalMessage} onClose={() => this.setState({ modalMessage: null })} headers="ERROR" />
       {body}
     </div>
   }

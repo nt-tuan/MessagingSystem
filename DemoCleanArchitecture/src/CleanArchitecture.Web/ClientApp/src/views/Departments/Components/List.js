@@ -53,7 +53,7 @@ class DepartmentsList extends Component {
                 });
               })
           })}
-          parentChildData={(row, rows) => rows.find(a => a.code === row.parentCode)}
+          //parentChildData={(row, rows) => rows.find(a => a.code === row.parentCode)}
           options={this.props.options}
           onSelectionChange={this.props.onSelectionChange}
         />

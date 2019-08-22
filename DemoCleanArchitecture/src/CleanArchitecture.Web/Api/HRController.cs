@@ -102,7 +102,8 @@ namespace CleanArchitecture.Web.Api
             return Ok(new ResponseModel(new { result = true }));
         }
 
-        [Route("ReviewEmployeesExcel")]
+        [HttpPost]
+        [Route("ReviewEmployeeExcel")]
         public async Task<IActionResult> ReadEmployeeExcel()
         {
             var file = Request.Form.Files[0];
@@ -131,7 +132,7 @@ namespace CleanArchitecture.Web.Api
             return Ok(new ResponseModel(rs));
         }        
 
-        [Route("UpdateEmployeesExcel")]
+        [Route("UpdateEmployees")]
         public async Task<IActionResult> UploadEmployeeExcel(ICollection<EmployeeModel> employees)
         {
             var entities = employees.Select(u => u.ToEmployee());
