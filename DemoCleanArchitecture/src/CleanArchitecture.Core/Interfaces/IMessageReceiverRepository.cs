@@ -49,6 +49,7 @@ namespace CleanArchitecture.Core.Interfaces
         Task DeleteReceiver(int id, AppUser actor, DateTime? at);
         //Usecase 3.4.1
         Task<ReceiverProvider> AddReceiverProvider(ReceiverProvider provider, AppUser actor, DateTime? at);
+        Task DeleteReceiverProvider(int id, AppUser actor, DateTime? at);
         //Usecase 3.6
         Task<List<MessageServiceProvider>> GetProviders(DateTime? at);
         //Usecase 3.7

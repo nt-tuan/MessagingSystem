@@ -103,6 +103,12 @@ namespace CleanArchitecture.Infrastructure.Data
             await _res.DeleteDetail(receiver);
         }
 
+        public async Task DeleteReceiverProvider(int id, AppUser actor, DateTime? at)
+        {
+            var entity = await _res.GetById<ReceiverProvider>(id, DateTime.Now);
+            await _res.DeleteDetail(entity, DateTime.Now, actor);
+        }
+
         public async Task<ICollection<ReceiverCategory>> GetCategories(DateTime? at)
         {
             var list = await _res.List<ReceiverCategory>(at: at);
@@ -138,7 +144,8 @@ namespace CleanArchitecture.Infrastructure.Data
 
         public async Task<ICollection<MessageReceiver>> GetReceivers(string search = null, int? page = null, int? pageRows = null, string orderby = "Id", int? orderdir = 1, dynamic filter = null, DateTime? at = null)
         {
-            return await _res.List<MessageReceiver>(search, page, pageRows, orderby, orderdir, filter, at);
+            var query = _context.MessageReceivers.Include(u => u.ReceiverProviders);
+            return await _res.List<MessageReceiver>(query, search, page, pageRows, orderby, orderdir, filter, at);
         }
 
         public async Task UpdateCategory(ReceiverCategory cate, AppUser appUser)

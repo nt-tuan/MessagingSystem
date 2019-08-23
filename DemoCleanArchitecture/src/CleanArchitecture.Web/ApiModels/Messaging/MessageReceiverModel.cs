@@ -14,6 +14,7 @@ namespace CleanArchitecture.Web.ApiModels.Messaging
         public string shortname { get; set; }
         public CustomerModel customer { get; set; }
         public EmployeeModel employee { get; set; }
+        public ICollection<ReceiverProviderModel> providers { get; set; }
         public MessageReceiverModel()
         {
 
